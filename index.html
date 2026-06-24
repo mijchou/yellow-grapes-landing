@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ─────────────────────────────  SEO  ───────────────────────────── -->
+  <title>Yellow Grapes — Discover Taiwan's wine world on one map</title>
+  <meta
+    name="description"
+    content="Yellow Grapes is a wine-discovery map for Taiwan — find wine bars, cellars, tastings and 12,000+ appellations in one place. Join the waitlist for early access."
+  />
+
+  <!-- Canonical (TODO: set real domain before launch) -->
+  <link rel="canonical" href="https://yellowgrapes.app/" />
+
+  <!-- Open Graph (Threads / Instagram / Facebook link previews) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Yellow Grapes" />
+  <meta property="og:title" content="Yellow Grapes — Discover Taiwan's wine world on one map" />
+  <meta
+    property="og:description"
+    content="A wine-discovery map for Taiwan — wine bars, cellars, tastings and 12,000+ appellations. Join the waitlist for early access."
+  />
+  <!-- Preview image = the app screenshot. NOTE: it's portrait (472×982), so it
+       will be cropped in wide link cards. TODO: for ideal previews add a
+       dedicated 1200×630 images/og.png and point these three tags at it. -->
+  <meta property="og:image" content="images/app-map.png" />
+  <meta property="og:image:width" content="472" />
+  <meta property="og:image:height" content="982" />
+  <meta property="og:image:alt" content="Yellow Grapes app showing a map of wine merchants across Taipei, Taiwan" />
+  <meta property="og:url" content="https://yellowgrapes.app/" />
+
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Yellow Grapes — Discover Taiwan's wine world on one map" />
+  <meta
+    name="twitter:description"
+    content="A wine-discovery map for Taiwan — wine bars, cellars, tastings and 12,000+ appellations. Join the waitlist for early access."
+  />
+  <meta name="twitter:image" content="images/app-map.png" />
+
+  <!-- Favicon: Yellow Grapes logo (SVG). TODO: add a PNG fallback for older browsers. -->
+  <link rel="icon" type="image/svg+xml" href="logo/dark-y.svg" />
+
+  <!-- Brand wordmark / heading font (Urbanist — used in the Flutter splash) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!--
+    Tailwind CSS — PLAY CDN (prototyping only).
+    Before launch, swap this for a built/purged stylesheet so we don't ship the
+    full runtime compiler.
+  -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Mirror the brand palette + fonts so Tailwind utilities can use them.
+    // The actual values live in :root (below) as CSS custom properties so they
+    // stay tunable in one place.
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: 'var(--bg)',
+            fg: 'var(--fg)',
+            fgmuted: 'var(--fg-muted)',
+            accent: 'var(--accent)',
+            accentmuted: 'var(--accent-muted)',
+            hairline: 'var(--border)',
+          },
+          fontFamily: {
+            // App body/UI uses the platform system font (SF Pro / Roboto).
+            sans: ['system-ui', '-apple-system', '"Segoe UI"', 'Roboto', '"Noto Sans TC"', 'sans-serif'],
+            // Brand wordmark + headings.
+            brand: ['Urbanist', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ───────────  Tunable design tokens (single source of truth)  ─────────── */
+    :root {
+      --bg: #FEFDFB;            /* page background (app warmGrey50) */
+      --bg-rgb: 254 253 251;    /* channels of --bg, for translucent header */
+
+      --header-border: #8A6E47; /* app themeBorder5Light */
+      --header-opacity: 0.85;   /* header background translucency */
+      --header-blur: 12px;      /* backdrop blur behind header */
+      --header-h-desktop: 72px;
+      --header-h-mobile: 56px;
+
+      /* Foreground / text colors (from the app theme) */
+      --fg: #423D35;            /* primary text + logo (app splash text light) */
+      --fg-muted: #6C624D;      /* secondary/body text (app warmGrey600) */
+
+      /* Accent — app themeText5Light (warm brown; intentionally NOT red) */
+      --accent: #6C4D27;
+      --accent-muted: #8C693C;  /* app themeText4Light */
+
+      /* Shared hairline border (== themeBorder5Light) */
+      --border: #8A6E47;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background-color: var(--bg); }
+
+    /* Sticky, translucent, blurred header */
+    .site-header {
+      height: var(--header-h-desktop);
+      background-color: rgb(var(--bg-rgb) / var(--header-opacity));
+      -webkit-backdrop-filter: blur(var(--header-blur));
+      backdrop-filter: blur(var(--header-blur));
+      border-bottom: 1px solid var(--header-border);
+    }
+    @media (max-width: 640px) {
+      .site-header { height: var(--header-h-mobile); }
+    }
+
+    /* Offset in-page scroll targets so they clear the sticky header */
+    #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
+
+    /* Logo art (inlined dark-y.svg + dark-dot.svg, composed as in the splash).
+       Strokes use currentColor so they inherit the surrounding text color (--fg);
+       the dot's center fill tracks --bg (the literal in the SVG is a fallback). */
+    .yg-logo { display: block; width: auto; }
+    .yg-logo circle { fill: var(--bg); }
+
+    /* Right-column image: graceful fallback if images/app-map.png isn't added yet */
+    .img-fallback { padding: 3rem; opacity: 0.6; }
+  </style>
+</head>
+
+<body id="top" class="font-sans text-fg antialiased">
+
+  <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
+  <header class="site-header sticky top-0 z-50">
+    <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-6 sm:px-8">
+      <!-- Left: logo + wordmark -->
+      <a href="#top" class="flex items-center gap-2.5 text-fg" aria-label="Yellow Grapes — home">
+        <!-- Logo: cursive "y" + dot (combined viewBox includes the dot at upper-right) -->
+        <svg class="yg-logo h-7 sm:h-8" viewBox="0 0 152 154" fill="none"
+             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Yellow Grapes logo">
+          <path d="M109.267 57.0088C69.7671 67.0089 -4.18621 125.998 21.9776 144.514C48.1415 163.03 86.6357 16.5142 84.2996 17.5138C81.9636 18.5134 33.7719 66.5849 31.2993 44.0139C30.1562 33.5793 39.501 28.5076 42.501 17.5147C47.2787 0.00753975 17.501 8.00765 7.50098 22.0077"
+                stroke="currentColor" stroke-width="15" stroke-linecap="round" />
+          <g transform="translate(127.09 34) scale(0.9683)">
+            <circle cx="12.5" cy="12.5" r="7.5" fill="#FEFDFB" stroke="currentColor" stroke-width="10" />
+          </g>
+        </svg>
+        <span class="font-brand font-medium uppercase text-[13px] tracking-[0.18em] sm:text-sm sm:tracking-[0.25em]">
+          Yellow&nbsp;Grapes
+        </span>
+      </a>
+
+      <!-- Right: scrolls to the waitlist form -->
+      <a href="#waitlist"
+         class="rounded-full bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-bg transition-opacity hover:opacity-90 sm:px-5 sm:text-sm">
+        Join waitlist
+      </a>
+    </div>
+  </header>
+
+  <!-- ─────────────────────────────  HERO  ───────────────────────────── -->
+  <!-- Mobile: app image on top, text below (flex-col-reverse).
+       Desktop: text left, image right (grid restores DOM order). -->
+  <main>
+    <section class="mx-auto flex max-w-6xl flex-col-reverse gap-12 px-6 py-16 sm:px-8 sm:py-20
+                    md:grid md:grid-cols-2 md:items-center md:gap-16 md:py-28">
+
+      <!-- Left column: hero copy -->
+      <div class="text-center md:text-left">
+        <p class="font-brand text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+          The Final Pour
+        </p>
+
+        <h1 class="mt-5 font-brand text-4xl font-semibold leading-[1.1] tracking-tight text-fg sm:text-5xl lg:text-6xl">
+          Reserve your<br />place in the cellar.
+        </h1>
+
+        <p class="mx-auto mt-6 max-w-md text-base leading-relaxed text-fgmuted md:mx-0 sm:text-lg">
+          Be among the first to explore 12,000+ appellations. Sign up for early
+          access and shape the future of wine discovery.
+        </p>
+
+        <div class="mt-9">
+          <a href="#waitlist"
+             class="inline-flex items-center justify-center rounded-md bg-accent px-8 py-4 text-base font-semibold tracking-wide text-bg shadow-sm transition-opacity hover:opacity-90">
+            Join the Waitlist
+          </a>
+        </div>
+
+        <!-- "COMING SOON" divider -->
+        <div class="mt-12 flex items-center gap-4" role="separator" aria-label="Coming soon">
+          <span class="h-px flex-1 bg-hairline opacity-40"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-accentmuted">Coming Soon</span>
+          <span class="h-px flex-1 bg-hairline opacity-40"></span>
+        </div>
+
+        <!-- Store badges (non-functional placeholders) -->
+        <div class="mt-6 grid grid-cols-2 gap-4">
+          <span class="flex items-center justify-center gap-3 rounded-lg border border-hairline px-4 py-3 text-fg">
+            <!-- Apple glyph -->
+            <svg class="h-6 w-6 shrink-0" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+              <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+            </svg>
+            <span class="text-left leading-tight">
+              <span class="block text-[9px] uppercase tracking-wider text-fgmuted">Download on the</span>
+              <span class="block text-sm font-semibold">App Store</span>
+            </span>
+          </span>
+
+          <span class="flex items-center justify-center gap-3 rounded-lg border border-hairline px-4 py-3 text-fg">
+            <!-- Google Play glyph -->
+            <svg class="h-6 w-6 shrink-0" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+              <path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/>
+            </svg>
+            <span class="text-left leading-tight">
+              <span class="block text-[9px] uppercase tracking-wider text-fgmuted">Get it on</span>
+              <span class="block text-sm font-semibold">Google Play</span>
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Right column: app screenshot (user adds images/app-map.png) -->
+      <div class="flex justify-center">
+        <img
+          src="images/app-map.png"
+          alt="Yellow Grapes app showing a map of wine merchants across Taipei, Taiwan"
+          class="w-full max-w-xs rounded-3xl shadow-xl"
+          loading="eager"
+          onerror="this.onerror=null; this.src='logo/dark-y.svg'; this.classList.add('img-fallback');"
+        />
+      </div>
+    </section>
+
+    <!-- ───────────────────────  WAITLIST FORM  ─────────────────────── -->
+    <section id="waitlist" class="border-t border-hairline">
+      <div class="mx-auto max-w-2xl px-6 py-16 text-center sm:px-8 sm:py-24">
+        <h2 class="font-brand text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
+          Join the waitlist
+        </h2>
+        <p class="mx-auto mt-4 max-w-md text-base text-fgmuted">
+          Drop your email and let us know your platform — we'll tell you the
+          moment early access opens.
+        </p>
+
+        <!-- UI only: no backend wired. See TODO in the submit handler below. -->
+        <form id="waitlistForm" class="mx-auto mt-10 max-w-md space-y-6 text-left" novalidate>
+          <div>
+            <label for="email" class="mb-2 block text-sm font-medium text-fg">Email address</label>
+            <input
+              id="email" name="email" type="email" required autocomplete="email"
+              placeholder="you@example.com"
+              class="w-full rounded-md border border-hairline bg-white px-4 py-3 text-fg placeholder:text-fgmuted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            />
+          </div>
+
+          <fieldset>
+            <legend class="mb-2 block text-sm font-medium text-fg">Which platform do you use?</legend>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="cursor-pointer">
+                <input type="radio" name="platform" value="ios" required class="peer sr-only" />
+                <span class="block rounded-md border border-hairline px-4 py-3 text-center text-sm font-medium text-fg transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-bg peer-focus-visible:ring-1 peer-focus-visible:ring-accent">
+                  iOS
+                </span>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="platform" value="android" required class="peer sr-only" />
+                <span class="block rounded-md border border-hairline px-4 py-3 text-center text-sm font-medium text-fg transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-bg peer-focus-visible:ring-1 peer-focus-visible:ring-accent">
+                  Android
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <button type="submit"
+            class="w-full rounded-md bg-accent px-6 py-4 text-base font-semibold tracking-wide text-bg transition-opacity hover:opacity-90">
+            Join the waitlist
+          </button>
+        </form>
+
+        <!-- Success state (revealed after a valid submit) -->
+        <div id="waitlistThanks" class="mx-auto mt-10 hidden max-w-md rounded-md border border-hairline px-6 py-8" tabindex="-1">
+          <p class="font-brand text-lg font-semibold text-fg">You're on the list. 🍇</p>
+          <p class="mt-2 text-sm text-fgmuted">Thanks for joining — we'll be in touch when early access opens.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ─────────────────────────────  FOOTER  ───────────────────────────── -->
+  <footer class="border-t border-hairline">
+    <!-- Same max-width + px as the header so the logo lines up with the header logo -->
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-8 sm:px-8 md:flex-row">
+      <!-- Logo + wordmark (reused from header) -->
+      <a href="#top" class="flex items-center gap-2.5 text-fg" aria-label="Yellow Grapes — home">
+        <svg class="yg-logo h-7" viewBox="0 0 152 154" fill="none"
+             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Yellow Grapes logo">
+          <path d="M109.267 57.0088C69.7671 67.0089 -4.18621 125.998 21.9776 144.514C48.1415 163.03 86.6357 16.5142 84.2996 17.5138C81.9636 18.5134 33.7719 66.5849 31.2993 44.0139C30.1562 33.5793 39.501 28.5076 42.501 17.5147C47.2787 0.00753975 17.501 8.00765 7.50098 22.0077"
+                stroke="currentColor" stroke-width="15" stroke-linecap="round" />
+          <g transform="translate(127.09 34) scale(0.9683)">
+            <circle cx="12.5" cy="12.5" r="7.5" fill="#FEFDFB" stroke="currentColor" stroke-width="10" />
+          </g>
+        </svg>
+        <span class="font-brand font-medium uppercase text-sm tracking-[0.25em]">Yellow&nbsp;Grapes</span>
+      </a>
+
+      <!-- Horizontal nav, spread out & vertically centered.
+           TODO: point Privacy / Terms / Contact at real destinations. -->
+      <nav class="flex items-center gap-8 text-sm text-fgmuted">
+        <a href="#top" class="transition-colors hover:text-fg">Home</a>
+        <a href="#" class="transition-colors hover:text-fg">Privacy</a>
+        <a href="#" class="transition-colors hover:text-fg">Terms</a>
+        <a href="#waitlist" class="transition-colors hover:text-fg">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Waitlist form — UI only (no backend). Validates, then shows the thanks state.
+    (function () {
+      var form = document.getElementById('waitlistForm');
+      var thanks = document.getElementById('waitlistThanks');
+      if (!form) return;
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!form.reportValidity()) return; // native validation UI
+        // TODO: wire submission to a backend here (Formspree / Getform / API).
+        form.classList.add('hidden');
+        thanks.classList.remove('hidden');
+        thanks.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
