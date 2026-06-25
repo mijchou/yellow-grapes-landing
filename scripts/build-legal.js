@@ -405,14 +405,31 @@ function parseDoc(snap, pageKey) {
 
 async function main() {
   const credential = resolveCredential();
-  initializeApp({ credential, projectId: config.projectId });
+  const app = initializeApp({ credential, projectId: config.projectId });
   const db = getFirestore();
 
-  console.log(`Reading legal documents from ${config.projectId}/${config.collection} …`);
+  const activeProject = app.options.projectId;
+  console.log(`Reading "${config.collection}" from project "${activeProject}" …`);
+  if (activeProject !== config.projectId) {
+    console.warn(
+      `  ⚠ Active project "${activeProject}" differs from config.projectId "${config.projectId}" ` +
+        `— the service-account key likely belongs to a different project.`,
+    );
+  }
 
   for (const pageKey of Object.keys(config.pages)) {
     const pageDef = config.pages[pageKey];
     const snap = await db.collection(config.collection).doc(pageDef.docId).get();
+    if (!snap.exists) {
+      // List what IS there so the failure pinpoints wrong-project / wrong-id / not-published.
+      const existing = (await db.collection(config.collection).listDocuments()).map((d) => d.id);
+      throw new Error(
+        `Doc "${config.collection}/${pageDef.docId}" (for "${pageKey}") not found in project ` +
+          `"${activeProject}". Existing docs in "${config.collection}": ` +
+          `[${existing.join(', ') || '(none)'}]. Check the service-account key is for the right ` +
+          `project and that the policy has been published there.`,
+      );
+    }
     const parsed = parseDoc(snap, pageKey);
     const html = renderPage(pageDef, parsed);
     const outPath = path.join(ROOT, pageDef.outFile);
