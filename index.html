@@ -68,7 +68,7 @@
       --header-border: #8A6E47; /* app themeBorder5Light */
       --header-opacity: 0.85;   /* header background translucency */
       --header-blur: 12px;      /* backdrop blur behind header */
-      --header-h-desktop: 160px;
+      --header-h-desktop: 100px;  /* tune to taste (logo + breathing room) */
       --header-h-mobile: 56px;
 
       /* Foreground / text colors (from the app theme) */
@@ -83,7 +83,7 @@
       --border: #8A6E47;
 
       /* Logo + wordmark (tune freely — inline, no rebuild needed) */
-      --logo-h: 128px;          /* header/footer logo height (desktop) */
+      --logo-h: 68px;          /* header/footer logo height (desktop) */
       --logo-h-mobile: 28px;   /* logo height on small screens */
       --wordmark-size: 1rem;
       --wordmark-weight: 1000;
@@ -99,6 +99,7 @@
       background-color: rgb(var(--bg-rgb) / var(--header-opacity));
       -webkit-backdrop-filter: blur(var(--header-blur));
       backdrop-filter: blur(var(--header-blur));
+      border-bottom: 1px solid var(--header-border);
     }
     @media (max-width: 640px) {
       .site-header { height: var(--header-h-mobile); }
@@ -135,17 +136,17 @@
         </span>
       </a>
 
-      <!-- Right: language toggle + waitlist CTA -->
+      <!-- Right: waitlist CTA + language toggle -->
       <div class="flex items-center gap-3 sm:gap-4">
-        <button id="langToggle" type="button"
-                class="rounded-full border border-hairline px-3 py-2 text-xs font-semibold tracking-wide text-fg transition-colors hover:border-accent hover:text-accent sm:text-sm">
-          中
-        </button>
         <a href="#waitlist"
            class="rounded-full bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-bg transition-opacity hover:opacity-90 sm:px-5 sm:text-sm"
            data-i18n="nav.join">
           Join waitlist
         </a>
+        <button id="langToggle" type="button"
+                class="rounded-full border border-hairline px-3 py-2 text-xs font-semibold tracking-wide text-fg transition-colors hover:border-accent hover:text-accent sm:text-sm">
+          中
+        </button>
       </div>
     </div>
   </header>
@@ -154,8 +155,8 @@
   <!-- Mobile: app image on top, text below (flex-col-reverse).
        Desktop: text left, image right (grid restores DOM order). -->
   <main>
-    <section class="mx-auto flex max-w-6xl flex-col-reverse gap-12 px-6 py-16 sm:px-8 sm:py-20
-                    md:grid md:grid-cols-2 md:items-start md:gap-16 md:py-28">
+    <section class="mx-auto flex max-w-6xl flex-col-reverse gap-12 px-6 pb-16 pt-6 sm:px-8 sm:pb-20 sm:pt-8
+                    md:grid md:grid-cols-2 md:items-start md:gap-16 md:pb-28 md:pt-10">
 
       <!-- Left column: hero copy -->
       <div class="text-center md:text-left">
@@ -187,8 +188,33 @@
           <span class="h-px flex-1 bg-hairline opacity-40"></span>
         </div>
 
+        <!-- Launch countdown (to 2026-09-24 00:00 Asia/Taipei) — borderless -->
+        <div class="mt-8">
+          <div id="countdown" class="grid max-w-md grid-cols-4 gap-3 md:mx-0">
+            <div class="text-center">
+              <span id="cd-days" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
+              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.days">Days</span>
+            </div>
+            <div class="text-center">
+              <span id="cd-hours" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
+              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.hours">Hours</span>
+            </div>
+            <div class="text-center">
+              <span id="cd-mins" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
+              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.minutes">Minutes</span>
+            </div>
+            <div class="text-center">
+              <span id="cd-secs" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
+              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.seconds">Seconds</span>
+            </div>
+          </div>
+          <p id="countdownDone" class="mt-4 hidden font-brand text-lg font-semibold text-accent" data-i18n="countdown.done">
+            We're live! 🍇
+          </p>
+        </div>
+
         <!-- Store badges (non-functional placeholders) -->
-        <div class="mt-6 grid grid-cols-2 gap-4">
+        <div class="mt-8 grid grid-cols-2 gap-4">
           <span class="flex items-center justify-center gap-3 rounded-lg border border-hairline px-4 py-3 text-fg">
             <!-- Apple glyph -->
             <svg class="h-6 w-6 shrink-0" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
@@ -210,34 +236,6 @@
               <span class="block text-sm font-semibold">Google Play</span>
             </span>
           </span>
-        </div>
-
-        <!-- Launch countdown (to 2026-09-24 00:00 Asia/Taipei) -->
-        <div class="mt-10">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-accentmuted" data-i18n="countdown.heading">
-            Launching in
-          </p>
-          <div id="countdown" class="mt-4 grid max-w-md grid-cols-4 gap-3 md:mx-0">
-            <div class="rounded-lg border border-hairline px-2 py-3 text-center">
-              <span id="cd-days" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.days">Days</span>
-            </div>
-            <div class="rounded-lg border border-hairline px-2 py-3 text-center">
-              <span id="cd-hours" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.hours">Hours</span>
-            </div>
-            <div class="rounded-lg border border-hairline px-2 py-3 text-center">
-              <span id="cd-mins" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.minutes">Minutes</span>
-            </div>
-            <div class="rounded-lg border border-hairline px-2 py-3 text-center">
-              <span id="cd-secs" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.seconds">Seconds</span>
-            </div>
-          </div>
-          <p id="countdownDone" class="mt-4 hidden font-brand text-lg font-semibold text-accent" data-i18n="countdown.done">
-            We're live! 🍇
-          </p>
         </div>
       </div>
 
@@ -359,7 +357,6 @@
         'hero.comingSoon': 'Coming Soon',
         'store.appleTop': 'Download on the',
         'store.googleTop': 'Get it on',
-        'countdown.heading': 'Launching in',
         'countdown.days': 'Days',
         'countdown.hours': 'Hours',
         'countdown.minutes': 'Minutes',
@@ -383,10 +380,9 @@
         'hero.headline': '透過 Yellow Grapes<br />探索在地葡萄酒世界。',
         'hero.subcopy': '搶先探索超過 12,000 種葡萄酒產區，註冊搶先體驗，一同形塑葡萄酒探索的未來。',
         'hero.cta': '加入候補名單',
-        'hero.comingSoon': '即將推出',
+        'hero.comingSoon': '上線倒數',
         'store.appleTop': '下載於',
         'store.googleTop': '立即下載',
-        'countdown.heading': '距離上線還有',
         'countdown.days': '天',
         'countdown.hours': '時',
         'countdown.minutes': '分',
