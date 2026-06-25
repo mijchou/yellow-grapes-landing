@@ -83,7 +83,7 @@
       --border: #8A6E47;
 
       /* Logo + wordmark (tune freely — inline, no rebuild needed) */
-      --logo-h: 68px;          /* header/footer logo height (desktop) */
+      --logo-h: 34px;          /* header/footer logo height (desktop) */
       --logo-h-mobile: 28px;   /* logo height on small screens */
       --wordmark-size: 1rem;
       --wordmark-weight: 1000;
@@ -318,11 +318,11 @@
       </a>
 
       <!-- Horizontal nav, spread out & vertically centered.
-           TODO: point Privacy / Terms / Contact at real destinations. -->
+           Privacy / Terms → build-time pages rendered from Firestore (see CLAUDE.md). -->
       <nav class="flex items-center gap-8 text-sm text-fgmuted">
         <a href="#top" class="transition-colors hover:text-fg" data-i18n="footer.home">Home</a>
-        <a href="#" class="transition-colors hover:text-fg" data-i18n="footer.privacy">Privacy</a>
-        <a href="#" class="transition-colors hover:text-fg" data-i18n="footer.terms">Terms</a>
+        <a href="/privacy" class="transition-colors hover:text-fg" data-i18n="footer.privacy">Privacy</a>
+        <a href="/terms" class="transition-colors hover:text-fg" data-i18n="footer.terms">Terms</a>
         <a href="#waitlist" class="transition-colors hover:text-fg" data-i18n="footer.contact">Contact</a>
       </nav>
     </div>

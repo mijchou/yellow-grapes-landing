@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // Scan the page so JIT generates exactly the utilities/variants used,
+  // Scan every page so JIT generates exactly the utilities/variants used,
   // including arbitrary values (e.g. tracking-[0.3em]) and peer-* variants.
-  content: ['./index.html'],
+  // The glob also picks up the build-generated terms.html / privacy.html — so
+  // always run `build:legal` (which writes them) BEFORE the Tailwind build.
+  content: ['./*.html'],
   theme: {
     extend: {
       // Brand palette — mirrors the :root design tokens in index.html.

@@ -4,10 +4,13 @@
   "private": true,
   "description": "Yellow Grapes — landing page (static, deployed via GitHub Pages).",
   "scripts": {
+    "build:legal": "node scripts/build-legal.js",
     "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "build:all": "npm run build:legal && npm run build",
     "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "devDependencies": {
+    "firebase-admin": "^12.7.0",
     "tailwindcss": "^3.4.19"
   }
 }

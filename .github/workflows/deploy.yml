@@ -1,0 +1,78 @@
+name: Deploy to GitHub Pages
+
+# Builds the site (renders /terms & /privacy from Firestore at build time, then
+# Tailwind) and deploys to GitHub Pages.
+#
+#   - push to main      → automatic deploy
+#   - "Run workflow"    → manual redeploy. Use this AFTER editing a policy in the
+#                         master panel so the rendered snapshot + "Last updated"
+#                         date refresh (Firestore is the single source of truth).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages deployment needs these; GITHUB_TOKEN stays read-only for contents.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deploys at once; let an in-progress run finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Node 18 matches the Tailwind v3 pin (see CLAUDE.md). Don't bump without
+      # migrating Tailwind to v4.
+      - name: Set up Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Render terms.html / privacy.html from Firestore. The service-account JSON
+      # comes from the repo secret and is never written to the deployed artifact.
+      - name: Render legal pages from Firestore
+        run: npm run build:legal
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      # Tailwind build — runs AFTER build:legal so it scans the generated pages.
+      - name: Build CSS
+        run: npm run build
+
+      # Assemble only the deployable files (keeps node_modules/, scripts/, src/,
+      # and the service account OUT of the published artifact).
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp index.html terms.html privacy.html _site/
+          cp -r dist logo images _site/
+          cp CNAME _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

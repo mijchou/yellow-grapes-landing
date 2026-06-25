@@ -4,5 +4,13 @@ node_modules/
 # OS junk
 .DS_Store
 
+# Build-generated legal pages — rendered from Firestore at build time (CI), never
+# committed. Firestore stays the single source of truth; no competing copy in git.
+/terms.html
+/privacy.html
+
+# Firebase service-account key (build-time secret) — must never be committed.
+service-account*.json
+
 # NOTE: dist/output.css is intentionally NOT ignored — it's the committed,
 # built stylesheet that GitHub Pages serves directly (no build step on deploy).
