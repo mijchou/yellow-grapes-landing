@@ -39,17 +39,46 @@ function escapeHtml(str) {
 }
 
 /**
- * Render a plain-text body (the format stored in Firestore) into HTML:
- * blank lines start a new <p>; single newlines become <br>. Text is escaped.
+ * Render a Firestore body into HTML. Bodies are authored as lightly-marked text:
+ *   - a line starting with `#`..`######` becomes a heading (ATX markdown) — `#`
+ *     maps to <h2> (the page <h1> is the document title), `##` to <h3>, etc.;
+ *   - blank lines separate <p> paragraphs; single newlines become <br>.
+ * All text is HTML-escaped (the `#` markers are stripped, never shown literally).
  */
 function renderBody(body) {
-  return String(body || '')
-    .replace(/\r\n/g, '\n')
-    .split(/\n\s*\n/)
-    .map((para) => para.trim())
-    .filter(Boolean)
-    .map((para) => `<p>${escapeHtml(para).replace(/\n/g, '<br />')}</p>`)
-    .join('\n          ');
+  const lines = String(body || '').replace(/\r\n/g, '\n').split('\n');
+  const out = [];
+  let para = [];
+  const flush = () => {
+    if (para.length) {
+      out.push(`<p>${para.map(escapeHtml).join('<br />')}</p>`);
+      para = [];
+    }
+  };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      flush();
+      continue;
+    }
+    const h = line.match(/^(#{1,6})\s+(.*\S)\s*$/);
+    if (h) {
+      flush();
+      const level = Math.min(h[1].length + 1, 4); // `#` -> h2, `##` -> h3, …
+      out.push(`<h${level}>${escapeHtml(h[2])}</h${level}>`);
+    } else {
+      para.push(line);
+    }
+  }
+  flush();
+  return out.join('\n          ');
+}
+
+/** An article is "empty" if neither its title nor body has visible text. */
+function isEmptyArticle(article) {
+  const title = (article[config.fields.article.title] || '').trim();
+  const body = (article[config.fields.article.body] || '').trim();
+  return !title && !body;
 }
 
 /** Format a JS Date for a given locale, or null. */
@@ -109,7 +138,12 @@ function renderLocaleSection(localeKey, pageDef, parsed) {
 function renderPage(pageDef, parsed) {
   const canonical = config.siteOrigin + pageDef.path;
   const defLocale = config.defaultLocale;
-  const htmlLang = config.locales[defLocale].htmlLang;
+  // Open in the default locale if it has content, else the first populated one,
+  // so the page never loads showing an empty language.
+  const initialLocale = parsed.populated.includes(defLocale)
+    ? defLocale
+    : parsed.populated[0];
+  const htmlLang = config.locales[initialLocale].htmlLang;
   const sections = Object.keys(config.locales)
     .map((localeKey) => renderLocaleSection(localeKey, pageDef, parsed))
     .join('\n');
@@ -141,7 +175,7 @@ function renderPage(pageDef, parsed) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>${escapeHtml(chrome[defLocale].title)}</title>
+  <title>${escapeHtml(chrome[initialLocale].title)}</title>
   <meta name="description" content="${escapeHtml(pageDef.title.en)} for Yellow Grapes." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="${canonical}" />
@@ -231,6 +265,15 @@ function renderPage(pageDef, parsed) {
       font-size: 1.125rem;
       font-weight: 600;
       color: var(--fg);
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .legal-content h2:first-child { margin-top: 0; }
+    .legal-content h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-top: 1.25rem;
       margin-bottom: 0.5rem;
     }
     .legal-content p {
@@ -303,9 +346,11 @@ ${sections}
     (function () {
       var CHROME = ${JSON.stringify(chrome)};
       var DEFAULT = ${JSON.stringify(defLocale)};
+      // Locales that actually have content on THIS page (empty ones show a notice).
+      var POPULATED = ${JSON.stringify(parsed.populated)};
       var langToggle = document.getElementById('langToggle');
 
-      function applyLang(lang) {
+      function applyLang(lang, persist) {
         if (!CHROME[lang]) lang = DEFAULT;
         var dict = CHROME[lang];
 
@@ -326,17 +371,28 @@ ${sections}
           langToggle.textContent = (lang === 'zh') ? 'EN' : '中';
           langToggle.setAttribute('aria-label', (lang === 'zh') ? 'Switch to English' : '切換至繁體中文');
         }
-        try { localStorage.setItem('yg-lang', lang); } catch (e) {}
+        // Only persist an explicit user choice — never overwrite the shared
+        // site-wide preference just because we fell back to a populated locale.
+        if (persist) { try { localStorage.setItem('yg-lang', lang); } catch (e) {} }
         window.__ygLang = lang;
       }
 
-      var saved;
-      try { saved = localStorage.getItem('yg-lang'); } catch (e) {}
-      var lang = saved || ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en');
-      applyLang(lang);
+      // Pick the initial language: the saved/browser preference if it has content
+      // on this page, otherwise the default (or first) populated locale.
+      function pickInitial() {
+        var saved;
+        try { saved = localStorage.getItem('yg-lang'); } catch (e) {}
+        if (saved && POPULATED.indexOf(saved) >= 0) return saved;
+        var guess = (navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en';
+        if (POPULATED.indexOf(guess) >= 0) return guess;
+        if (POPULATED.indexOf(DEFAULT) >= 0) return DEFAULT;
+        return POPULATED[0] || DEFAULT;
+      }
+
+      applyLang(pickInitial(), false);
       if (langToggle) {
         langToggle.addEventListener('click', function () {
-          applyLang(window.__ygLang === 'zh' ? 'en' : 'zh');
+          applyLang(window.__ygLang === 'zh' ? 'en' : 'zh', true);
         });
       }
     })();
@@ -382,25 +438,37 @@ function parseDoc(snap, pageKey) {
 
   const articlesByLocale = {};
   const dateByLocale = {};
+  const populated = []; // locales that actually have visible content
   for (const localeKey of Object.keys(config.locales)) {
     const loc = config.locales[localeKey];
     const arr = data[loc.field];
-    articlesByLocale[localeKey] = Array.isArray(arr) ? arr : [];
+    // Drop empty article slots (e.g. a placeholder {title:'', body:''}) so an
+    // unfilled language renders the "missing" notice, not a blank section.
+    const articles = (Array.isArray(arr) ? arr : []).filter((a) => !isEmptyArticle(a));
+    articlesByLocale[localeKey] = articles;
     dateByLocale[localeKey] = formatDate(updatedAt, loc.intl);
+    if (articles.length) populated.push(localeKey);
   }
 
-  // The default locale must have content — otherwise we'd ship a blank policy.
-  if (articlesByLocale[config.defaultLocale].length === 0) {
+  // At least one locale must have content — otherwise we'd ship a blank policy.
+  if (populated.length === 0) {
     throw new Error(
-      `Firestore doc ${config.collection}/${snap.id} has no "${config.defaultLocale}" articles ` +
-        `(field ${config.locales[config.defaultLocale].field}). Refusing to write a blank page.`,
+      `Firestore doc ${config.collection}/${snap.id} has no content in any locale ` +
+        `(${Object.values(config.locales).map((l) => l.field).join(', ')}). ` +
+        `Refusing to write a blank page.`,
+    );
+  }
+  if (!populated.includes(config.defaultLocale)) {
+    console.warn(
+      `  ⚠ ${snap.id}: default locale "${config.defaultLocale}" is empty; ` +
+        `page will open in "${populated[0]}".`,
     );
   }
   if (updatedAt == null) {
     console.warn(`  ⚠ ${snap.id}: no "${config.fields.updatedAt}" — "Last updated" will show "—".`);
   }
 
-  return { version, articlesByLocale, dateByLocale };
+  return { version, articlesByLocale, dateByLocale, populated };
 }
 
 async function main() {
