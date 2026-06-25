@@ -52,36 +52,12 @@
   />
 
   <!--
-    Tailwind CSS — PLAY CDN (prototyping only).
-    Before launch, swap this for a built/purged stylesheet so we don't ship the
-    full runtime compiler.
+    Tailwind CSS — local build (src/input.css → dist/output.css).
+    Run `npm run watch` while editing, or `npm run build` for a minified output.
+    The Tailwind theme (brand colors/fonts) lives in tailwind.config.js; the
+    :root design tokens below stay inline so they're tunable without a rebuild.
   -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // Mirror the brand palette + fonts so Tailwind utilities can use them.
-    // The actual values live in :root (below) as CSS custom properties so they
-    // stay tunable in one place.
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            bg: 'var(--bg)',
-            fg: 'var(--fg)',
-            fgmuted: 'var(--fg-muted)',
-            accent: 'var(--accent)',
-            accentmuted: 'var(--accent-muted)',
-            hairline: 'var(--border)',
-          },
-          fontFamily: {
-            // App body/UI uses the platform system font (SF Pro / Roboto).
-            sans: ['system-ui', '-apple-system', '"Segoe UI"', 'Roboto', '"Noto Sans TC"', 'sans-serif'],
-            // Brand wordmark + headings.
-            brand: ['Urbanist', 'system-ui', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+  <link rel="stylesheet" href="dist/output.css" />
 
   <style>
     /* ───────────  Tunable design tokens (single source of truth)  ─────────── */

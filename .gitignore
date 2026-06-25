@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# OS junk
+.DS_Store
+
+# NOTE: dist/output.css is intentionally NOT ignored — it's the committed,
+# built stylesheet that GitHub Pages serves directly (no build step on deploy).

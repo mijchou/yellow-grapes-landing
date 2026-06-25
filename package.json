@@ -1,0 +1,13 @@
+{
+  "name": "yellow-grapes-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Yellow Grapes — landing page (static, deployed via GitHub Pages).",
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}

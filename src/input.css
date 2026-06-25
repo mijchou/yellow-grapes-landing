@@ -1,0 +1,9 @@
+/*
+ * Tailwind entry point — compiled to ../dist/output.css by the `build`/`watch`
+ * npm scripts. Only the Tailwind layers live here; the brand design tokens
+ * (:root custom properties) and bespoke component CSS stay inline in index.html
+ * so they can be tuned without a rebuild.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
