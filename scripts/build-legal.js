@@ -161,7 +161,7 @@ function renderPage(pageDef, parsed) {
     },
     zh: {
       title: `${pageDef.title.zh} — Yellow Grapes`,
-      'nav.join': '加入候補名單',
+      'nav.join': '加入等候名單',
       'footer.home': '首頁',
       'footer.privacy': '隱私權',
       'footer.terms': '服務條款',
