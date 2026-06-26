@@ -10,13 +10,17 @@ module.exports = {
       // Brand palette — mirrors the :root design tokens in index.html.
       // (The actual values live in index.html's <style> so they stay tunable
       // without a rebuild; these just let Tailwind utilities reference them.)
+      // Defined as rgb(<channels> / <alpha-value>) so Tailwind opacity
+      // modifiers work (e.g. border-fg/30, via-bg/70). The channel vars are
+      // the single source of truth, in index.html's :root (tunable, no rebuild).
       colors: {
-        bg: 'var(--bg)',
-        fg: 'var(--fg)',
-        fgmuted: 'var(--fg-muted)',
-        accent: 'var(--accent)',
-        accentmuted: 'var(--accent-muted)',
-        hairline: 'var(--border)',
+        bg: 'rgb(var(--bg-rgb) / <alpha-value>)',
+        fg: 'rgb(var(--fg-rgb) / <alpha-value>)',
+        fgmuted: 'rgb(var(--fg-muted-rgb) / <alpha-value>)',
+        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',          // lemon-curd yellow (fills/marks only)
+        accentstrong: 'rgb(var(--accent-strong-rgb) / <alpha-value>)', // hover / focus / yellow borders
+        onaccent: 'rgb(var(--fg-rgb) / <alpha-value>)',            // text on yellow = charcoal (never white)
+        hairline: 'var(--line)',                                    // grid hairlines / dividers / borders
       },
       fontFamily: {
         // App body/UI uses the platform system font (SF Pro / Roboto).

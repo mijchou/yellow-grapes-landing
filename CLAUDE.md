@@ -37,35 +37,47 @@ footer in one file. Tailwind is a build input, not a runtime dependency:
 `dist/output.css`, which `index.html` links.
 
 ### Design tokens live in TWO places that must stay in sync
-- **`index.html` `<style>` `:root`** — the *actual* brand values as CSS custom
-  properties (`--bg`, `--fg`, `--accent`, `--border`, header sizing, etc.).
-  These are intentionally inline (not in `src/input.css`) so they can be tuned
-  and previewed **without a rebuild**.
+- **`index.html` `<style>` `:root`** — the *actual* brand values, stored as
+  space-separated **RGB channels** (`--bg-rgb`, `--fg-rgb`, `--fg-muted-rgb`,
+  `--accent-rgb`, `--accent-strong-rgb`) plus `--line` and header/logo sizing.
+  Channels (not hex) so Tailwind can apply opacity (`border-fg/30`) and raw CSS
+  can do `rgb(var(--x-rgb) / a)`. Intentionally inline (not in `src/input.css`)
+  so they can be tuned and previewed **without a rebuild**.
 - **`tailwind.config.js`** — `theme.extend.colors` maps utility names
-  (`bg`, `fg`, `fgmuted`, `accent`, `accentmuted`, `hairline`) to those vars via
-  `var(--…)`, and `fontFamily` defines `sans` (system stack) + `brand`
-  (Urbanist).
+  (`bg`, `fg`, `fgmuted`, `accent`, `accentstrong`, `onaccent`, `hairline`) to
+  those channels via `rgb(var(--…-rgb) / <alpha-value>)`, and `fontFamily`
+  defines `sans` (system stack) + `brand` (Urbanist 400–800).
 
 So adding a brand color means editing **both**: define the `--var` in
 `:root` and add the utility mapping in `tailwind.config.js`. The same inline
 `<style>` also holds bespoke component CSS that has no Tailwind equivalent
 (`.site-header` translucency/blur, `.yg-logo` fill, scroll offsets).
 
-### Brand consistency with the Flutter app
-Colors and fonts are derived from the sibling Flutter app at
-`../yellow_grapes_app` — `lib/theme/colors.dart`, `lib/theme/typography.dart`,
-and `lib/widgets/splash/splash_overlay.dart`. When changing brand styling, match
-the app: e.g. `--accent #6C4D27` = `themeText5Light`, `--border #8A6E47` =
-`themeBorder5Light`, `--fg #423D35` = splash text, body = system font, wordmark
-= Urbanist. **Constraint: do not introduce colors outside the `:root` tokens /
-the app theme.**
+### Brand palette — Swiss / International Typographic (independent of the app)
+The landing was redesigned to a **Swiss / International Typographic** look and
+**no longer mirrors the Flutter app's warm-brown theme**. The palette is
+intentionally restricted: warm **cream** page (`--bg-rgb`), warm **charcoal** ink
+(`--fg-rgb`, also the logo + rules), and exactly **one** vibrant accent —
+**lemon-curd yellow** (`--accent-rgb`). Yellow is a *fill/mark* colour only (CTA
+fills, the active filter chip, eyebrow ticks, the headline underline); **text on
+yellow is charcoal (`onaccent`), never white**, and yellow is never used as text
+on cream (fails contrast). Type is **left-aligned** with extreme size contrast
+(massive Urbanist headlines vs. small system-font body); page shapes are
+**sharp** — the one exception is the recreated in-app search bar / filter chips
+in section 02, which stay rounded on purpose to mimic the app. The sibling app
+(`../yellow_grapes_app`) remains the source for the *wordmark* (Urbanist) only.
+**Constraint: keep the palette to the `:root` tokens — one accent, no extra hues.**
 
 ### Other structural notes
-- The logo is **inlined SVG** (combined `y` + dot, duplicated in header and
-  footer) using `currentColor` so it inherits `--fg`. The `logo/` `.svg` files
-  are the source art; `logo/dark-y.svg` is also the favicon.
-- The right-column app screenshot is `images/app-map.png` (portrait); it has a
-  JS `onerror` fallback to the logo.
+- The logo (`logo/logo.svg`) is duplicated in header + footer as an `<img>`; its
+  art has a hardcoded charcoal fill kept in sync with `--fg` (`#1A1814`).
+  `logo/dark-y.svg` is also the favicon.
+- Map art: the desktop hero lays **`images/app-map-wide.png`** full-bleed behind
+  the text (cream→transparent `.hero-fade` gradient, solid ~40% → transparent
+  ~66% at `lg`); mobile **section 02** uses the taller **`images/app-map-tall.png`**
+  with the app's search bar + filter chips recreated in HTML pinned on top. Each
+  map `<img>` `onerror`-hides if missing. The old portrait `images/app-map.png`
+  now only serves as the OG/Twitter preview image.
 - The waitlist form is **UI-only** — client-side validation + a "thanks" state,
   no submission. Wire a backend where the `// TODO` marks the submit handler.
 - Tailwind only generates classes it finds **literally in the HTML** it scans

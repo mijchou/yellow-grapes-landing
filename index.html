@@ -43,11 +43,12 @@
   <!-- Favicon: Yellow Grapes logo (SVG). TODO: add a PNG fallback for older browsers. -->
   <link rel="icon" type="image/svg+xml" href="logo/dark-y.svg" />
 
-  <!-- Brand wordmark / heading font (Urbanist — used in the Flutter splash) -->
+  <!-- Brand wordmark / heading font (Urbanist — used in the Flutter splash).
+       800 is loaded for the big Swiss-style display headlines. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
 
@@ -60,46 +61,45 @@
   <link rel="stylesheet" href="dist/output.css" />
 
   <style>
-    /* ───────────  Tunable design tokens (single source of truth)  ─────────── */
+    /* ───────────  Tunable design tokens (single source of truth)  ───────────
+       Swiss / International Typographic palette: warm cream + charcoal + ONE
+       accent (lemon-curd yellow). Stored as space-separated RGB CHANNELS so
+       Tailwind can apply opacity (border-fg/30) and raw CSS can use
+       rgb(var(--x-rgb) / a). Tune freely — value edits need no rebuild. */
     :root {
-      --bg: #FEFDFB;            /* page background (app warmGrey50) */
-      --bg-rgb: 254 253 251;    /* channels of --bg, for translucent header */
+      --bg-rgb: 242 239 230;           /* warm cream — page + hero gradient solid */
+      --fg-rgb: 26 24 20;              /* warm charcoal — all text, rules, logo */
+      --fg-muted-rgb: 92 87 78;        /* body / secondary text */
+      --accent-rgb: 242 200 75;        /* lemon-curd yellow — FILLS / MARKS only */
+      --accent-strong-rgb: 224 180 49; /* hover / focus / yellow borders */
+      /* on-accent text is charcoal (--fg-rgb); never white on yellow. */
 
-      --header-border: #8A6E47; /* app themeBorder5Light */
-      --header-opacity: 0.85;   /* header background translucency */
-      --header-blur: 12px;      /* backdrop blur behind header */
-      --header-h-desktop: 100px;  /* tune to taste (logo + breathing room) */
+      --line: rgb(26 24 20 / 0.16);    /* hairline dividers / input borders */
+
+      /* Header */
+      --header-opacity: 0.85;          /* translucency of the cream header */
+      --header-blur: 10px;             /* backdrop blur behind header */
+      --header-h-desktop: 88px;
       --header-h-mobile: 56px;
 
-      /* Foreground / text colors (from the app theme) */
-      --fg: #423D35;            /* primary text + logo (app splash text light) */
-      --fg-muted: #6C624D;      /* secondary/body text (app warmGrey600) */
-
-      /* Accent — app themeText5Light (warm brown; intentionally NOT red) */
-      --accent: #6C4D27;
-      --accent-muted: #8C693C;  /* app themeText4Light */
-
-      /* Shared hairline border (== themeBorder5Light) */
-      --border: #8A6E47;
-
       /* Logo + wordmark (tune freely — inline, no rebuild needed) */
-      --logo-h: 34px;          /* header/footer logo height (desktop) */
-      --logo-h-mobile: 28px;   /* logo height on small screens */
-      --wordmark-size: 1rem;
-      --wordmark-weight: 1000;
-      --wordmark-tracking: 0.5em;
+      --logo-h: 30px;
+      --logo-h-mobile: 26px;
+      --wordmark-size: 0.95rem;
+      --wordmark-weight: 800;
+      --wordmark-tracking: 0.42em;
     }
 
     html { scroll-behavior: smooth; }
-    body { background-color: var(--bg); }
+    body { background-color: rgb(var(--bg-rgb)); }
 
-    /* Sticky, translucent, blurred header */
+    /* Sticky, translucent header with a crisp charcoal rule (Swiss frame). */
     .site-header {
       height: var(--header-h-desktop);
       background-color: rgb(var(--bg-rgb) / var(--header-opacity));
       -webkit-backdrop-filter: blur(var(--header-blur));
       backdrop-filter: blur(var(--header-blur));
-      border-bottom: 1px solid var(--header-border);
+      border-bottom: 1px solid rgb(var(--fg-rgb));
     }
     @media (max-width: 640px) {
       .site-header { height: var(--header-h-mobile); }
@@ -108,8 +108,7 @@
     /* Offset in-page scroll targets so they clear the sticky header */
     #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
 
-    /* Logo art (logo/logo.svg). Height + wordmark type are tunable via the
-       :root vars above (no rebuild needed). */
+    /* Logo art. Height + wordmark type are tunable via the :root vars above. */
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
     @media (max-width: 640px) { .yg-logo { height: var(--logo-h-mobile); } }
     .yg-wordmark {
@@ -118,8 +117,54 @@
       letter-spacing: var(--wordmark-tracking);
     }
 
-    /* Right-column image: graceful fallback if images/app-map.png isn't added yet */
-    .img-fallback { padding: 3rem; opacity: 0.6; }
+    /* ───────────  Hero map atmosphere (desktop only)  ───────────
+       Horizontal fade: solid cream over the text (left) → transparent over the
+       map (right). The transparent stop uses the cream colour at 0 alpha (not
+       the `transparent` keyword) so the fade never muddies to grey.
+       Wider solid at md (tight width); tightens to ~40% at lg+. */
+    .hero-fade {
+      background-image: linear-gradient(
+        90deg,
+        rgb(var(--bg-rgb)) 0%,
+        rgb(var(--bg-rgb)) 52%,
+        rgb(var(--bg-rgb) / 0) 80%
+      );
+    }
+    @media (min-width: 1024px) {
+      .hero-fade {
+        background-image: linear-gradient(
+          90deg,
+          rgb(var(--bg-rgb)) 0%,
+          rgb(var(--bg-rgb)) 40%,
+          rgb(var(--bg-rgb) / 0) 66%
+        );
+      }
+    }
+    /* Gentle top/bottom cream wash so the map sits calmly under the header and
+       fades cleanly into the section rule below. */
+    .hero-fade-v {
+      background-image: linear-gradient(
+        to bottom,
+        rgb(var(--bg-rgb) / 0.28) 0%,
+        rgb(var(--bg-rgb) / 0) 13%,
+        rgb(var(--bg-rgb) / 0) 80%,
+        rgb(var(--bg-rgb)) 100%
+      );
+    }
+
+    /* Single yellow highlight bar under one word in the headline (the one
+       accent moment in the type). */
+    .mark-underline {
+      background-image: linear-gradient(rgb(var(--accent-rgb)), rgb(var(--accent-rgb)));
+      background-repeat: no-repeat;
+      background-position: 0 90%;
+      background-size: 100% 0.26em;
+      padding-bottom: 0.02em;
+    }
+
+    /* Hide the scrollbar on the app-chrome filter-chip rail */
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
 </head>
 
@@ -127,204 +172,282 @@
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
   <header class="site-header sticky top-0 z-50">
-    <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-6 sm:px-8">
+    <div class="mx-auto flex h-full max-w-7xl items-center justify-between px-5 sm:px-8">
       <!-- Left: logo + wordmark -->
-      <a href="#top" class="flex items-center gap-5 text-fg" aria-label="Yellow Grapes — home">
+      <a href="#top" class="flex items-center gap-4 text-fg" aria-label="Yellow Grapes — home">
         <img class="yg-logo" src="logo/logo.svg" alt="Yellow Grapes logo" />
-        <span class="yg-wordmark font-brand uppercase">
-          Yellow&nbsp;Grapes
-        </span>
+        <span class="yg-wordmark font-brand uppercase">Yellow&nbsp;Grapes</span>
       </a>
 
-      <!-- Right: waitlist CTA + language toggle -->
-      <div class="flex items-center gap-3 sm:gap-4">
+      <!-- Right: waitlist CTA (yellow, charcoal text) + language toggle (sharp) -->
+      <div class="flex items-center gap-2 sm:gap-3">
         <a href="#waitlist"
-           class="rounded-full bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-bg transition-opacity hover:opacity-90 sm:px-5 sm:text-sm"
+           class="bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wide text-onaccent transition-colors hover:bg-accentstrong sm:px-5 sm:text-sm"
            data-i18n="nav.join">
           Join waitlist
         </a>
         <button id="langToggle" type="button"
-                class="rounded-full border border-hairline px-3 py-2 text-xs font-semibold tracking-wide text-fg transition-colors hover:border-accent hover:text-accent sm:text-sm">
+                class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
           中
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ─────────────────────────────  HERO  ───────────────────────────── -->
-  <!-- Mobile: app image on top, text below (flex-col-reverse).
-       Desktop: text left, image right (grid restores DOM order). -->
   <main>
-    <section class="mx-auto flex max-w-6xl flex-col-reverse gap-12 px-6 pb-16 pt-6 sm:px-8 sm:pb-20 sm:pt-8
-                    md:grid md:grid-cols-2 md:items-start md:gap-16 md:pb-28 md:pt-10">
-
-      <!-- Left column: hero copy -->
-      <div class="text-center md:text-left">
-        <p class="font-brand text-xs font-semibold uppercase tracking-[0.3em] text-accent" data-i18n="hero.eyebrow">
-          The Final Pour
-        </p>
-
-        <h1 class="mt-5 font-brand text-4xl font-semibold leading-[1.1] tracking-tight text-fg sm:text-5xl lg:text-6xl" data-i18n="hero.headline">
-          Discover the local wine<br />scene through Yellow Grapes.
-        </h1>
-
-        <p class="mx-auto mt-6 max-w-md text-base leading-relaxed text-fgmuted md:mx-0 sm:text-lg" data-i18n="hero.subcopy">
-          Be among the first to explore 12,000+ appellations. Sign up for early
-          access and shape the future of wine discovery.
-        </p>
-
-        <div class="mt-9">
-          <a href="#waitlist"
-             class="inline-flex items-center justify-center rounded-md bg-accent px-8 py-4 text-base font-semibold tracking-wide text-bg shadow-sm transition-opacity hover:opacity-90"
-             data-i18n="hero.cta">
-            Join the Waitlist
-          </a>
-        </div>
-
-        <!-- "COMING SOON" divider -->
-        <div class="mt-12 flex items-center gap-4" role="separator" aria-label="Coming soon">
-          <span class="h-px flex-1 bg-hairline opacity-40"></span>
-          <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-accentmuted" data-i18n="hero.comingSoon">Coming Soon</span>
-          <span class="h-px flex-1 bg-hairline opacity-40"></span>
-        </div>
-
-        <!-- Launch countdown (to 2026-09-24 00:00 Asia/Taipei) — borderless -->
-        <div class="mt-8">
-          <div id="countdown" class="grid max-w-md grid-cols-4 gap-3 md:mx-0">
-            <div class="text-center">
-              <span id="cd-days" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.days">Days</span>
-            </div>
-            <div class="text-center">
-              <span id="cd-hours" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.hours">Hours</span>
-            </div>
-            <div class="text-center">
-              <span id="cd-mins" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.minutes">Minutes</span>
-            </div>
-            <div class="text-center">
-              <span id="cd-secs" class="block font-brand text-2xl font-semibold tabular-nums text-fg sm:text-3xl">00</span>
-              <span class="mt-1 block text-[10px] uppercase tracking-wider text-fgmuted" data-i18n="countdown.seconds">Seconds</span>
-            </div>
-          </div>
-          <p id="countdownDone" class="mt-4 hidden font-brand text-lg font-semibold text-accent" data-i18n="countdown.done">
-            We're live! 🍇
-          </p>
-        </div>
-
-        <!-- Store badges (non-functional placeholders) -->
-        <div class="mt-8 grid grid-cols-2 gap-4">
-          <span class="flex items-center justify-center gap-3 rounded-lg border border-hairline px-4 py-3 text-fg">
-            <!-- Apple glyph -->
-            <svg class="h-6 w-6 shrink-0" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
-              <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-            </svg>
-            <span class="text-left leading-tight">
-              <span class="block text-[9px] uppercase tracking-wider text-fgmuted" data-i18n="store.appleTop">Download on the</span>
-              <span class="block text-sm font-semibold">App Store</span>
-            </span>
-          </span>
-
-          <span class="flex items-center justify-center gap-3 rounded-lg border border-hairline px-4 py-3 text-fg">
-            <!-- Google Play glyph -->
-            <svg class="h-6 w-6 shrink-0" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
-              <path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/>
-            </svg>
-            <span class="text-left leading-tight">
-              <span class="block text-[9px] uppercase tracking-wider text-fgmuted" data-i18n="store.googleTop">Get it on</span>
-              <span class="block text-sm font-semibold">Google Play</span>
-            </span>
-          </span>
-        </div>
+    <!-- ───────────────────────  01 · HERO  ───────────────────────
+         Desktop: wide map full-bleed behind, cream→transparent gradient, text
+         on the left columns. Mobile: map layer is hidden → clean cream text
+         block (the user's "section 1"); the map lives in section 02 below. -->
+    <section class="relative overflow-hidden">
+      <!-- Full-bleed map atmosphere (desktop / tablet-landscape only) -->
+      <div class="absolute inset-0 hidden md:block" aria-hidden="true">
+        <img
+          src="images/app-map-wide.png" alt=""
+          class="h-full w-full object-cover object-[68%_45%]"
+          onerror="this.style.display='none'"
+        />
+        <div class="hero-fade absolute inset-0"></div>
+        <div class="hero-fade-v absolute inset-0"></div>
       </div>
 
-      <!-- Right column: app screenshot (user adds images/app-map.png) -->
-      <div class="flex justify-center">
-        <img
-          src="images/app-map.png"
-          alt="Yellow Grapes app showing a map of wine merchants across Taipei, Taiwan"
-          class="w-full max-w-xs rounded-3xl shadow-xl"
-          loading="eager"
-          onerror="this.onerror=null; this.src='logo/dark-y.svg'; this.classList.add('img-fallback');"
-        />
+      <!-- Content (12-col grid; text occupies the left columns) -->
+      <div class="relative mx-auto grid max-w-7xl grid-cols-12 px-5 pb-16 pt-12 sm:px-8 md:min-h-[80vh] md:items-center md:pb-24 md:pt-16">
+        <div class="col-span-12 md:col-span-7 lg:col-span-6">
+
+          <!-- Eyebrow -->
+          <p class="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em] text-fg">
+            <span class="inline-block h-2.5 w-2.5 bg-accent" aria-hidden="true"></span>
+            <span data-i18n="hero.eyebrow">The Final Pour</span>
+          </p>
+
+          <!-- Headline (massive, left-aligned; one yellow underline mark) -->
+          <h1 class="mt-6 font-brand text-4xl font-extrabold leading-[0.98] tracking-tight text-fg sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl" data-i18n="hero.headline">
+            Discover the local wine scene through <span class="mark-underline">Yellow&nbsp;Grapes</span>.
+          </h1>
+
+          <!-- Subcopy -->
+          <p class="mt-7 max-w-md text-base leading-relaxed text-fgmuted sm:text-lg" data-i18n="hero.subcopy">
+            Be among the first to explore 12,000+ appellations. Sign up for early
+            access and shape the future of wine discovery.
+          </p>
+
+          <!-- CTA -->
+          <div class="mt-9">
+            <a href="#waitlist"
+               class="inline-flex items-center bg-accent px-8 py-4 text-sm font-bold uppercase tracking-wide text-onaccent transition-colors hover:bg-accentstrong"
+               data-i18n="hero.cta">
+              Join the Waitlist
+            </a>
+          </div>
+
+          <!-- Coming soon + launch countdown -->
+          <div class="mt-14 max-w-md">
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] font-bold uppercase tracking-[0.32em] text-fg" data-i18n="hero.comingSoon">Coming Soon</span>
+              <span class="h-px flex-1 bg-fg/25"></span>
+            </div>
+
+            <!-- Launch countdown (to 2026-09-24 00:00 Asia/Taipei) — yellow ticks -->
+            <div id="countdown" class="mt-6 grid grid-cols-4 gap-x-3">
+              <div class="border-l-2 border-accent pl-3">
+                <span id="cd-days" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
+                <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.days">Days</span>
+              </div>
+              <div class="border-l-2 border-accent pl-3">
+                <span id="cd-hours" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
+                <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.hours">Hours</span>
+              </div>
+              <div class="border-l-2 border-accent pl-3">
+                <span id="cd-mins" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
+                <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.minutes">Minutes</span>
+              </div>
+              <div class="border-l-2 border-accent pl-3">
+                <span id="cd-secs" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
+                <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.seconds">Seconds</span>
+              </div>
+            </div>
+            <p id="countdownDone" class="mt-4 hidden font-brand text-lg font-bold text-fg" data-i18n="countdown.done">
+              We're live! 🍇
+            </p>
+          </div>
+
+          <!-- Store badges (sharp, outlined; non-functional placeholders) -->
+          <div class="mt-10 grid max-w-md grid-cols-2 gap-3">
+            <span class="flex items-center gap-3 border border-fg px-4 py-3 text-fg">
+              <!-- Apple glyph -->
+              <svg class="h-6 w-6 shrink-0" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+              </svg>
+              <span class="text-left leading-tight">
+                <span class="block text-[9px] uppercase tracking-wider text-fgmuted" data-i18n="store.appleTop">Download on the</span>
+                <span class="block text-sm font-bold">App Store</span>
+              </span>
+            </span>
+
+            <span class="flex items-center gap-3 border border-fg px-4 py-3 text-fg">
+              <!-- Google Play glyph -->
+              <svg class="h-6 w-6 shrink-0" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+                <path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/>
+              </svg>
+              <span class="text-left leading-tight">
+                <span class="block text-[9px] uppercase tracking-wider text-fgmuted" data-i18n="store.googleTop">Get it on</span>
+                <span class="block text-sm font-bold">Google Play</span>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ───────────────────────  WAITLIST FORM  ─────────────────────── -->
-    <section id="waitlist" class="border-t border-hairline">
-      <div class="mx-auto max-w-2xl px-6 py-16 text-center sm:px-8 sm:py-24">
-        <h2 class="font-brand text-3xl font-semibold tracking-tight text-fg sm:text-4xl" data-i18n="waitlist.heading">
-          Join the waitlist
-        </h2>
-        <p class="mx-auto mt-4 max-w-md text-base text-fgmuted" data-i18n="waitlist.desc">
-          Drop your email and let us know your platform — we'll tell you the
-          moment early access opens.
-        </p>
+    <!-- ───────────────────────  02 · MAP (mobile only)  ───────────────────────
+         The mobile counterpart to the desktop hero map: a tall map block with the
+         app's top chrome (search bar + filter chips) recreated in HTML. Hidden on
+         desktop, where the map already lives in the hero. -->
+    <section id="map" class="relative md:hidden">
+      <img
+        src="images/app-map-tall.png"
+        alt="Yellow Grapes app map of wine merchants across Taipei, Taiwan"
+        class="h-[82vh] w-full object-cover object-top"
+        loading="lazy"
+        onerror="this.style.display='none'"
+      />
 
-        <!-- UI only: no backend wired. See TODO in the submit handler below. -->
-        <form id="waitlistForm" class="mx-auto mt-10 max-w-md space-y-6 text-left" novalidate>
-          <div>
-            <label for="email" class="mb-2 block text-sm font-medium text-fg" data-i18n="form.email">Email address</label>
-            <input
-              id="email" name="email" type="email" required autocomplete="email"
-              placeholder="you@example.com"
-              class="w-full rounded-md border border-hairline bg-white px-4 py-3 text-fg placeholder:text-fgmuted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-            />
+      <!-- Soft top scrim so the chrome stays legible over the busy map -->
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-bg via-bg/65 to-transparent"></div>
+
+      <!-- Recreated app chrome (faithful to the app → rounded) -->
+      <div class="absolute inset-x-0 top-0 px-4 pt-5">
+        <!-- Search bar -->
+        <div class="flex items-center gap-3 rounded-full border border-fg/10 bg-white px-5 py-3.5 shadow-sm">
+          <svg class="h-5 w-5 shrink-0 text-fgmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+          </svg>
+          <span class="text-sm text-fgmuted" data-i18n="map.search">Search merchants…</span>
+          <svg class="ml-auto h-5 w-5 shrink-0 text-fgmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+          </svg>
+        </div>
+
+        <!-- Filter chips (one active in yellow; horizontally scrollable) -->
+        <div class="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1">
+          <span class="flex shrink-0 items-center rounded-full border border-fg/10 bg-white p-2.5 text-fg" aria-hidden="true">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M4 6h16M4 12h16M4 18h16" /><circle cx="9" cy="6" r="1.6" fill="currentColor" /><circle cx="15" cy="12" r="1.6" fill="currentColor" /><circle cx="8" cy="18" r="1.6" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-onaccent" data-i18n="map.chip1">Tastings</span>
+          <span class="shrink-0 rounded-full border border-fg/10 bg-white px-4 py-2 text-sm font-medium text-fg" data-i18n="map.chip2">By the glass</span>
+          <span class="shrink-0 rounded-full border border-fg/10 bg-white px-4 py-2 text-sm font-medium text-fg" data-i18n="map.chip3">Natural wine</span>
+          <span class="shrink-0 rounded-full border border-fg/10 bg-white px-4 py-2 text-sm font-medium text-fg" data-i18n="map.chip4">BYO</span>
+        </div>
+      </div>
+
+      <!-- Caption pinned bottom-left over a cream fade -->
+      <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/85 to-transparent px-5 pb-8 pt-20">
+        <p class="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.28em] text-fg">
+          <span class="inline-block h-2 w-2 bg-accent" aria-hidden="true"></span>
+          <span data-i18n="map.eyebrow">The Map</span>
+        </p>
+        <p class="mt-2 max-w-xs font-brand text-2xl font-extrabold leading-tight tracking-tight text-fg" data-i18n="map.caption">
+          12,000+ wine spots across Taiwan.
+        </p>
+      </div>
+    </section>
+
+    <!-- ───────────────────────  03 · WAITLIST  ─────────────────────── -->
+    <section id="waitlist" class="border-t border-fg">
+      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+        <div class="grid grid-cols-12 gap-y-10 md:gap-x-12">
+
+          <!-- Left: eyebrow + heading + copy -->
+          <div class="col-span-12 md:col-span-5">
+            <p class="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em] text-fg">
+              <span class="inline-block h-2.5 w-2.5 bg-accent" aria-hidden="true"></span>
+              <span data-i18n="waitlist.eyebrow">Early Access</span>
+            </p>
+            <h2 class="mt-6 font-brand text-4xl font-extrabold leading-[0.98] tracking-tight text-fg sm:text-5xl lg:text-6xl" data-i18n="waitlist.heading">
+              Join the waitlist.
+            </h2>
+            <p class="mt-5 max-w-sm text-base leading-relaxed text-fgmuted" data-i18n="waitlist.desc">
+              Drop your email and let us know your platform — we'll tell you the
+              moment early access opens.
+            </p>
           </div>
 
-          <fieldset>
-            <legend class="mb-2 block text-sm font-medium text-fg" data-i18n="form.platform">Which platform do you use?</legend>
-            <div class="grid grid-cols-2 gap-3">
-              <label class="cursor-pointer">
-                <input type="radio" name="platform" value="ios" required class="peer sr-only" />
-                <span class="block rounded-md border border-hairline px-4 py-3 text-center text-sm font-medium text-fg transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-bg peer-focus-visible:ring-1 peer-focus-visible:ring-accent">
-                  iOS
-                </span>
-              </label>
-              <label class="cursor-pointer">
-                <input type="radio" name="platform" value="android" required class="peer sr-only" />
-                <span class="block rounded-md border border-hairline px-4 py-3 text-center text-sm font-medium text-fg transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-bg peer-focus-visible:ring-1 peer-focus-visible:ring-accent">
-                  Android
-                </span>
-              </label>
+          <!-- Right: form (UI only — no backend wired) -->
+          <div class="col-span-12 md:col-span-6 md:col-start-7">
+            <form id="waitlistForm" class="space-y-6" novalidate>
+              <div>
+                <label for="email" class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg" data-i18n="form.email">Email address</label>
+                <input
+                  id="email" name="email" type="email" required autocomplete="email"
+                  placeholder="you@example.com"
+                  class="w-full border border-fg/30 bg-bg px-4 py-3.5 text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent"
+                />
+              </div>
+
+              <fieldset>
+                <legend class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg" data-i18n="form.platform">Which platform do you use?</legend>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="cursor-pointer">
+                    <input type="radio" name="platform" value="ios" required class="peer sr-only" />
+                    <span class="block border border-fg/30 px-4 py-3.5 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent">
+                      iOS
+                    </span>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input type="radio" name="platform" value="android" required class="peer sr-only" />
+                    <span class="block border border-fg/30 px-4 py-3.5 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent">
+                      Android
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <button type="submit"
+                class="w-full bg-accent px-6 py-4 text-sm font-bold uppercase tracking-wide text-onaccent transition-colors hover:bg-accentstrong"
+                data-i18n="form.submit">
+                Join the waitlist
+              </button>
+            </form>
+
+            <!-- Success state (revealed after a valid submit) -->
+            <div id="waitlistThanks" class="mt-6 hidden border border-fg px-6 py-8" tabindex="-1">
+              <p class="font-brand text-lg font-bold text-fg" data-i18n="thanks.title">You're on the list. 🍇</p>
+              <p class="mt-2 text-sm text-fgmuted" data-i18n="thanks.body">Thanks for joining — we'll be in touch when early access opens.</p>
             </div>
-          </fieldset>
-
-          <button type="submit"
-            class="w-full rounded-md bg-accent px-6 py-4 text-base font-semibold tracking-wide text-bg transition-opacity hover:opacity-90"
-            data-i18n="form.submit">
-            Join the waitlist
-          </button>
-        </form>
-
-        <!-- Success state (revealed after a valid submit) -->
-        <div id="waitlistThanks" class="mx-auto mt-10 hidden max-w-md rounded-md border border-hairline px-6 py-8" tabindex="-1">
-          <p class="font-brand text-lg font-semibold text-fg" data-i18n="thanks.title">You're on the list. 🍇</p>
-          <p class="mt-2 text-sm text-fgmuted" data-i18n="thanks.body">Thanks for joining — we'll be in touch when early access opens.</p>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
   <!-- ─────────────────────────────  FOOTER  ───────────────────────────── -->
-  <footer class="border-t border-hairline">
-    <!-- Same max-width + px as the header so the logo lines up with the header logo -->
-    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-8 sm:px-8 md:flex-row">
-      <!-- Logo + wordmark (reused from header) -->
-      <a href="#top" class="flex items-center gap-5 text-fg" aria-label="Yellow Grapes — home">
-        <img class="yg-logo" src="logo/logo.svg" alt="Yellow Grapes logo" />
-        <span class="yg-wordmark font-brand uppercase">Yellow&nbsp;Grapes</span>
-      </a>
+  <footer class="border-t border-fg">
+    <div class="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+      <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <!-- Logo + wordmark (reused from header) -->
+        <a href="#top" class="flex items-center gap-4 text-fg" aria-label="Yellow Grapes — home">
+          <img class="yg-logo" src="logo/logo.svg" alt="Yellow Grapes logo" />
+          <span class="yg-wordmark font-brand uppercase">Yellow&nbsp;Grapes</span>
+        </a>
 
-      <!-- Horizontal nav, spread out & vertically centered.
-           Privacy / Terms → build-time pages rendered from Firestore (see CLAUDE.md). -->
-      <nav class="flex items-center gap-8 text-sm text-fgmuted">
-        <a href="#top" class="transition-colors hover:text-fg" data-i18n="footer.home">Home</a>
-        <a href="/privacy" class="transition-colors hover:text-fg" data-i18n="footer.privacy">Privacy</a>
-        <a href="/terms" class="transition-colors hover:text-fg" data-i18n="footer.terms">Terms</a>
-        <a href="#waitlist" class="transition-colors hover:text-fg" data-i18n="footer.contact">Contact</a>
-      </nav>
+        <!-- Nav. Privacy / Terms → build-time pages rendered from Firestore (see CLAUDE.md). -->
+        <nav class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-fgmuted">
+          <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.home">Home</a>
+          <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
+          <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.terms">Terms</a>
+          <a href="#waitlist" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
+        </nav>
+      </div>
+
+      <!-- Swiss meta line -->
+      <div class="mt-8 border-t border-hairline pt-6">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-fgmuted" data-i18n="footer.meta">
+          Yellow Grapes — Taipei, Taiwan · yellow.grapes.com.tw · 2026
+        </p>
+      </div>
     </div>
   </footer>
 
@@ -351,7 +474,7 @@
       en: {
         'nav.join': 'Join waitlist',
         'hero.eyebrow': 'The Final Pour',
-        'hero.headline': 'Discover the local wine<br />scene through Yellow Grapes.',
+        'hero.headline': 'Discover the local wine scene through <span class="mark-underline">Yellow&nbsp;Grapes</span>.',
         'hero.subcopy': 'Be among the first to explore 12,000+ appellations. Sign up for early access and shape the future of wine discovery.',
         'hero.cta': 'Join the Waitlist',
         'hero.comingSoon': 'Coming Soon',
@@ -362,7 +485,15 @@
         'countdown.minutes': 'Minutes',
         'countdown.seconds': 'Seconds',
         'countdown.done': "We're live! 🍇",
-        'waitlist.heading': 'Join the waitlist',
+        'map.search': 'Search merchants…',
+        'map.chip1': 'Tastings',
+        'map.chip2': 'By the glass',
+        'map.chip3': 'Natural wine',
+        'map.chip4': 'BYO',
+        'map.eyebrow': 'The Map',
+        'map.caption': '12,000+ wine spots across Taiwan.',
+        'waitlist.eyebrow': 'Early Access',
+        'waitlist.heading': 'Join the waitlist.',
         'waitlist.desc': "Drop your email and let us know your platform — we'll tell you the moment early access opens.",
         'form.email': 'Email address',
         'form.platform': 'Which platform do you use?',
@@ -372,12 +503,13 @@
         'footer.home': 'Home',
         'footer.privacy': 'Privacy',
         'footer.terms': 'Terms',
-        'footer.contact': 'Contact'
+        'footer.contact': 'Contact',
+        'footer.meta': 'Yellow Grapes — Taipei, Taiwan · yellow.grapes.com.tw · 2026'
       },
       zh: {
         'nav.join': '加入等候名單',
         'hero.eyebrow': '最後一杯',
-        'hero.headline': '透過 Yellow Grapes<br />探索在地葡萄酒世界。',
+        'hero.headline': '透過 <span class="mark-underline">Yellow&nbsp;Grapes</span><br />探索在地葡萄酒世界。',
         'hero.subcopy': '搶先探索超過 12,000 種葡萄酒產區，註冊搶先體驗，一同形塑葡萄酒探索的未來。',
         'hero.cta': '加入等候名單',
         'hero.comingSoon': '上線倒數',
@@ -388,7 +520,15 @@
         'countdown.minutes': '分',
         'countdown.seconds': '秒',
         'countdown.done': '正式上線！🍇',
-        'waitlist.heading': '加入等候名單',
+        'map.search': '搜尋商家名稱…',
+        'map.chip1': '品酒會',
+        'map.chip2': '單杯酒',
+        'map.chip3': '自然酒',
+        'map.chip4': '自帶酒',
+        'map.eyebrow': '地圖',
+        'map.caption': '全台 12,000+ 葡萄酒地標。',
+        'waitlist.eyebrow': '搶先體驗',
+        'waitlist.heading': '加入等候名單。',
         'waitlist.desc': '留下你的電子郵件並選擇使用平台 — 開放搶先體驗時，我們會立刻通知你。',
         'form.email': '電子郵件',
         'form.platform': '你使用哪個平台？',
@@ -398,7 +538,8 @@
         'footer.home': '首頁',
         'footer.privacy': '隱私權',
         'footer.terms': '服務條款',
-        'footer.contact': '聯絡我們'
+        'footer.contact': '聯絡我們',
+        'footer.meta': 'Yellow Grapes — 台灣台北 · yellow.grapes.com.tw · 2026'
       }
     };
 
