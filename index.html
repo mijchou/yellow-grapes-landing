@@ -67,7 +67,7 @@
        Tailwind can apply opacity (border-fg/30) and raw CSS can use
        rgb(var(--x-rgb) / a). Tune freely — value edits need no rebuild. */
     :root {
-      --bg-rgb: 242 239 230;           /* warm cream — page + hero gradient solid */
+      --bg-rgb: 250 249 245;           /* soft off-white (#FAF9F5) — page + hero gradient solid */
       --fg-rgb: 26 24 20;              /* warm charcoal — all text, rules, logo */
       --fg-muted-rgb: 92 87 78;        /* body / secondary text */
       --accent-rgb: 242 200 75;        /* lemon-curd yellow — FILLS / MARKS only */
@@ -212,7 +212,7 @@
       </div>
 
       <!-- Content (12-col grid; text occupies the left columns) -->
-      <div class="relative mx-auto grid max-w-7xl grid-cols-12 px-5 pb-16 pt-12 sm:px-8 md:min-h-[80vh] md:items-center md:pb-24 md:pt-16">
+      <div class="relative mx-auto grid max-w-7xl grid-cols-12 px-5 pb-16 pt-12 sm:px-8 md:min-h-[calc(100vh_-_var(--header-h-desktop))] md:items-center md:pb-8 md:pt-8">
         <div class="col-span-12 md:col-span-7 lg:col-span-6">
 
           <!-- Eyebrow -->
@@ -222,14 +222,14 @@
           </p>
 
           <!-- Headline (massive, left-aligned; one yellow underline mark) -->
-          <h1 class="mt-6 font-brand text-4xl font-extrabold leading-[0.98] tracking-tight text-fg sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl" data-i18n="hero.headline">
+          <h1 class="mt-6 font-brand text-3xl font-extrabold leading-[0.98] tracking-tight text-fg sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl" data-i18n="hero.headline">
             Discover the local wine scene through <span class="mark-underline">Yellow&nbsp;Grapes</span>.
           </h1>
 
           <!-- Subcopy -->
           <p class="mt-7 max-w-md text-base leading-relaxed text-fgmuted sm:text-lg" data-i18n="hero.subcopy">
-            Be among the first to explore 12,000+ appellations. Sign up for early
-            access and shape the future of wine discovery.
+            A wine-discovery map for Taiwan — bringing wine bars, restaurants,
+            bottle shops together in one place.
           </p>
 
           <!-- CTA -->
@@ -248,21 +248,21 @@
               <span class="h-px flex-1 bg-fg/25"></span>
             </div>
 
-            <!-- Launch countdown (to 2026-09-24 00:00 Asia/Taipei) — yellow ticks -->
+            <!-- Launch countdown (to 2026-09-24 00:00 Asia/Taipei) -->
             <div id="countdown" class="mt-6 grid grid-cols-4 gap-x-3">
-              <div class="border-l-2 border-accent pl-3">
+              <div>
                 <span id="cd-days" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
                 <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.days">Days</span>
               </div>
-              <div class="border-l-2 border-accent pl-3">
+              <div>
                 <span id="cd-hours" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
                 <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.hours">Hours</span>
               </div>
-              <div class="border-l-2 border-accent pl-3">
+              <div>
                 <span id="cd-mins" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
                 <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.minutes">Minutes</span>
               </div>
-              <div class="border-l-2 border-accent pl-3">
+              <div>
                 <span id="cd-secs" class="block font-brand text-3xl font-extrabold leading-none tabular-nums text-fg sm:text-4xl">00</span>
                 <span class="mt-2 block text-[10px] font-semibold uppercase tracking-wider text-fgmuted" data-i18n="countdown.seconds">Seconds</span>
               </div>
@@ -475,7 +475,7 @@
         'nav.join': 'Join waitlist',
         'hero.eyebrow': 'The Final Pour',
         'hero.headline': 'Discover the local wine scene through <span class="mark-underline">Yellow&nbsp;Grapes</span>.',
-        'hero.subcopy': 'Be among the first to explore 12,000+ appellations. Sign up for early access and shape the future of wine discovery.',
+        'hero.subcopy': 'A wine-discovery map for Taiwan — bringing wine bars, restaurants, bottle shops together in one place.',
         'hero.cta': 'Join the Waitlist',
         'hero.comingSoon': 'Coming Soon',
         'store.appleTop': 'Download on the',
@@ -510,7 +510,7 @@
         'nav.join': '加入等候名單',
         'hero.eyebrow': '最後一杯',
         'hero.headline': '透過 <span class="mark-underline">Yellow&nbsp;Grapes</span><br />探索在地葡萄酒世界。',
-        'hero.subcopy': '搶先探索超過 12,000 種葡萄酒產區，註冊搶先體驗，一同形塑葡萄酒探索的未來。',
+        'hero.subcopy': '專為台灣打造的葡萄酒探索地圖 — 集結葡萄酒吧、餐廳與酒專於同一處。',
         'hero.cta': '加入等候名單',
         'hero.comingSoon': '上線倒數',
         'store.appleTop': '下載於',
