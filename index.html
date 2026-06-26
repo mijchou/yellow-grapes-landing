@@ -77,7 +77,7 @@
       --line: rgb(26 24 20 / 0.16);    /* hairline dividers / input borders */
 
       /* Header */
-      --header-opacity: 0.85;          /* translucency of the cream header */
+      --header-opacity: 0.55;          /* translucency of the cream header */
       --header-blur: 10px;             /* backdrop blur behind header */
       --header-h-desktop: 88px;
       --header-h-mobile: 56px;
@@ -93,13 +93,12 @@
     html { scroll-behavior: smooth; }
     body { background-color: rgb(var(--bg-rgb)); }
 
-    /* Sticky, translucent header with a crisp charcoal rule (Swiss frame). */
+    /* Sticky, translucent header (borderless; relies on blur + translucency). */
     .site-header {
       height: var(--header-h-desktop);
       background-color: rgb(var(--bg-rgb) / var(--header-opacity));
       -webkit-backdrop-filter: blur(var(--header-blur));
       backdrop-filter: blur(var(--header-blur));
-      border-bottom: 1px solid rgb(var(--fg-rgb));
     }
     @media (max-width: 640px) {
       .site-header { height: var(--header-h-mobile); }
@@ -204,7 +203,7 @@
       <div class="absolute inset-0 hidden md:block" aria-hidden="true">
         <img
           src="images/app-map-wide.png" alt=""
-          class="h-full w-full object-cover object-[68%_45%]"
+          class="h-full w-full object-contain object-right"
           onerror="this.style.display='none'"
         />
         <div class="hero-fade absolute inset-0"></div>
