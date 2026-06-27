@@ -77,8 +77,8 @@
       --line: rgb(26 24 20 / 0.16);    /* hairline dividers / input borders */
 
       /* Header */
-      --header-opacity: 0.55;          /* translucency of the cream header */
-      --header-blur: 10px;             /* backdrop blur behind header */
+      --header-opacity: 0.12;          /* translucency of the cream header (barely-there: map shows through) */
+      --header-blur: 8px;              /* backdrop blur behind header (soft frost keeps text legible) */
       --header-h-desktop: 88px;
       --header-h-mobile: 56px;
 
@@ -117,38 +117,35 @@
     }
 
     /* ───────────  Hero map atmosphere (desktop only)  ───────────
-       Horizontal fade: solid cream over the text (left) → transparent over the
-       map (right). The transparent stop uses the cream colour at 0 alpha (not
-       the `transparent` keyword) so the fade never muddies to grey.
-       Wider solid at md (tight width); tightens to ~40% at lg+. */
+       The wide map is full-bleed (object-cover). The UPPER-LEFT sea stays fully
+       visible (no wash) and the right-side city map stays sharp; only the
+       LOWER-LEFT land — where the headline/sub/CTA/countdown/badges sit — is
+       frosted: a cream tint + real backdrop blur, clipped to the bottom-left
+       corner by a radial mask so it fades out upward (toward the sea) and
+       rightward (toward the city). Percentages keep it responsive — no
+       breakpoint override needed. */
     .hero-fade {
-      background-image: linear-gradient(
-        90deg,
-        rgb(var(--bg-rgb)) 0%,
-        rgb(var(--bg-rgb)) 52%,
-        rgb(var(--bg-rgb) / 0) 80%
-      );
+      background-color: rgb(var(--bg-rgb) / 0.86);
+      -webkit-backdrop-filter: blur(7px);
+      backdrop-filter: blur(7px);
+      -webkit-mask-image: radial-gradient(115% 96% at 8% 100%,
+        #000 0%, #000 36%, transparent 68%);
+      mask-image: radial-gradient(115% 96% at 8% 100%,
+        #000 0%, #000 36%, transparent 68%);
     }
-    @media (min-width: 1024px) {
-      .hero-fade {
-        background-image: linear-gradient(
-          90deg,
-          rgb(var(--bg-rgb)) 0%,
-          rgb(var(--bg-rgb)) 40%,
-          rgb(var(--bg-rgb) / 0) 66%
-        );
+
+    /* Pull the hero up BEHIND the sticky header (desktop only — the map layer is
+       hidden below md) so the full-bleed map fills the reclaimed top band instead
+       of starting clipped under the header. The header keeps z-50 + its frost, so
+       it still paints on top; the rest of the page flow is unaffected. These rules
+       override the element's md:min-h-[…] / md:pt-8 utilities by cascade order
+       (this <style> is parsed after dist/output.css). */
+    @media (min-width: 768px) {
+      .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
+      .hero-content {
+        min-height: 100vh;                       /* fill the full viewport (was 100vh − header) */
+        padding-top: var(--header-h-desktop);    /* keep centered content clear of the floating header */
       }
-    }
-    /* Gentle top/bottom cream wash so the map sits calmly under the header and
-       fades cleanly into the section rule below. */
-    .hero-fade-v {
-      background-image: linear-gradient(
-        to bottom,
-        rgb(var(--bg-rgb) / 0.28) 0%,
-        rgb(var(--bg-rgb) / 0) 13%,
-        rgb(var(--bg-rgb) / 0) 80%,
-        rgb(var(--bg-rgb)) 100%
-      );
     }
 
     /* Single yellow highlight bar under one word in the headline (the one
@@ -198,20 +195,19 @@
          Desktop: wide map full-bleed behind, cream→transparent gradient, text
          on the left columns. Mobile: map layer is hidden → clean cream text
          block (the user's "section 1"); the map lives in section 02 below. -->
-    <section class="relative overflow-hidden">
+    <section class="hero relative overflow-hidden">
       <!-- Full-bleed map atmosphere (desktop / tablet-landscape only) -->
       <div class="absolute inset-0 hidden md:block" aria-hidden="true">
         <img
-          src="images/app-map-wide.png" alt=""
-          class="h-full w-full object-contain object-right"
+          src="images/app-map-wide-extended.png" alt=""
+          class="h-full w-full object-cover object-center"
           onerror="this.style.display='none'"
         />
         <div class="hero-fade absolute inset-0"></div>
-        <div class="hero-fade-v absolute inset-0"></div>
       </div>
 
       <!-- Content (12-col grid; text occupies the left columns) -->
-      <div class="relative mx-auto grid max-w-7xl grid-cols-12 px-5 pb-16 pt-12 sm:px-8 md:min-h-[calc(100vh_-_var(--header-h-desktop))] md:items-center md:pb-8 md:pt-8">
+      <div class="hero-content relative mx-auto grid max-w-7xl grid-cols-12 px-5 pb-16 pt-12 sm:px-8 md:min-h-[calc(100vh_-_var(--header-h-desktop))] md:items-center md:pb-8 md:pt-8">
         <div class="col-span-12 md:col-span-7 lg:col-span-6">
 
           <!-- Eyebrow -->
