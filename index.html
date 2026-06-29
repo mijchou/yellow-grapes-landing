@@ -50,7 +50,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;700;800&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
     rel="stylesheet"
   />
 
@@ -94,41 +94,66 @@
       /* ───────  Editorial hero (section 01) — named constants, no magic numbers.
          All tunable inline (no rebuild). Sizes use clamp() for fluid desktop→mobile. */
       --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif; /* the ONE serif: swap face here (Playfair Display / Cormorant) */
+      --font-display-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; /* the big YELLOW / GRAPES wordmark */
 
       /* Tracking */
       --hero-title-tracking: 0.04em;   /* big title A WINE MAP FOR TAIWAN */
       --hero-label-tracking: 0.3em;    /* small tracked caps: colophon, COMING SOON IN, DAYS, CTA */
 
-      /* Masthead — YELLOW stacked above GRAPES at the far left, then a CONNECTOR line
-         running across to the toggle/CTA. The masthead row is vertically centered, so the
-         line passes through the middle of GRAPES (left) and the buttons (right). All tunable. */
-      --mast-line-color: rgb(var(--fg-rgb));            /* charcoal connector, matches the site's dividers */
-      --mast-line-thickness: 1px;
-      --mast-line-gap: 1rem;                            /* gap each side of the connector (GRAPES ↔ line ↔ buttons) */
-      --mast-word-size: clamp(1.05rem, 1.8vw, 1.7rem);  /* smaller editorial wordmark halves */
-      --mast-word-tracking: 0.12em;
-      --mast-word-color: rgb(var(--fg-rgb));            /* full charcoal */
-      --mast-yellow-shift: 0rem;                        /* nudge YELLOW horizontally (negative = further left of GRAPES) */
-      --mast-grapes-indent: 1.5rem;                     /* GRAPES leans right of YELLOW */
-      --mast-yellow-gap: 0.1rem;                        /* vertical gap between YELLOW (above) and GRAPES (below) */
+      /* Header — just the toggle + CTA, pinned to the right viewport edge. */
+      --header-inset-x: 1.5rem;        /* gap from the right edge to the buttons */
+
+      /* Hero composition (left column): eyebrow · serif wordmark + tagline · store badges,
+         pushed toward the vertical centre, with the countdown + brand lower down. All tunable. */
+      --hero-stack-top: 20vh;          /* push the eyebrow/wordmark/badges cluster down toward centre */
+      --hero-text-max: 44rem;          /* keep the left-column text clear of the right-hand map window */
+      --hero-rail-width: 40rem;        /* shared right edge: the tagline AND the countdown both align to it */
+
+      /* Eyebrow line: A GUIDE TO —— THE PLACES, THE PEOPLE & THE BOTTLE */
+      --hero-eyebrow-size: 0.72rem;    /* small tracked caps — tune freely */
+      --hero-eyebrow-tracking: 0.26em;
+      --hero-eyebrow-color: rgb(var(--fg-rgb) / 0.75);
+      --hero-eyebrow-gap: 9rem;                 /* gap BELOW the eyebrow (space to YELLOW GRAPES); raising it pushes the wordmark DOWN */
+      --hero-eyebrow-top: -8rem;                 /* space ABOVE the eyebrow — make this NEGATIVE (e.g. -4rem) to lift the eyebrow UP (wordmark stays put) */
+      --hero-eyebrow-line-width: 3.5rem;          /* the short connector between the two phrases */
+      --hero-eyebrow-line-color: rgb(var(--fg-rgb) / 0.4);
+
+      /* Serif wordmark (YELLOW over GRAPES, Cormorant Garamond) + the one-line tagline beside it */
+      --wordmark-serif-size: clamp(0.9rem, 1.8vw, 1.6rem);   /* clamp(MIN, PREFERRED=vw, MAX): floor · fluid · ceiling */
+      --wordmark-serif-weight: 500;
+      --wordmark-serif-tracking: 0.2em;           /* letter-spread so YELLOW / GRAPES align as two rows */
+      --wordmark-serif-color: rgb(var(--fg-rgb));
+      --wordmark-line-gap: 0em;                 /* vertical gap between the YELLOW and GRAPES rows */
+      --wordmark-tagline-gap: 8rem;               /* (desktop now uses --hero-rail-width instead; this is the mobile/fallback gap) */
+      --hero-tagline-size: clamp(1.1rem, 1.5vw, 1.5rem);
+      --hero-tagline-color: rgb(var(--fg-rgb) / 0.85);
+
+      /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow */
+      --store-badge-bg: rgb(var(--bg-rgb) / 0.45);            /* a little transparent (map shows through) */
+      --store-badge-border: rgb(var(--fg-rgb) / 0.22);
+      --store-badge-radius: 0.5rem;                          /* gently rounded, a touch sharper */
+      --store-badge-pad: 0.6rem 2.6rem;                      /* vertical horizontal → less top/bottom, more sides = wider & flatter */
+      --store-badge-gap: 1rem;
+      --store-badge-icon-color: var(--hero-colophon-color);  /* icon tone = colophon text */
 
       /* Type sizes (strong contrast: huge title vs small guide; large serif numeral) */
       --hero-title-size:  clamp(1.9rem, 4.2vw, 3rem);
       --hero-guide-size:  clamp(1.05rem, 1.5vw, 1.45rem);
-      --hero-numeral-size: clamp(2.2rem, 2.8vw, 2.7rem); /* tall — matches the two-row brand block height; tune to taste */
+      --hero-numeral-size: clamp(1.3rem, 1.7vw, 1.8rem); /* modest editorial accent in the countdown; tune to taste */
 
       /* Hairline rules */
       --hero-rule-thickness: 1px;
       --hero-rule-color: rgb(var(--fg-rgb) / 0.7);
       --hero-colophon-width: 48rem;       /* colophon band width (labels · dash · countdown on one line) */
-      --hero-colophon-color: rgb(var(--fg-rgb) / 0.6); /* whole colophon (text + dash) = the "Vol. 1" muted tone */
-      --hero-colophon-line-rise: 0.475rem; /* lifts the connector to the center of "BY TORSADE TECH" / "COMING SOON IN" — tune to taste */
+      --hero-colophon-color: rgb(var(--fg-rgb) / 0.6); /* colophon text = the "Vol. 1" muted tone */
+      --hero-colophon-line-color: rgb(var(--fg-rgb) / 0.3); /* connector — intentionally LIGHTER than the text */
+      --hero-countdown-line-width: 9rem;     /* the connector to the LEFT of "COMING SOON IN …" */
+      --hero-countdown-brand-gap: 3rem;      /* gap between the countdown (above) and the bottom brand line */
 
-      /* Moody dark veil over the hero map (sits UNDER the cream .hero-fade so the
-         lower-left text area stays legible). --hero-dark-fade is the manual control:
-         edit it here, or drag the live slider at index.html#tune, then bake the value. */
-      --hero-dark-rgb: 26 24 20;          /* charcoal veil (same channels as --fg-rgb) */
-      --hero-dark-fade: 0.16;             /* 0 = none … 1 = solid; keep it slight */
+      /* Hero background: a single pre-rendered image (frosted map + window baked in) fills the
+         hero. Only an optional charcoal veil remains, for text legibility over the image. */
+      --hero-dark-rgb: 26 24 20;          /* charcoal veil channels (same as --fg-rgb) */
+      --hero-dark-fade: 0;                /* 0 = none; raise (or use #tune) to darken the bg for legibility */
 
       /* Title second-row dash ("————— FOR TAIWAN") */
       --hero-title-dash-width: 8rem;
@@ -169,29 +194,12 @@
       letter-spacing: var(--wordmark-tracking);
     }
 
-    /* ───────────  Hero map atmosphere (desktop only)  ───────────
-       The wide map is full-bleed (object-cover). The UPPER-LEFT sea stays fully
-       visible (no wash) and the right-side city map stays sharp; only the
-       LOWER-LEFT land — where the headline/sub/CTA/countdown/badges sit — is
-       frosted: a cream tint + real backdrop blur, clipped to the bottom-left
-       corner by a radial mask so it fades out upward (toward the sea) and
-       rightward (toward the city). Percentages keep it responsive — no
-       breakpoint override needed. */
-    /* Moody uniform veil across the whole map. Layered UNDER .hero-fade (see the hero
-       markup order) so the cream-washed lower-left stays bright for the headline/colophon. */
+    /* ───────────  Hero background (desktop only)  ───────────
+       A single pre-rendered image (frosted map + window baked in) fills the hero; only an
+       optional charcoal veil remains for text legibility (default 0; tune via #tune). */
     .hero-dark {
       background-color: rgb(var(--hero-dark-rgb) / var(--hero-dark-fade));
       pointer-events: none;
-    }
-
-    .hero-fade {
-      background-color: rgb(var(--bg-rgb) / 0.86);
-      -webkit-backdrop-filter: blur(7px);
-      backdrop-filter: blur(7px);
-      -webkit-mask-image: radial-gradient(115% 96% at 8% 100%,
-        #000 0%, #000 36%, transparent 68%);
-      mask-image: radial-gradient(115% 96% at 8% 100%,
-        #000 0%, #000 36%, transparent 68%);
     }
 
     /* Pull the hero up BEHIND the sticky header (desktop only — the map layer is
@@ -223,98 +231,87 @@
        with the one serif numeral. Desktop-first; mobile falls back to plain flow.
        Driven entirely by the --hero-* / --font-serif tokens in :root above. */
 
-    /* Masthead wordmark (all viewports) — YELLOW stacked above GRAPES at the far left, then a
-       connector LINE running across to the toggle/CTA on the right. The row is vertically
-       centered, so the line passes through the middle of GRAPES (left) and the buttons (right).
-       YELLOW floats above GRAPES (absolute) so the brand's height == GRAPES height and the line
-       centers on GRAPES, not on the YELLOW+GRAPES pair. English in both locales; the accessible
-       name is the sr-only "Yellow Grapes" span. All offsets are tunable tokens. */
-    .mast-row { align-items: center; }
-    .mast-brand {
-      position: relative;                 /* anchor for the absolutely-placed YELLOW */
-      flex: none;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;            /* shrink-wrap GRAPES (no stretch) */
+    /* ───────────  Editorial hero composition  ───────────
+       Header holds only the right-pinned buttons; the wordmark now lives in the hero body. */
+    .header-row {
+      display: flex; align-items: center; justify-content: flex-end;
+      height: 100%; padding-right: var(--header-inset-x);
     }
-    @media (min-width: 768px) {
-      /* Pull the wordmark left to line up with the colophon's left edge (--hero-corner-inset-x),
-         escaping the centered max-w-7xl box — the same calc the colophon uses. */
-      .mast-brand { margin-left: calc(var(--hero-corner-inset-x) - 2rem - max((100vw - 80rem) / 2, 0px)); }
-    }
-    .mast-line {
-      flex: 1 1 auto;
-      height: var(--mast-line-thickness);
-      background: var(--mast-line-color);
-      margin: 0 var(--mast-line-gap);
-    }
-    .mast-actions { display: flex; align-items: center; gap: 0.5rem; flex: none; }
-    @media (min-width: 640px) { .mast-actions { gap: 0.75rem; } }
-    .mast-word {
-      font-family: 'Asta Sans', system-ui, sans-serif;
-      font-weight: 800;
-      font-size: var(--mast-word-size);
-      line-height: 1;
-      letter-spacing: var(--mast-word-tracking);
-      text-transform: uppercase;
-      color: var(--mast-word-color);
-      white-space: nowrap;
-      pointer-events: none;
-    }
-    .mast-word--grapes { margin-left: var(--mast-grapes-indent); }  /* leans right of YELLOW */
-    .mast-word--yellow {
-      position: absolute;
-      bottom: 100%;                       /* sit directly above GRAPES */
-      left: var(--mast-yellow-shift);     /* lean left of GRAPES */
-      margin-bottom: var(--mast-yellow-gap);
-    }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; }
+    @media (min-width: 640px) { .header-actions { gap: 0.75rem; } }
 
-    /* Title block — sits in the upper-third on desktop, indented past the vertical "ELLOW". */
-    .hero-title-block { max-width: 40rem; min-width: 0; margin-top: 2.5rem; } /* min-width:0 lets the title wrap inside the flex column */
-    @media (min-width: 768px) {
-      .hero-title-block {
-        margin-top: var(--hero-title-top);
-        padding-left: var(--hero-title-indent);
-      }
-    }
-    .hero-title {
-      font-family: 'Asta Sans', system-ui, sans-serif;
-      font-weight: 800;
-      font-size: var(--hero-title-size);
-      line-height: 1.04;
-      letter-spacing: var(--hero-title-tracking);
+    /* Left column = full-height flex stack: cluster (eyebrow · wordmark+tagline · badges) pushed
+       toward centre, then the countdown, then the brand pinned to the bottom. */
+    .hero-stack { max-width: var(--hero-text-max); }
+    @media (min-width: 768px) { .hero-stack { margin-top: var(--hero-stack-top); } }
+
+    /* Eyebrow: A GUIDE TO —— THE PLACES, THE PEOPLE & THE BOTTLE */
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 0.9rem;
+      margin: 0 0 var(--hero-eyebrow-gap) 0;
+      position: relative; top: var(--hero-eyebrow-top);  /* negative top = lift the eyebrow up without moving the wordmark */
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: var(--hero-eyebrow-size);
+      letter-spacing: var(--hero-eyebrow-tracking);
       text-transform: uppercase;
-      text-wrap: balance;          /* balanced line breaks when it wraps */
-      overflow-wrap: break-word;   /* safety net: never spill past the column */
-      color: rgb(var(--fg-rgb));
+      color: var(--hero-eyebrow-color);
     }
-    /* Dash that leads the title's second row ("————— FOR TAIWAN"), left-aligned under row 1. */
-    .hero-title-dash {
-      display: inline-block;
-      vertical-align: middle;
-      width: var(--hero-title-dash-width);
-      height: var(--hero-title-dash-thickness);
-      margin-left: 5rem;
-      margin-right: 0.6rem;
-      background: currentColor;
+    .hero-eyebrow-line { flex: 0 0 var(--hero-eyebrow-line-width); height: 1px; background: var(--hero-eyebrow-line-color); }
+
+    /* Wordmark (Cormorant Garamond, YELLOW over GRAPES) + one-line tagline beside it */
+    .hero-wordmark-row { display: flex; align-items: center; gap: var(--wordmark-tagline-gap); flex-wrap: wrap; }
+    /* Desktop: fix the row to the shared rail width and push the tagline to its right edge,
+       so the tagline's right edge == the countdown's right edge (see .hero-countdown-band). */
+    @media (min-width: 768px) {
+      .hero-wordmark-row { flex-wrap: nowrap; width: var(--hero-rail-width); justify-content: space-between; gap: 0; }
     }
-    .hero-guide {
-      margin-top: 1.5rem;
+    .hero-wordmark {
+      margin: 0;
+      font-family: var(--font-display-serif);
+      font-weight: var(--wordmark-serif-weight);
+      font-size: var(--wordmark-serif-size);
+      line-height: 1;
+      letter-spacing: var(--wordmark-serif-tracking);
+      text-transform: uppercase;
+      color: var(--wordmark-serif-color);
+    }
+    .hero-wordmark span { display: block; }
+    .hero-wordmark span + span { margin-top: var(--wordmark-line-gap); }
+    .hero-tagline {
+      margin: 0;
       font-family: 'Urbanist', system-ui, sans-serif;
       font-weight: 400;
-      font-size: var(--hero-guide-size);
-      line-height: 1.35;
-      color: rgb(var(--fg-rgb));
+      font-size: var(--hero-tagline-size);
+      line-height: 1.3;
+      color: var(--hero-tagline-color);
+      white-space: nowrap;
     }
+    @media (max-width: 767px) {
+      /* Mobile: simple stacked flow (desktop is the priority for now). */
+      .hero-tagline { white-space: normal; }
+      .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
+      .hero-eyebrow { flex-wrap: wrap; }
+    }
+
+    /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow. */
+    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.25rem; }
+    .store-badge {
+      display: inline-flex; align-items: center; gap: var(--store-badge-gap);
+      background: var(--store-badge-bg); color: rgb(var(--fg-rgb));
+      border: 1px solid var(--store-badge-border);
+      border-radius: var(--store-badge-radius); padding: var(--store-badge-pad);
+    }
+    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: var(--store-badge-icon-color); }
+    .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
+    .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
 
     /* Hairline rules (thickness / colour are tokens). */
     .hero-rule { border: 0; height: var(--hero-rule-thickness); background: var(--hero-rule-color); }
-    .hero-rule--colophon { width: 100%; background: var(--hero-colophon-color); }
-    /* Desktop: the connector grows between the labels & countdown and is lifted off the
-       bottom baseline to sit at the center of "BY TORSADE TECH" / "COMING SOON IN". */
-    @media (min-width: 768px) {
-      .hero-rule--colophon { width: auto; flex: 1 1 auto; margin-bottom: var(--hero-colophon-line-rise); }
-    }
+    /* Countdown connector — a short line to the LEFT of "COMING SOON IN …", lighter than the text. */
+    .hero-rule--countdown { width: 100%; background: var(--hero-colophon-line-color); }
+    @media (min-width: 768px) { .hero-rule--countdown { width: auto; flex: 0 0 var(--hero-countdown-line-width); } }
 
     /* Small tracked caps (colophon lines, COMING SOON IN / DAYS). */
     .hero-label {
@@ -327,30 +324,23 @@
     }
     .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
 
-    /* Colophon: one band — brand labels · growing dash · countdown. Stacks on mobile;
-       single centered row on desktop, pinned to the bottom of the flex column. */
-    .hero-colophon {
-      max-width: var(--hero-colophon-width);
-      min-width: 0;
-      margin-top: 3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
+    /* Countdown band — connector + "COMING SOON IN [N] DAYS", pulled UP from the bottom.
+       margin-top:auto eats the column's free space so it (and the brand below it) sit low. */
+    .hero-countdown-band {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 1.1rem;
+      max-width: var(--hero-text-max);
+      margin-top: 2.5rem;
     }
+    /* Desktop: same rail width, content pushed right → "——— COMING SOON IN N DAYS" right edge
+       lines up with the tagline's right edge above it. */
     @media (min-width: 768px) {
-      /* Pull the colophon left so its left edge lines up with the corner wordmark
-         (anchored to the section edge at --hero-corner-inset-x), escaping the centered
-         max-w-7xl content box (80rem) + its sm:px-8 (2rem) padding. */
-      .hero-colophon {
-        margin-top: auto;
-        margin-left: calc(var(--hero-corner-inset-x) - 2rem - max((100vw - 80rem) / 2, 0px));
-        flex-direction: row; align-items: flex-end; gap: 1.5rem;
-      }
+      .hero-countdown-band { margin-top: auto; width: var(--hero-rail-width); justify-content: flex-end; }
     }
-    /* Whole colophon — text and the growing dash — share the muted "Vol. 1" tone. */
-    .hero-colophon .hero-label,
-    .hero-colophon .display-numeral { color: var(--hero-colophon-color); }
-    .hero-colophon-brand { flex: none; }
+    .hero-countdown-band .hero-label,
+    .hero-countdown-band .display-numeral { color: var(--hero-colophon-color); }
+
+    /* Brand line — pinned to the very bottom of the column, below the countdown. */
+    .hero-colophon-brand { margin-top: var(--hero-countdown-brand-gap); }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
 
     /* "COMING SOON IN [N] DAYS" — small caps wrap the large serif numeral, baseline-aligned. */
@@ -366,11 +356,11 @@
     }
 
     /* CJK graceful fallback: relax the wide Latin tracking for zh so the all-caps /
-       letter-spacing treatment isn't forced onto Chinese. The corner wordmark stays
+       letter-spacing treatment isn't forced onto Chinese. The "Yellow Grapes" wordmark stays
        English in both locales, so it is intentionally NOT relaxed here. */
-    html[lang="zh-Hant"] .hero-title  { letter-spacing: 0.06em; }
-    html[lang="zh-Hant"] .hero-label  { letter-spacing: 0.14em; }
-    html[lang="zh-Hant"] .hero-guide  { line-height: 1.55; }
+    html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
+    html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
+    html[lang="zh-Hant"] .hero-tagline { line-height: 1.5; }
 
     /* Hide the scrollbar on the app-chrome filter-chip rail */
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -382,19 +372,10 @@
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
   <header class="site-header sticky top-0 z-50">
-    <div class="mast-row mx-auto flex h-full max-w-7xl px-5 sm:px-8">
-      <!-- Masthead: YELLOW stacked above GRAPES at the left, then a connector line across to
-           the toggle/CTA. The row is centered, so the line runs through the middle of GRAPES
-           (left) and the buttons (right). -->
-      <div class="mast-brand">
-        <span class="sr-only">Yellow Grapes</span>
-        <span class="mast-word mast-word--yellow" aria-hidden="true">YELLOW</span>
-        <span class="mast-word mast-word--grapes" aria-hidden="true">GRAPES</span>
-      </div>
-
-      <div class="mast-line" aria-hidden="true"></div>
-
-      <div class="mast-actions">
+    <!-- Just the language toggle + waitlist CTA, pinned to the right edge of the screen.
+         The wordmark lives in the hero body now (centred). -->
+    <div class="header-row">
+      <div class="header-actions">
         <button id="langToggle" type="button"
                 class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
           中
@@ -414,16 +395,16 @@
          on the left columns. Mobile: map layer is hidden → clean cream text
          block (the user's "section 1"); the map lives in section 02 below. -->
     <section class="hero relative overflow-hidden">
-      <!-- Full-bleed map atmosphere (desktop / tablet-landscape only) -->
+      <!-- Pre-rendered background (frosted map + window baked into the image). Swap the src below
+           for your rendered file (desktop / tablet-landscape only). -->
       <div class="absolute inset-0 hidden md:block" aria-hidden="true">
         <img
           src="images/app-map-wide-extended.png" alt=""
           class="h-full w-full object-cover object-center"
           onerror="this.style.display='none'"
         />
-        <!-- Moody dark veil (uniform). Under the cream fade so the lower-left text stays bright. -->
+        <!-- optional charcoal veil for legibility (default 0, tune via #tune) -->
         <div class="hero-dark absolute inset-0"></div>
-        <div class="hero-fade absolute inset-0"></div>
       </div>
 
       <!-- Content — editorial composition. Keep the grid + min-height (they drive the
@@ -435,28 +416,44 @@
              item shrink so the title wraps instead of overflowing on narrow screens. -->
         <div class="relative col-span-12 flex min-w-0 flex-col md:col-span-9 lg:col-span-8">
 
-          <!-- Title block (over the ocean on desktop). Two rows; a dash leads row 2. -->
-          <div class="hero-title-block">
-            <h1 class="hero-title" data-i18n="hero.title">A Wine Map<br /><span class="hero-title-dash" aria-hidden="true"></span>For Taiwan</h1>
-            <p class="hero-guide" data-i18n="hero.guide">
-              A Guide to the Places,<br />the People,<br />and the Bottle.
+          <!-- Cluster: eyebrow · serif wordmark + tagline · store badges (pushed toward centre) -->
+          <div class="hero-stack">
+            <p class="hero-eyebrow">
+              <span data-i18n="hero.guidePre">A Guide To</span>
+              <span class="hero-eyebrow-line" aria-hidden="true"></span>
+              <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
             </p>
-          </div>
 
-          <!-- Colophon — one band on desktop: brand labels · growing dash · live day-count.
-               (Pinned to the column bottom; stacks on mobile.) -->
-          <div class="hero-colophon">
-            <div class="hero-colophon-brand">
-              <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes. Vol. 1</p>
-              <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
+            <div class="hero-wordmark-row">
+              <!-- Wordmark stays English in both locales -->
+              <h1 class="hero-wordmark"><span>Yellow</span><span>Grapes</span></h1>
+              <p class="hero-tagline" data-i18n="hero.title">A wine map for Taiwan.</p>
             </div>
 
-            <div class="hero-rule hero-rule--colophon" aria-hidden="true"></div>
+            <!-- Store badges (non-functional placeholders until launch) -->
+            <div class="hero-store">
+              <span class="store-badge">
+                <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                <span class="badge-text">
+                  <span class="badge-top" data-i18n="store.appleTop">Download on the</span>
+                  <span class="badge-name">App Store</span>
+                </span>
+              </span>
+              <span class="store-badge">
+                <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/></svg>
+                <span class="badge-text">
+                  <span class="badge-top" data-i18n="store.googleTop">Get it on</span>
+                  <span class="badge-name">Google Play</span>
+                </span>
+              </span>
+            </div>
+          </div>
 
-            <!-- COMING SOON IN [N] DAYS — [N] is the live launch countdown (#cd-days,
-                 sourced from 2026-09-24 in the script below). The wrapper keeps id="countdown"
-                 so the existing done-state toggle still works; hours/mins/secs spans can be
-                 re-added inside .hero-countdown later (the script already computes them). -->
+          <!-- Countdown band — pulled up from the bottom: lighter connector + live day-count -->
+          <div class="hero-countdown-band">
+            <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
+            <!-- The wrapper keeps id="countdown" so the existing done-state toggle still works;
+                 #cd-days is the live launch countdown (sourced from 2026-09-24 in the script). -->
             <div id="countdown">
               <p class="hero-countdown">
                 <span class="hero-label" data-i18n="hero.comingSoonPre">Coming Soon In</span>
@@ -465,6 +462,12 @@
               </p>
             </div>
             <p id="countdownDone" class="hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
+          </div>
+
+          <!-- Brand line — pinned bottom-left -->
+          <div class="hero-colophon-brand">
+            <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes. Vol. 1</p>
+            <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
           </div>
         </div>
       </div>
@@ -642,8 +645,9 @@
     // "Yellow Grapes" wordmark + brand names (App Store / Google Play) stay as-is.
     var I18N = {
       en: {
-        'hero.title': 'A Wine Map<br /><span class="hero-title-dash" aria-hidden="true"></span>For Taiwan',
-        'hero.guide': 'A Guide to the Places,<br />the People,<br />and the Bottle.',
+        'hero.title': 'A wine map for Taiwan.',
+        'hero.guidePre': 'A Guide To',
+        'hero.guidePost': 'The Places, the People &amp; the Bottle',
         'hero.colophonVol': 'Yellow Grapes. Vol. 1',
         'hero.colophonBy': 'By Torsade Tech',
         'hero.comingSoonPre': 'Coming Soon In',
@@ -678,8 +682,9 @@
         'footer.meta': 'Yellow Grapes — Taipei, Taiwan · yellow.grapes.com.tw · 2026'
       },
       zh: {
-        'hero.title': '台灣葡萄酒地圖',
-        'hero.guide': '通往在地場所、人物<br />與酒款的指南。',
+        'hero.title': '台灣葡萄酒地圖。',
+        'hero.guidePre': '一份指南',
+        'hero.guidePost': '在地場所、人物與酒款',
         'hero.colophonVol': 'Yellow Grapes・第一卷',
         'hero.colophonBy': '由 Torsade Tech 出品',
         'hero.comingSoonPre': '距上線還有',
@@ -781,7 +786,7 @@
 
   <!-- ───────────  Dev-only token tuner  ───────────
        Hidden in production. Open index.html#tune (or ?tune) to get live sliders for
-       the header wash (--header-opacity) and the moody map veil (--hero-dark-fade).
+       the header wash and the optional dark veil over the background image.
        Drag to taste, then bake the values you like into :root above. Add more rows by
        extending the CONTROLS list. Safe to delete this block. -->
   <script>
@@ -790,7 +795,7 @@
       var root = document.documentElement;
       var CONTROLS = [
         { label: 'Header opacity', varName: '--header-opacity', fallback: 0.12 },
-        { label: 'Dark fade',      varName: '--hero-dark-fade', fallback: 0.16 }
+        { label: 'Dark fade',      varName: '--hero-dark-fade', fallback: 0 }
       ];
       function current(varName, fallback) {
         var v = parseFloat(getComputedStyle(root).getPropertyValue(varName));
@@ -806,13 +811,17 @@
         wrap.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
         var label = document.createElement('div');
         var slider = document.createElement('input');
+        var suffix = c.suffix || '';
         slider.type = 'range';
-        slider.min = '0'; slider.max = '1'; slider.step = '0.01';
+        slider.min = '0'; slider.max = String(c.max || 1); slider.step = String(c.step || 0.01);
         slider.value = String(current(c.varName, c.fallback));
         slider.style.cssText = 'width:100%;accent-color:#F2C84B;cursor:pointer;';
-        function render() { label.textContent = c.label + ': ' + Number(slider.value).toFixed(2); }
+        function render() {
+          var n = Number(slider.value);
+          label.textContent = c.label + ': ' + (suffix ? n + suffix : n.toFixed(2));
+        }
         slider.addEventListener('input', function () {
-          root.style.setProperty(c.varName, slider.value);
+          root.style.setProperty(c.varName, slider.value + suffix);
           render();
         });
         render();
