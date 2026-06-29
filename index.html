@@ -117,10 +117,10 @@
       --hero-title-dash-thickness: 2px;
 
       /* Spacing / placement */
-      --hero-corner-inset-x: 0.9rem;      /* corner wordmark hugs the left viewport edge */
-      --hero-corner-inset-y: 0.6rem;      /* corner wordmark hugs the top viewport edge */
-      --hero-title-top: clamp(2rem, 7vh, 5rem); /* drop title into the upper-third, below the wordmark */
-      --hero-title-indent: 3.5rem;        /* indent title block past the vertical "ELLOW" (desktop) */
+      --hero-corner-inset-x: 1.5rem;      /* corner wordmark hugs the left viewport edge */
+      --hero-corner-inset-y: 1.2rem;      /* corner wordmark hugs the top viewport edge */
+      --hero-title-top: clamp(1rem, 7vh, 3rem); /* drop title into the upper-third, below the wordmark */
+      --hero-title-indent: 0rem;        /* indent title block past the vertical "ELLOW" (desktop) */
     }
 
     html { scroll-behavior: smooth; }
@@ -196,8 +196,8 @@
        with the one serif numeral. Desktop-first; mobile falls back to plain flow.
        Driven entirely by the --hero-* / --font-serif tokens in :root above. */
 
-    /* Corner wordmark: a shared "Y" pivot — GRAPES runs across the top, ELLOW runs
-       down the left edge, so the corner reads Y·GRAPES (top) + YELLOW (down).
+    /* Corner wordmark: a shared "G" pivot — YELLOW runs across the top, RAPES runs
+       down the left edge, so the corner reads G·YELLOW (top) + GRAPES (down).
        Stays English in both locales. Absolutely placed in the hero's top-left. */
     .hero-wordmark-corner {
       position: absolute;
@@ -293,7 +293,14 @@
       gap: 0.9rem;
     }
     @media (min-width: 768px) {
-      .hero-colophon { margin-top: auto; flex-direction: row; align-items: center; gap: 1.5rem; }
+      /* Pull the colophon left so its left edge lines up with the corner wordmark
+         (anchored to the section edge at --hero-corner-inset-x), escaping the centered
+         max-w-7xl content box (80rem) + its sm:px-8 (2rem) padding. */
+      .hero-colophon {
+        margin-top: auto;
+        margin-left: calc(var(--hero-corner-inset-x) - 2rem - max((100vw - 80rem) / 2, 0px));
+        flex-direction: row; align-items: center; gap: 1.5rem;
+      }
     }
     .hero-colophon-brand { flex: none; }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
@@ -358,16 +365,16 @@
         <div class="hero-fade absolute inset-0"></div>
       </div>
 
-      <!-- Corner wordmark pivot (desktop): a shared "Y" — GRAPES across the top and ELLOW
-           down the left edge → reads Y·GRAPES + YELLOW. Anchored to the section (viewport)
-           edge so it hugs the top-left corner. English in both locales. -->
+      <!-- Corner wordmark pivot (desktop): a shared "G" — YELLOW across the top and RAPES
+           down the left edge → reads G·YELLOW (top) + GRAPES (down). Anchored to the section
+           (viewport) edge so it hugs the top-left corner. English in both locales. -->
       <div class="hero-wordmark-corner hidden md:block">
         <span class="sr-only">Yellow Grapes</span>
         <div class="wm-top" aria-hidden="true">
-          <span>Y</span><span>G</span><span>R</span><span>A</span><span>P</span><span>E</span><span>S</span>
+          <span>G</span><span>Y</span><span>E</span><span>L</span><span>L</span><span>O</span><span>W</span>
         </div>
         <div class="wm-down" aria-hidden="true">
-          <span>E</span><span>L</span><span>L</span><span>O</span><span>W</span>
+          <span>R</span><span>A</span><span>P</span><span>E</span><span>S</span>
         </div>
       </div>
 
