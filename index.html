@@ -43,13 +43,14 @@
   <!-- Favicon: Yellow Grapes logo (SVG). TODO: add a PNG fallback for older browsers. -->
   <link rel="icon" type="image/svg+xml" href="logo/dark-y.svg" />
 
-  <!-- Type: Urbanist (brand wordmark + all Swiss-style display/labels, 400–800) +
-       Fraunces (the ONE serif — used only for the big editorial day-count numeral;
-       opsz axis for crisp display sizing). Swap the serif face in :root --font-serif. -->
+  <!-- Type: Asta Sans (hero corner wordmark + big hero title, 700/800) + Urbanist
+       (all other Swiss-style display/labels + the hero guide, 400–800) + Fraunces
+       (the ONE serif — used only for the big editorial day-count numeral; opsz axis
+       for crisp display sizing). Swap the serif face in :root --font-serif. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;700;800&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
     rel="stylesheet"
   />
 
@@ -95,8 +96,8 @@
       --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif; /* the ONE serif: swap face here (Playfair Display / Cormorant) */
 
       /* Tracking */
-      --hero-corner-tracking: 0.72em;  /* corner wordmark Y·GRAPES / YELLOW (horizontal) — wide gaps */
-      --hero-corner-leading: 0.55em;   /* corner wordmark ELLOW vertical rhythm */
+      --hero-corner-tracking: 1.7em;  /* corner wordmark Y·GRAPES / YELLOW (horizontal) — wide gaps */
+      --hero-corner-leading: 1.4em;   /* corner wordmark ELLOW vertical rhythm */
       --hero-title-tracking: 0.04em;   /* big title A WINE MAP FOR TAIWAN */
       --hero-label-tracking: 0.3em;    /* small tracked caps: colophon, COMING SOON IN, DAYS, CTA */
 
@@ -111,14 +112,14 @@
       --hero-rule-color: rgb(var(--fg-rgb) / 0.7);
       --hero-colophon-width: 48rem;       /* colophon band width (labels · dash · countdown on one line) */
 
-      /* Title second-row dash ("— FOR TAIWAN") */
-      --hero-title-dash-width: 2.5rem;
+      /* Title second-row dash ("————— FOR TAIWAN") */
+      --hero-title-dash-width: 8rem;
       --hero-title-dash-thickness: 2px;
 
       /* Spacing / placement */
       --hero-corner-inset-x: 0.9rem;      /* corner wordmark hugs the left viewport edge */
       --hero-corner-inset-y: 0.6rem;      /* corner wordmark hugs the top viewport edge */
-      --hero-title-top: clamp(4.5rem, 12vh, 9rem); /* drop title into the upper-third, below the wordmark */
+      --hero-title-top: clamp(2rem, 7vh, 5rem); /* drop title into the upper-third, below the wordmark */
       --hero-title-indent: 3.5rem;        /* indent title block past the vertical "ELLOW" (desktop) */
     }
 
@@ -203,7 +204,7 @@
       top: var(--hero-corner-inset-y);
       left: var(--hero-corner-inset-x);
       z-index: 1;
-      font-family: 'Urbanist', system-ui, sans-serif;
+      font-family: 'Asta Sans', system-ui, sans-serif;
       font-weight: 700;
       font-size: var(--hero-corner-size);
       line-height: 1;
@@ -236,7 +237,7 @@
       }
     }
     .hero-title {
-      font-family: 'Urbanist', system-ui, sans-serif;
+      font-family: 'Asta Sans', system-ui, sans-serif;
       font-weight: 800;
       font-size: var(--hero-title-size);
       line-height: 1.04;
@@ -246,12 +247,13 @@
       overflow-wrap: break-word;   /* safety net: never spill past the column */
       color: rgb(var(--fg-rgb));
     }
-    /* Dash that leads the title's second row ("— FOR TAIWAN"), left-aligned under row 1. */
+    /* Dash that leads the title's second row ("————— FOR TAIWAN"), left-aligned under row 1. */
     .hero-title-dash {
       display: inline-block;
       vertical-align: middle;
       width: var(--hero-title-dash-width);
       height: var(--hero-title-dash-thickness);
+      margin-left: 5rem;
       margin-right: 0.6rem;
       background: currentColor;
     }
@@ -294,7 +296,7 @@
       .hero-colophon { margin-top: auto; flex-direction: row; align-items: center; gap: 1.5rem; }
     }
     .hero-colophon-brand { flex: none; }
-    .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.3rem; }
+    .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
 
     /* "COMING SOON IN [N] DAYS" — small caps wrap the large serif numeral, baseline-aligned. */
     .hero-countdown { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
