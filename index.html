@@ -96,42 +96,62 @@
       --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif; /* the ONE serif: swap face here (Playfair Display / Cormorant) */
 
       /* Tracking */
-      --hero-corner-tracking: 1.7em;  /* corner wordmark Y·GRAPES / YELLOW (horizontal) — wide gaps */
-      --hero-corner-leading: 1.4em;   /* corner wordmark ELLOW vertical rhythm */
       --hero-title-tracking: 0.04em;   /* big title A WINE MAP FOR TAIWAN */
       --hero-label-tracking: 0.3em;    /* small tracked caps: colophon, COMING SOON IN, DAYS, CTA */
 
+      /* Masthead — YELLOW stacked above GRAPES at the far left, then a CONNECTOR line
+         running across to the toggle/CTA. The masthead row is vertically centered, so the
+         line passes through the middle of GRAPES (left) and the buttons (right). All tunable. */
+      --mast-line-color: rgb(var(--fg-rgb));            /* charcoal connector, matches the site's dividers */
+      --mast-line-thickness: 1px;
+      --mast-line-gap: 1rem;                            /* gap each side of the connector (GRAPES ↔ line ↔ buttons) */
+      --mast-word-size: clamp(1.05rem, 1.8vw, 1.7rem);  /* smaller editorial wordmark halves */
+      --mast-word-tracking: 0.12em;
+      --mast-word-color: rgb(var(--fg-rgb));            /* full charcoal */
+      --mast-yellow-shift: 0rem;                        /* nudge YELLOW horizontally (negative = further left of GRAPES) */
+      --mast-grapes-indent: 1.5rem;                     /* GRAPES leans right of YELLOW */
+      --mast-yellow-gap: 0.1rem;                        /* vertical gap between YELLOW (above) and GRAPES (below) */
+
       /* Type sizes (strong contrast: huge title vs small guide; large serif numeral) */
-      --hero-corner-size: clamp(1.4rem, 2.4vw, 2.4rem);   /* large corner wordmark hugging the edge */
       --hero-title-size:  clamp(1.9rem, 4.2vw, 3rem);
       --hero-guide-size:  clamp(1.05rem, 1.5vw, 1.45rem);
-      --hero-numeral-size: clamp(1.4rem, 2vw, 1.9rem);   /* small editorial accent in the colophon line */
+      --hero-numeral-size: clamp(2.2rem, 2.8vw, 2.7rem); /* tall — matches the two-row brand block height; tune to taste */
 
       /* Hairline rules */
       --hero-rule-thickness: 1px;
       --hero-rule-color: rgb(var(--fg-rgb) / 0.7);
       --hero-colophon-width: 48rem;       /* colophon band width (labels · dash · countdown on one line) */
+      --hero-colophon-color: rgb(var(--fg-rgb) / 0.6); /* whole colophon (text + dash) = the "Vol. 1" muted tone */
+      --hero-colophon-line-rise: 0.35rem; /* lifts the connector to the center of "BY TORSADE TECH" / "COMING SOON IN" — tune to taste */
+
+      /* Moody dark veil over the hero map (sits UNDER the cream .hero-fade so the
+         lower-left text area stays legible). --hero-dark-fade is the manual control:
+         edit it here, or drag the live slider at index.html#tune, then bake the value. */
+      --hero-dark-rgb: 26 24 20;          /* charcoal veil (same channels as --fg-rgb) */
+      --hero-dark-fade: 0.16;             /* 0 = none … 1 = solid; keep it slight */
 
       /* Title second-row dash ("————— FOR TAIWAN") */
       --hero-title-dash-width: 8rem;
       --hero-title-dash-thickness: 2px;
 
       /* Spacing / placement */
-      --hero-corner-inset-x: 1.5rem;      /* corner wordmark hugs the left viewport edge */
-      --hero-corner-inset-y: 1.2rem;      /* corner wordmark hugs the top viewport edge */
-      --hero-title-top: clamp(1rem, 7vh, 3rem); /* drop title into the upper-third, below the wordmark */
+      --hero-corner-inset-x: 4rem;      /* left inset the colophon aligns its left edge to (kept for that calc) */
+      --hero-title-top: clamp(2rem, 7vh, 3.5rem); /* drop title into the upper-third, below the header */
       --hero-title-indent: 0rem;        /* indent title block past the vertical "ELLOW" (desktop) */
     }
 
     html { scroll-behavior: smooth; }
     body { background-color: rgb(var(--bg-rgb)); }
 
-    /* Sticky, translucent header (borderless; relies on blur + translucency). */
+    /* Sticky, translucent header. overflow:visible lets YELLOW float just above GRAPES
+       without clipping. The masthead connector line lives inside the row (between GRAPES
+       and the buttons), not as a full-width border. */
     .site-header {
       height: var(--header-h-desktop);
       background-color: rgb(var(--bg-rgb) / var(--header-opacity));
       -webkit-backdrop-filter: blur(var(--header-blur));
       backdrop-filter: blur(var(--header-blur));
+      overflow: visible;
     }
     @media (max-width: 640px) {
       .site-header { height: var(--header-h-mobile); }
@@ -157,6 +177,13 @@
        corner by a radial mask so it fades out upward (toward the sea) and
        rightward (toward the city). Percentages keep it responsive — no
        breakpoint override needed. */
+    /* Moody uniform veil across the whole map. Layered UNDER .hero-fade (see the hero
+       markup order) so the cream-washed lower-left stays bright for the headline/colophon. */
+    .hero-dark {
+      background-color: rgb(var(--hero-dark-rgb) / var(--hero-dark-fade));
+      pointer-events: none;
+    }
+
     .hero-fade {
       background-color: rgb(var(--bg-rgb) / 0.86);
       -webkit-backdrop-filter: blur(7px);
@@ -196,36 +223,50 @@
        with the one serif numeral. Desktop-first; mobile falls back to plain flow.
        Driven entirely by the --hero-* / --font-serif tokens in :root above. */
 
-    /* Corner wordmark: a shared "G" pivot — YELLOW runs across the top, RAPES runs
-       down the left edge, so the corner reads G·YELLOW (top) + GRAPES (down).
-       Stays English in both locales. Absolutely placed in the hero's top-left. */
-    .hero-wordmark-corner {
-      position: absolute;
-      top: var(--hero-corner-inset-y);
-      left: var(--hero-corner-inset-x);
-      z-index: 1;
+    /* Masthead wordmark (all viewports) — YELLOW stacked above GRAPES at the far left, then a
+       connector LINE running across to the toggle/CTA on the right. The row is vertically
+       centered, so the line passes through the middle of GRAPES (left) and the buttons (right).
+       YELLOW floats above GRAPES (absolute) so the brand's height == GRAPES height and the line
+       centers on GRAPES, not on the YELLOW+GRAPES pair. English in both locales; the accessible
+       name is the sr-only "Yellow Grapes" span. All offsets are tunable tokens. */
+    .mast-row { align-items: center; }
+    .mast-brand {
+      position: relative;                 /* anchor for the absolutely-placed YELLOW */
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;            /* shrink-wrap GRAPES (no stretch) */
+    }
+    @media (min-width: 768px) {
+      /* Pull the wordmark left to line up with the colophon's left edge (--hero-corner-inset-x),
+         escaping the centered max-w-7xl box — the same calc the colophon uses. */
+      .mast-brand { margin-left: calc(var(--hero-corner-inset-x) - 2rem - max((100vw - 80rem) / 2, 0px)); }
+    }
+    .mast-line {
+      flex: 1 1 auto;
+      height: var(--mast-line-thickness);
+      background: var(--mast-line-color);
+      margin: 0 var(--mast-line-gap);
+    }
+    .mast-actions { display: flex; align-items: center; gap: 0.5rem; flex: none; }
+    @media (min-width: 640px) { .mast-actions { gap: 0.75rem; } }
+    .mast-word {
       font-family: 'Asta Sans', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: var(--hero-corner-size);
+      font-weight: 800;
+      font-size: var(--mast-word-size);
       line-height: 1;
+      letter-spacing: var(--mast-word-tracking);
       text-transform: uppercase;
-      color: rgb(var(--fg-rgb) / 0.55);   /* recessive frame — doesn't compete with the title */
+      color: var(--mast-word-color);
+      white-space: nowrap;
       pointer-events: none;
     }
-    .wm-top { display: flex; }
-    .wm-top span { letter-spacing: var(--hero-corner-tracking); }
-    .wm-down { display: flex; flex-direction: column; }
-    .wm-down span { margin-top: var(--hero-corner-leading); }
-
-    /* Simple wordmark fallback (mobile — no map, no corner pivot). Decoupled from the
-       big corner tokens so it stays compact and can wrap. */
-    .hero-wordmark-simple {
-      font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.1rem, 4vw, 1.5rem);
-      letter-spacing: var(--hero-label-tracking);
-      text-transform: uppercase;
-      color: rgb(var(--fg-rgb) / 0.7);
+    .mast-word--grapes { margin-left: var(--mast-grapes-indent); }  /* leans right of YELLOW */
+    .mast-word--yellow {
+      position: absolute;
+      bottom: 100%;                       /* sit directly above GRAPES */
+      left: var(--mast-yellow-shift);     /* lean left of GRAPES */
+      margin-bottom: var(--mast-yellow-gap);
     }
 
     /* Title block — sits in the upper-third on desktop, indented past the vertical "ELLOW". */
@@ -268,8 +309,12 @@
 
     /* Hairline rules (thickness / colour are tokens). */
     .hero-rule { border: 0; height: var(--hero-rule-thickness); background: var(--hero-rule-color); }
-    .hero-rule--colophon { width: 100%; }
-    @media (min-width: 768px) { .hero-rule--colophon { width: auto; flex: 1 1 auto; } } /* grows between labels & countdown */
+    .hero-rule--colophon { width: 100%; background: var(--hero-colophon-color); }
+    /* Desktop: the connector grows between the labels & countdown and is lifted off the
+       bottom baseline to sit at the center of "BY TORSADE TECH" / "COMING SOON IN". */
+    @media (min-width: 768px) {
+      .hero-rule--colophon { width: auto; flex: 1 1 auto; margin-bottom: var(--hero-colophon-line-rise); }
+    }
 
     /* Small tracked caps (colophon lines, COMING SOON IN / DAYS). */
     .hero-label {
@@ -299,9 +344,12 @@
       .hero-colophon {
         margin-top: auto;
         margin-left: calc(var(--hero-corner-inset-x) - 2rem - max((100vw - 80rem) / 2, 0px));
-        flex-direction: row; align-items: center; gap: 1.5rem;
+        flex-direction: row; align-items: flex-end; gap: 1.5rem;
       }
     }
+    /* Whole colophon — text and the growing dash — share the muted "Vol. 1" tone. */
+    .hero-colophon .hero-label,
+    .hero-colophon .display-numeral { color: var(--hero-colophon-color); }
     .hero-colophon-brand { flex: none; }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
 
@@ -334,18 +382,29 @@
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
   <header class="site-header sticky top-0 z-50">
-    <div class="mx-auto flex h-full max-w-7xl items-center justify-end gap-2 px-5 sm:gap-3 sm:px-8">
-      <!-- Transparent header: language toggle + waitlist CTA. The wordmark lives as the
-           corner pivot in the hero. The CTA mirrors the toggle but with a filled (near-white) bg. -->
-      <button id="langToggle" type="button"
-              class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
-        中
-      </button>
-      <a href="#waitlist"
-         class="border border-fg bg-bg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm"
-         data-i18n="hero.cta">
-        Join the Waitlist
-      </a>
+    <div class="mast-row mx-auto flex h-full max-w-7xl px-5 sm:px-8">
+      <!-- Masthead: YELLOW stacked above GRAPES at the left, then a connector line across to
+           the toggle/CTA. The row is centered, so the line runs through the middle of GRAPES
+           (left) and the buttons (right). -->
+      <div class="mast-brand">
+        <span class="sr-only">Yellow Grapes</span>
+        <span class="mast-word mast-word--yellow" aria-hidden="true">YELLOW</span>
+        <span class="mast-word mast-word--grapes" aria-hidden="true">GRAPES</span>
+      </div>
+
+      <div class="mast-line" aria-hidden="true"></div>
+
+      <div class="mast-actions">
+        <button id="langToggle" type="button"
+                class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
+          中
+        </button>
+        <a href="#waitlist"
+           class="border border-fg bg-bg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm"
+           data-i18n="hero.cta">
+          Join the Waitlist
+        </a>
+      </div>
     </div>
   </header>
 
@@ -362,20 +421,9 @@
           class="h-full w-full object-cover object-center"
           onerror="this.style.display='none'"
         />
+        <!-- Moody dark veil (uniform). Under the cream fade so the lower-left text stays bright. -->
+        <div class="hero-dark absolute inset-0"></div>
         <div class="hero-fade absolute inset-0"></div>
-      </div>
-
-      <!-- Corner wordmark pivot (desktop): a shared "G" — YELLOW across the top and RAPES
-           down the left edge → reads G·YELLOW (top) + GRAPES (down). Anchored to the section
-           (viewport) edge so it hugs the top-left corner. English in both locales. -->
-      <div class="hero-wordmark-corner hidden md:block">
-        <span class="sr-only">Yellow Grapes</span>
-        <div class="wm-top" aria-hidden="true">
-          <span>G</span><span>Y</span><span>E</span><span>L</span><span>L</span><span>O</span><span>W</span>
-        </div>
-        <div class="wm-down" aria-hidden="true">
-          <span>R</span><span>A</span><span>P</span><span>E</span><span>S</span>
-        </div>
       </div>
 
       <!-- Content — editorial composition. Keep the grid + min-height (they drive the
@@ -386,9 +434,6 @@
         <!-- Left editorial column (full-height flex on desktop). min-w-0 lets the grid
              item shrink so the title wraps instead of overflowing on narrow screens. -->
         <div class="relative col-span-12 flex min-w-0 flex-col md:col-span-9 lg:col-span-8">
-
-          <!-- Simple wordmark fallback (mobile only — no map / no corner pivot) -->
-          <p class="hero-wordmark-simple md:hidden">Yellow&nbsp;Grapes</p>
 
           <!-- Title block (over the ocean on desktop). Two rows; a dash leads row 2. -->
           <div class="hero-title-block">
@@ -734,37 +779,47 @@
     })();
   </script>
 
-  <!-- ───────────  Dev-only header-opacity tuner  ───────────
-       Hidden in production. Open index.html#tune (or ?tune) to get a live slider
-       that drives the --header-opacity token. Drag to taste, then bake the value
-       you like into :root { --header-opacity } above. Safe to delete this block. -->
+  <!-- ───────────  Dev-only token tuner  ───────────
+       Hidden in production. Open index.html#tune (or ?tune) to get live sliders for
+       the header wash (--header-opacity) and the moody map veil (--hero-dark-fade).
+       Drag to taste, then bake the values you like into :root above. Add more rows by
+       extending the CONTROLS list. Safe to delete this block. -->
   <script>
     (function () {
       if (!/tune/.test(location.hash) && !/tune/.test(location.search)) return;
       var root = document.documentElement;
-      function current() {
-        var v = parseFloat(getComputedStyle(root).getPropertyValue('--header-opacity'));
-        return isNaN(v) ? 0.12 : v;
+      var CONTROLS = [
+        { label: 'Header opacity', varName: '--header-opacity', fallback: 0.12 },
+        { label: 'Dark fade',      varName: '--hero-dark-fade', fallback: 0.16 }
+      ];
+      function current(varName, fallback) {
+        var v = parseFloat(getComputedStyle(root).getPropertyValue(varName));
+        return isNaN(v) ? fallback : v;
       }
       var panel = document.createElement('div');
       panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9999;' +
         'background:rgb(26 24 20 / .9);color:#FAF9F5;font:600 12px/1.4 system-ui,sans-serif;' +
         'padding:12px 14px;border-radius:10px;box-shadow:0 6px 24px rgb(0 0 0 / .3);' +
-        'display:flex;flex-direction:column;gap:8px;min-width:200px;';
-      var label = document.createElement('div');
-      var slider = document.createElement('input');
-      slider.type = 'range';
-      slider.min = '0'; slider.max = '1'; slider.step = '0.01';
-      slider.value = String(current());
-      slider.style.cssText = 'width:100%;accent-color:#F2C84B;cursor:pointer;';
-      function render() { label.textContent = 'Header opacity: ' + Number(slider.value).toFixed(2); }
-      slider.addEventListener('input', function () {
-        root.style.setProperty('--header-opacity', slider.value);
+        'display:flex;flex-direction:column;gap:12px;min-width:200px;';
+      CONTROLS.forEach(function (c) {
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
+        var label = document.createElement('div');
+        var slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = '0'; slider.max = '1'; slider.step = '0.01';
+        slider.value = String(current(c.varName, c.fallback));
+        slider.style.cssText = 'width:100%;accent-color:#F2C84B;cursor:pointer;';
+        function render() { label.textContent = c.label + ': ' + Number(slider.value).toFixed(2); }
+        slider.addEventListener('input', function () {
+          root.style.setProperty(c.varName, slider.value);
+          render();
+        });
         render();
+        wrap.appendChild(label);
+        wrap.appendChild(slider);
+        panel.appendChild(wrap);
       });
-      render();
-      panel.appendChild(label);
-      panel.appendChild(slider);
       document.body.appendChild(panel);
     })();
   </script>
