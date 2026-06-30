@@ -113,7 +113,7 @@
       --hero-eyebrow-size: 0.72rem;    /* small tracked caps — tune freely */
       --hero-eyebrow-tracking: 0.26em;
       --hero-eyebrow-color: rgb(var(--fg-rgb) / 0.75);
-      --hero-eyebrow-gap: 9rem;                 /* gap BELOW the eyebrow (space to YELLOW GRAPES); raising it pushes the wordmark DOWN */
+      --hero-eyebrow-gap: -3rem;                 /* gap BELOW the eyebrow (space to YELLOW GRAPES); raising it pushes the wordmark DOWN */
       --hero-eyebrow-top: -8rem;                 /* space ABOVE the eyebrow — make this NEGATIVE (e.g. -4rem) to lift the eyebrow UP (wordmark stays put) */
       --hero-eyebrow-line-width: 3.5rem;          /* the short connector between the two phrases */
       --hero-eyebrow-line-color: rgb(var(--fg-rgb) / 0.4);
@@ -148,7 +148,8 @@
       --hero-colophon-color: rgb(var(--fg-rgb) / 0.6); /* colophon text = the "Vol. 1" muted tone */
       --hero-colophon-line-color: rgb(var(--fg-rgb) / 0.3); /* connector — intentionally LIGHTER than the text */
       --hero-countdown-line-width: 9rem;     /* the connector to the LEFT of "COMING SOON IN …" */
-      --hero-countdown-brand-gap: 3rem;      /* gap between the countdown (above) and the bottom brand line */
+      --hero-countdown-brand-gap: 6rem;      /* gap between the countdown (above) and the bottom brand line */
+      --hero-colophon-bottom: 3rem;          /* space below the bottom brand line → raise this to push the colophon up */
 
       /* Hero background: a single pre-rendered image (frosted map + window baked in) fills the
          hero. Only an optional charcoal veil remains, for text legibility over the image. */
@@ -202,6 +203,22 @@
       pointer-events: none;
     }
 
+    /* Right-hand "window": a sharp app-map crop over the frosted bg.
+       Anchored to the centred max-w-7xl container's right edge, vertically centred.
+       Sized by a clamped box + object-contain → ratio ALWAYS preserved (never
+       stretched/cropped) on zoom or resize; the clamp keeps it clear of the
+       left-column text (which is itself capped by --hero-text-max). */
+    .hero-window {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: clamp(15rem, 36vw, 30rem);
+      height: min(80vh, 46rem);
+      object-fit: contain;
+      object-position: center;
+    }
+
     /* Pull the hero up BEHIND the sticky header (desktop only — the map layer is
        hidden below md) so the full-bleed map fills the reclaimed top band instead
        of starting clipped under the header. The header keeps z-50 + its frost, so
@@ -245,6 +262,11 @@
     .hero-stack { max-width: var(--hero-text-max); }
     @media (min-width: 768px) { .hero-stack { margin-top: var(--hero-stack-top); } }
 
+    /* Headline wrapper (eyebrow + wordmark/tagline): on desktop it shrinks to the eyebrow's
+       width (its widest child), so the wordmark-row stretched to 100% puts the tagline's right
+       edge exactly at the end of "…THE BOTTLE". */
+    @media (min-width: 768px) { .hero-headline { width: max-content; max-width: var(--hero-text-max); } }
+
     /* Eyebrow: A GUIDE TO —— THE PLACES, THE PEOPLE & THE BOTTLE */
     .hero-eyebrow {
       display: flex; align-items: center; gap: 0.9rem;
@@ -261,10 +283,12 @@
 
     /* Wordmark (Cormorant Garamond, YELLOW over GRAPES) + one-line tagline beside it */
     .hero-wordmark-row { display: flex; align-items: center; gap: var(--wordmark-tagline-gap); flex-wrap: wrap; }
-    /* Desktop: fix the row to the shared rail width and push the tagline to its right edge,
-       so the tagline's right edge == the countdown's right edge (see .hero-countdown-band). */
+    /* Desktop: fill the headline wrapper (= eyebrow width) and push the tagline to the right,
+       so the tagline's right edge lines up with the end of the eyebrow ("…THE BOTTLE"). */
     @media (min-width: 768px) {
-      .hero-wordmark-row { flex-wrap: nowrap; width: var(--hero-rail-width); justify-content: space-between; gap: 0; }
+      /* gap is just a MINIMUM (matters only when the eyebrow is shorter than wordmark+tagline, e.g. zh);
+         in English space-between spreads them far apart and the tagline lands on the eyebrow's edge. */
+      .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
     }
     .hero-wordmark {
       margin: 0;
@@ -294,8 +318,10 @@
       .hero-eyebrow { flex-wrap: wrap; }
     }
 
-    /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow. */
-    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.25rem; }
+    /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow.
+       margin-top mirrors the eyebrow↔wordmark VISIBLE gap (gap minus the eyebrow's lift), so the
+       wordmark↔buttons space stays equal to it automatically as those tokens change. */
+    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: calc(var(--hero-eyebrow-gap) - var(--hero-eyebrow-top)); }
     .store-badge {
       display: inline-flex; align-items: center; gap: var(--store-badge-gap);
       background: var(--store-badge-bg); color: rgb(var(--fg-rgb));
@@ -340,7 +366,7 @@
     .hero-countdown-band .display-numeral { color: var(--hero-colophon-color); }
 
     /* Brand line — pinned to the very bottom of the column, below the countdown. */
-    .hero-colophon-brand { margin-top: var(--hero-countdown-brand-gap); }
+    .hero-colophon-brand { margin-top: var(--hero-countdown-brand-gap); margin-bottom: var(--hero-colophon-bottom); }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
 
     /* "COMING SOON IN [N] DAYS" — small caps wrap the large serif numeral, baseline-aligned. */
@@ -361,10 +387,6 @@
     html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
     html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
     html[lang="zh-Hant"] .hero-tagline { line-height: 1.5; }
-
-    /* Hide the scrollbar on the app-chrome filter-chip rail */
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
 </head>
 
@@ -397,7 +419,7 @@
     <section class="hero relative overflow-hidden">
       <!-- Pre-rendered background (frosted map + window baked into the image). Swap the src below
            for your rendered file (desktop / tablet-landscape only). -->
-      <div class="absolute inset-0 hidden md:block" aria-hidden="true">
+      <div class="absolute inset-0 block" aria-hidden="true">
         <img
           src="images/app-map-wide-extended.png" alt=""
           class="h-full w-full object-cover object-center"
@@ -416,18 +438,21 @@
              item shrink so the title wraps instead of overflowing on narrow screens. -->
         <div class="relative col-span-12 flex min-w-0 flex-col md:col-span-9 lg:col-span-8">
 
-          <!-- Cluster: eyebrow · serif wordmark + tagline · store badges (pushed toward centre) -->
+          <!-- Cluster: headline (eyebrow + wordmark/tagline) · store badges (pushed toward centre) -->
           <div class="hero-stack">
-            <p class="hero-eyebrow">
-              <span data-i18n="hero.guidePre">A Guide To</span>
-              <span class="hero-eyebrow-line" aria-hidden="true"></span>
-              <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
-            </p>
+            <!-- Headline wrapper — shrinks to the eyebrow's width so the tagline right-aligns to it -->
+            <div class="hero-headline">
+              <p class="hero-eyebrow">
+                <span data-i18n="hero.guidePre">A Guide To</span>
+                <span class="hero-eyebrow-line" aria-hidden="true"></span>
+                <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
+              </p>
 
-            <div class="hero-wordmark-row">
-              <!-- Wordmark stays English in both locales -->
-              <h1 class="hero-wordmark"><span>Yellow</span><span>Grapes</span></h1>
-              <p class="hero-tagline" data-i18n="hero.title">A wine map for Taiwan.</p>
+              <div class="hero-wordmark-row">
+                <!-- Wordmark stays English in both locales -->
+                <h1 class="hero-wordmark"><span>Yellow</span><span>Grapes</span></h1>
+                <p class="hero-tagline" data-i18n="hero.title">A wine map for Taiwan.</p>
+              </div>
             </div>
 
             <!-- Store badges (non-functional placeholders until launch) -->
@@ -470,62 +495,29 @@
             <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
           </div>
         </div>
+
+        <!-- The clear "window" into the frosted map — desktop/tablet only.
+             object-contain guarantees the portrait crop never distorts or crops,
+             at any zoom / viewport size. -->
+        <img
+          src="images/app-map-window.png"
+          alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
+          class="hero-window pointer-events-none hidden select-none md:block"
+          onerror="this.style.display='none'"
+        />
       </div>
     </section>
 
-    <!-- ───────────────────────  02 · MAP (mobile only)  ───────────────────────
-         The mobile counterpart to the desktop hero map: a tall map block with the
-         app's top chrome (search bar + filter chips) recreated in HTML. Hidden on
-         desktop, where the map already lives in the hero. -->
-    <section id="map" class="relative md:hidden">
+    <!-- ───────────────────────  02 · APP WINDOW (mobile only)  ───────────────────────
+         A clean crop of the in-app map. Desktop shows this in the hero instead. -->
+    <section id="map" class="md:hidden">
       <img
-        src="images/app-map-tall.png"
-        alt="Yellow Grapes app map of wine merchants across Taipei, Taiwan"
-        class="h-[82vh] w-full object-cover object-top"
+        src="images/app-map-window.png"
+        alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
+        class="block h-auto w-full"
         loading="lazy"
         onerror="this.style.display='none'"
       />
-
-      <!-- Soft top scrim so the chrome stays legible over the busy map -->
-      <div class="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-bg via-bg/65 to-transparent"></div>
-
-      <!-- Recreated app chrome (faithful to the app → rounded) -->
-      <div class="absolute inset-x-0 top-0 px-4 pt-5">
-        <!-- Search bar -->
-        <div class="flex items-center gap-3 rounded-full border border-fg/10 bg-white px-5 py-3.5 shadow-sm">
-          <svg class="h-5 w-5 shrink-0 text-fgmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
-          </svg>
-          <span class="text-sm text-fgmuted" data-i18n="map.search">Search merchants…</span>
-          <svg class="ml-auto h-5 w-5 shrink-0 text-fgmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-          </svg>
-        </div>
-
-        <!-- Filter chips (one active in yellow; horizontally scrollable) -->
-        <div class="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1">
-          <span class="flex shrink-0 items-center rounded-full border border-fg/10 bg-white p-2.5 text-fg" aria-hidden="true">
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M4 6h16M4 12h16M4 18h16" /><circle cx="9" cy="6" r="1.6" fill="currentColor" /><circle cx="15" cy="12" r="1.6" fill="currentColor" /><circle cx="8" cy="18" r="1.6" fill="currentColor" />
-            </svg>
-          </span>
-          <span class="shrink-0 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-onaccent" data-i18n="map.chip1">Tastings</span>
-          <span class="shrink-0 rounded-full border border-fg/10 bg-white px-4 py-2 text-sm font-medium text-fg" data-i18n="map.chip2">By the glass</span>
-          <span class="shrink-0 rounded-full border border-fg/10 bg-white px-4 py-2 text-sm font-medium text-fg" data-i18n="map.chip3">Natural wine</span>
-          <span class="shrink-0 rounded-full border border-fg/10 bg-white px-4 py-2 text-sm font-medium text-fg" data-i18n="map.chip4">BYO</span>
-        </div>
-      </div>
-
-      <!-- Caption pinned bottom-left over a cream fade -->
-      <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/85 to-transparent px-5 pb-8 pt-20">
-        <p class="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.28em] text-fg">
-          <span class="inline-block h-2 w-2 bg-accent" aria-hidden="true"></span>
-          <span data-i18n="map.eyebrow">The Map</span>
-        </p>
-        <p class="mt-2 max-w-xs font-brand text-2xl font-extrabold leading-tight tracking-tight text-fg" data-i18n="map.caption">
-          12,000+ wine spots across Taiwan.
-        </p>
-      </div>
     </section>
 
     <!-- ───────────────────────  03 · WAITLIST  ─────────────────────── -->
@@ -660,13 +652,6 @@
         'countdown.minutes': 'Minutes',
         'countdown.seconds': 'Seconds',
         'countdown.done': "We're live! 🍇",
-        'map.search': 'Search merchants…',
-        'map.chip1': 'Tastings',
-        'map.chip2': 'By the glass',
-        'map.chip3': 'Natural wine',
-        'map.chip4': 'BYO',
-        'map.eyebrow': 'The Map',
-        'map.caption': '12,000+ wine spots across Taiwan.',
         'waitlist.eyebrow': 'Early Access',
         'waitlist.heading': 'Join the waitlist.',
         'waitlist.desc': "Drop your email and let us know your platform — we'll tell you the moment early access opens.",
@@ -697,13 +682,6 @@
         'countdown.minutes': '分鐘',
         'countdown.seconds': '秒',
         'countdown.done': '正式上線！🍇',
-        'map.search': '搜尋商家名稱…',
-        'map.chip1': '品酒會',
-        'map.chip2': '單杯酒',
-        'map.chip3': '自然酒',
-        'map.chip4': '自帶酒',
-        'map.eyebrow': '地圖',
-        'map.caption': '全台 12,000+ 葡萄酒地標。',
         'waitlist.eyebrow': '搶先體驗',
         'waitlist.heading': '加入等候名單。',
         'waitlist.desc': '留下你的電子郵件並選擇使用平台 — 開放搶先體驗時，我們會立刻通知你。',
