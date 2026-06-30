@@ -109,6 +109,12 @@
       --hero-text-max: 44rem;          /* keep the left-column text clear of the right-hand map window */
       --hero-rail-width: 40rem;        /* shared right edge: the tagline AND the countdown both align to it */
 
+      /* Vertical rhythm of the left-column cluster — each gap is now independently tunable
+         (the wordmark→badges gap no longer has to equal the eyebrow→wordmark gap). */
+      --hero-badges-gap: 5rem;         /* gap: wordmark → store badges */
+      --hero-countdown-gap: 2rem;      /* gap: store badges → "COMING SOON IN … DAYS" (kept tight so the
+                                          countdown reads as a pair with the App Store / Google Play badges) */
+
       /* Eyebrow line: A GUIDE TO —— THE PLACES, THE PEOPLE & THE BOTTLE */
       --hero-eyebrow-size: 0.72rem;    /* small tracked caps — tune freely */
       --hero-eyebrow-tracking: 0.26em;
@@ -149,7 +155,7 @@
       --hero-colophon-line-color: rgb(var(--fg-rgb) / 0.3); /* connector — intentionally LIGHTER than the text */
       --hero-countdown-line-width: 9rem;     /* the connector to the LEFT of "COMING SOON IN …" */
       --hero-countdown-brand-gap: 6rem;      /* gap between the countdown (above) and the bottom brand line */
-      --hero-colophon-bottom: 3rem;          /* space below the bottom brand line → raise this to push the colophon up */
+      --hero-colophon-bottom: 5rem;          /* space below the bottom brand line → raise this to push the colophon up */
 
       /* Hero background: a single pre-rendered image (frosted map + window baked in) fills the
          hero. Only an optional charcoal veil remains, for text legibility over the image. */
@@ -164,6 +170,17 @@
       --hero-corner-inset-x: 4rem;      /* left inset the colophon aligns its left edge to (kept for that calc) */
       --hero-title-top: clamp(2rem, 7vh, 3.5rem); /* drop title into the upper-third, below the header */
       --hero-title-indent: 0rem;        /* indent title block past the vertical "ELLOW" (desktop) */
+
+      /* Desktop: leave a sliver of the NEXT section visible below the hero as a scroll cue
+         (so users see there's more to scroll to). Bigger = taller peek. */
+      --hero-peek: 6vh;                 /* how much of the following section peeks under the hero */
+
+      /* Right-hand "window" image (desktop/tablet) — full manual control.
+         object-contain keeps the ratio no matter what these values are. */
+      --hero-window-width: clamp(15rem, 36vw, 30rem);  /* box width */
+      --hero-window-height: min(80vh, 46rem);          /* box height */
+      --hero-window-right: 0rem;                       /* inset from the centred container's right edge */
+      --hero-window-offset-y: 3rem;                    /* shift DOWN from vertical centre (negative = up) */
     }
 
     html { scroll-behavior: smooth; }
@@ -210,11 +227,11 @@
        left-column text (which is itself capped by --hero-text-max). */
     .hero-window {
       position: absolute;
-      right: 0;
+      right: var(--hero-window-right);
       top: 50%;
-      transform: translateY(-50%);
-      width: clamp(15rem, 36vw, 30rem);
-      height: min(80vh, 46rem);
+      transform: translateY(calc(-50% + var(--hero-window-offset-y)));
+      width: var(--hero-window-width);
+      height: var(--hero-window-height);
       object-fit: contain;
       object-position: center;
     }
@@ -228,9 +245,24 @@
     @media (min-width: 768px) {
       .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
       .hero-content {
-        min-height: 100vh;                       /* fill the full viewport (was 100vh − header) */
+        min-height: calc(100vh - var(--hero-peek)); /* leave a sliver of the next section peeking below */
         padding-top: var(--header-h-desktop);    /* keep centered content clear of the floating header */
       }
+    }
+
+    /* ───────────  Mobile hero  ───────────
+       Pull the frosted map up BEHIND the transparent header (kills the cream "header" band
+       at the very top) and pad the content clear of the header buttons. Also undo the desktop
+       eyebrow offsets (negative top / margin) that would otherwise shove "A GUIDE TO …" off
+       the top of the screen — so the eyebrow shows on mobile too. The header is 88px until the
+       640px breakpoint, then 56px; pull-up + padding match each range. */
+    @media (max-width: 767px) {
+      .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
+      .hero-content { padding-top: calc(var(--header-h-desktop) + 1.5rem); }
+    }
+    @media (max-width: 640px) {
+      .hero { margin-top: calc(-1 * var(--header-h-mobile)); }
+      .hero-content { padding-top: calc(var(--header-h-mobile) + 1.25rem); }
     }
 
     /* Single yellow highlight bar under one word in the headline (the one
@@ -315,13 +347,13 @@
       /* Mobile: simple stacked flow (desktop is the priority for now). */
       .hero-tagline { white-space: normal; }
       .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
-      .hero-eyebrow { flex-wrap: wrap; }
+      /* Undo the desktop eyebrow offsets so "A GUIDE TO …" flows normally and stays on-screen. */
+      .hero-eyebrow { position: static; top: auto; margin-bottom: 1.25rem; flex-wrap: wrap; }
     }
 
     /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow.
-       margin-top mirrors the eyebrow↔wordmark VISIBLE gap (gap minus the eyebrow's lift), so the
-       wordmark↔buttons space stays equal to it automatically as those tokens change. */
-    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: calc(var(--hero-eyebrow-gap) - var(--hero-eyebrow-top)); }
+       Gap to the wordmark is its own token (--hero-badges-gap), independent of the eyebrow gap. */
+    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: var(--hero-badges-gap); }
     .store-badge {
       display: inline-flex; align-items: center; gap: var(--store-badge-gap);
       background: var(--store-badge-bg); color: rgb(var(--fg-rgb));
@@ -355,19 +387,23 @@
     .hero-countdown-band {
       display: flex; align-items: center; flex-wrap: wrap; gap: 1.1rem;
       max-width: var(--hero-text-max);
-      margin-top: 2.5rem;
+      margin-top: var(--hero-countdown-gap);   /* sits right under the store badges → reads as a pair */
     }
     /* Desktop: same rail width, content pushed right → "——— COMING SOON IN N DAYS" right edge
-       lines up with the tagline's right edge above it. */
+       lines up with the tagline's right edge above it. The brand line (not the countdown) now
+       absorbs the column's free space, so it stays pinned to the very bottom. */
     @media (min-width: 768px) {
-      .hero-countdown-band { margin-top: auto; width: var(--hero-rail-width); justify-content: flex-end; }
+      .hero-countdown-band { width: var(--hero-rail-width); justify-content: flex-end; }
     }
     .hero-countdown-band .hero-label,
     .hero-countdown-band .display-numeral { color: var(--hero-colophon-color); }
 
-    /* Brand line — pinned to the very bottom of the column, below the countdown. */
+    /* Brand line. Mobile: sits a fixed gap below the countdown. Desktop: absorbs the column's
+       free space (margin-top:auto) so it stays pinned to the very bottom even though the
+       countdown now sits up near the store badges. (This override must follow the base rule.) */
     .hero-colophon-brand { margin-top: var(--hero-countdown-brand-gap); margin-bottom: var(--hero-colophon-bottom); }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
+    @media (min-width: 768px) { .hero-colophon-brand { margin-top: auto; } }
 
     /* "COMING SOON IN [N] DAYS" — small caps wrap the large serif numeral, baseline-aligned. */
     .hero-countdown { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
