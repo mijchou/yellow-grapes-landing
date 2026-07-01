@@ -155,7 +155,9 @@
       --hero-colophon-line-color: rgb(var(--fg-rgb) / 0.3); /* connector — intentionally LIGHTER than the text */
       --hero-countdown-line-width: 9rem;     /* the connector to the LEFT of "COMING SOON IN …" */
       --hero-countdown-brand-gap: 6rem;      /* gap between the countdown (above) and the bottom brand line */
-      --hero-colophon-bottom: 5rem;          /* space below the bottom brand line → raise this to push the colophon up */
+      /* Colophon (brand line) stuck to the lower-LEFT corner on desktop — two manual knobs: */
+      --hero-colophon-left: 0rem;            /* gap from the text column's left edge */
+      --hero-colophon-bottom: 2.5rem;        /* gap from the bottom (smaller = closer to the corner) */
 
       /* Hero background: a single pre-rendered image (frosted map + window baked in) fills the
          hero. Only an optional charcoal veil remains, for text legibility over the image. */
@@ -176,11 +178,12 @@
       --hero-peek: 6vh;                 /* how much of the following section peeks under the hero */
 
       /* Right-hand "window" image (desktop/tablet) — full manual control.
-         object-contain keeps the ratio no matter what these values are. */
-      --hero-window-width: clamp(15rem, 36vw, 30rem);  /* box width */
-      --hero-window-height: min(80vh, 46rem);          /* box height */
-      --hero-window-right: 0rem;                       /* inset from the centred container's right edge */
-      --hero-window-offset-y: 3rem;                    /* shift DOWN from vertical centre (negative = up) */
+         object-contain keeps the ratio no matter what these values are. Anchored to the
+         lower-right: shrink via width/height, sit lower by lowering --hero-window-bottom. */
+      --hero-window-width: clamp(14rem, 32vw, 26rem);  /* box width (shrunk) */
+      --hero-window-height: min(70vh, 40rem);          /* box height (shrunk) */
+      --hero-window-right: 0rem;                        /* inset from the centred container's right edge */
+      --hero-window-bottom: 4rem;                       /* gap from the bottom (smaller = closer to the bottom) */
     }
 
     html { scroll-behavior: smooth; }
@@ -228,12 +231,11 @@
     .hero-window {
       position: absolute;
       right: var(--hero-window-right);
-      top: 50%;
-      transform: translateY(calc(-50% + var(--hero-window-offset-y)));
+      bottom: var(--hero-window-bottom);
       width: var(--hero-window-width);
       height: var(--hero-window-height);
       object-fit: contain;
-      object-position: center;
+      object-position: bottom right;
     }
 
     /* Pull the hero up BEHIND the sticky header (desktop only — the map layer is
@@ -398,12 +400,20 @@
     .hero-countdown-band .hero-label,
     .hero-countdown-band .display-numeral { color: var(--hero-colophon-color); }
 
-    /* Brand line. Mobile: sits a fixed gap below the countdown. Desktop: absorbs the column's
-       free space (margin-top:auto) so it stays pinned to the very bottom even though the
-       countdown now sits up near the store badges. (This override must follow the base rule.) */
+    /* Brand line. Mobile: sits a fixed gap below the countdown (normal flow). Desktop: pinned
+       absolutely to the lower-LEFT corner of the editorial column, with manual left/bottom gaps
+       (--hero-colophon-left / --hero-colophon-bottom). The column is position:relative, so the
+       colophon anchors to it; left:0 keeps it aligned with the eyebrow/wordmark above. */
     .hero-colophon-brand { margin-top: var(--hero-countdown-brand-gap); margin-bottom: var(--hero-colophon-bottom); }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
-    @media (min-width: 768px) { .hero-colophon-brand { margin-top: auto; } }
+    @media (min-width: 768px) {
+      .hero-colophon-brand {
+        position: absolute;
+        left: var(--hero-colophon-left);
+        bottom: var(--hero-colophon-bottom);
+        margin: 0;
+      }
+    }
 
     /* "COMING SOON IN [N] DAYS" — small caps wrap the large serif numeral, baseline-aligned. */
     .hero-countdown { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
@@ -434,15 +444,15 @@
          The wordmark lives in the hero body now (centred). -->
     <div class="header-row">
       <div class="header-actions">
-        <button id="langToggle" type="button"
-                class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
-          中
-        </button>
         <a href="#waitlist"
            class="border border-fg bg-bg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm"
            data-i18n="hero.cta">
           Join the Waitlist
         </a>
+        <button id="langToggle" type="button"
+                class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
+          中
+        </button>
       </div>
     </div>
   </header>
@@ -642,13 +652,6 @@
           <a href="#waitlist" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
         </nav>
       </div>
-
-      <!-- Swiss meta line -->
-      <div class="mt-8 border-t border-hairline pt-6">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-fgmuted" data-i18n="footer.meta">
-          Yellow Grapes — Taipei, Taiwan · yellow.grapes.com.tw · 2026
-        </p>
-      </div>
     </div>
   </footer>
 
@@ -699,8 +702,7 @@
         'footer.home': 'Home',
         'footer.privacy': 'Privacy',
         'footer.terms': 'Terms',
-        'footer.contact': 'Contact',
-        'footer.meta': 'Yellow Grapes — Taipei, Taiwan · yellow.grapes.com.tw · 2026'
+        'footer.contact': 'Contact'
       },
       zh: {
         'hero.title': '台灣葡萄酒地圖。',
@@ -729,8 +731,7 @@
         'footer.home': '首頁',
         'footer.privacy': '隱私權',
         'footer.terms': '服務條款',
-        'footer.contact': '聯絡我們',
-        'footer.meta': 'Yellow Grapes — 台灣台北 · yellow.grapes.com.tw · 2026'
+        'footer.contact': '聯絡我們'
       }
     };
 
