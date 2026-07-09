@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -43,14 +43,12 @@
   <!-- Favicon: Yellow Grapes logo (SVG). TODO: add a PNG fallback for older browsers. -->
   <link rel="icon" type="image/svg+xml" href="logo/dark-y.svg" />
 
-  <!-- Type: Asta Sans (hero corner wordmark + big hero title, 700/800) + Urbanist
-       (all other Swiss-style display/labels + the hero guide, 400–800) + Fraunces
-       (the ONE serif — used only for the big editorial day-count numeral; opsz axis
-       for crisp display sizing). Swap the serif face in :root --font-serif. -->
+  <!-- Fonts: Urbanist (headings/labels), Cormorant Garamond (serif wordmark),
+       Fraunces (countdown numeral). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
     rel="stylesheet"
   />
 
@@ -63,139 +61,45 @@
   <link rel="stylesheet" href="dist/output.css" />
 
   <style>
-    /* ───────────  Tunable design tokens (single source of truth)  ───────────
-       Swiss / International Typographic palette: warm cream + charcoal + ONE
-       accent (lemon-curd yellow). Stored as space-separated RGB CHANNELS so
-       Tailwind can apply opacity (border-fg/30) and raw CSS can use
-       rgb(var(--x-rgb) / a). Tune freely — value edits need no rebuild. */
+    /* ═══════════  Design Tokens  ═══════════
+       Brand palette + layout dimensions. Stored as RGB channels so Tailwind
+       opacity modifiers work (border-fg/30). Tune freely — no rebuild needed. */
     :root {
-      --bg-rgb: 250 249 245;           /* soft off-white (#FAF9F5) — page + hero gradient solid */
-      --fg-rgb: 26 24 20;              /* warm charcoal — all text, rules, logo */
-      --fg-muted-rgb: 92 87 78;        /* body / secondary text */
-      --accent-rgb: 242 200 75;        /* lemon-curd yellow — FILLS / MARKS only */
-      --accent-strong-rgb: 224 180 49; /* hover / focus / yellow borders */
-      /* on-accent text is charcoal (--fg-rgb); never white on yellow. */
+      /* Palette */
+      --bg-rgb: 250 249 245;
+      --fg-rgb: 26 24 20;
+      --fg-muted-rgb: 92 87 78;
+      --accent-rgb: 242 200 75;
+      --accent-strong-rgb: 224 180 49;
+      --line: rgb(26 24 20 / 0.16);
 
-      --line: rgb(26 24 20 / 0.16);    /* hairline dividers / input borders */
-
-      /* Header — fully transparent over the map (editorial redesign: no scrim). */
-      --header-opacity: 0;             /* 0 = no cream wash; map shows through cleanly */
-      --header-blur: 0px;              /* backdrop blur behind header (0 = no frost, fully sharp map) */
+      /* Layout */
       --header-h-desktop: 88px;
       --header-h-mobile: 56px;
-
-      /* Logo + wordmark (tune freely — inline, no rebuild needed) */
+      --header-opacity: 0;
+      --header-blur: 0px;
       --logo-h: 30px;
       --logo-h-mobile: 26px;
-      --wordmark-size: 0.95rem;
-      --wordmark-weight: 800;
-      --wordmark-tracking: 0.42em;
 
-      /* ───────  Editorial hero (section 01) — named constants, no magic numbers.
-         All tunable inline (no rebuild). Sizes use clamp() for fluid desktop→mobile. */
-      --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif; /* the ONE serif: swap face here (Playfair Display / Cormorant) */
-      --font-display-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; /* the big YELLOW / GRAPES wordmark */
+      /* Typography */
+      --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+      --font-display-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 
-      /* Tracking */
-      --hero-title-tracking: 0.04em;   /* big title A WINE MAP FOR TAIWAN */
-      --hero-label-tracking: 0.3em;    /* small tracked caps: colophon, COMING SOON IN, DAYS, CTA */
+      /* Hero composition */
+      --hero-text-max: 44rem;
+      --hero-rail-width: 40rem;
+      --hero-stack-top: 6vh;
+      --hero-peek: 6vh;
+      --hero-dark-fade: 0;
 
-      /* Header — just the toggle + CTA, pinned to the right viewport edge. */
-      --header-inset-x: 1.5rem;        /* gap from the right edge to the buttons */
-
-      /* Hero composition (left column): eyebrow · serif wordmark + tagline · store badges,
-         pushed toward the vertical centre, with the countdown + brand lower down. All tunable. */
-      --hero-stack-top: 6vh;           /* push the eyebrow/wordmark/badges cluster down toward centre */
-      --hero-text-max: 44rem;          /* keep the left-column text clear of the right-hand map window */
-      --hero-rail-width: 40rem;        /* shared right edge: the tagline AND the countdown both align to it */
-
-      /* Vertical rhythm of the left-column cluster — each gap is now independently tunable
-         (the wordmark→badges gap no longer has to equal the eyebrow→wordmark gap). */
-      --hero-badges-gap: 2.5rem;       /* gap: hero body copy → store badges */
-      --hero-countdown-gap: 2rem;      /* gap: store badges → "COMING SOON IN … DAYS" (kept tight so the
-                                          countdown reads as a pair with the App Store / Google Play badges) */
-
-      /* Eyebrow line: A GUIDE TO —— THE PLACES, THE PEOPLE & THE BOTTLE */
-      --hero-eyebrow-size: 0.72rem;    /* small tracked caps — tune freely */
-      --hero-eyebrow-tracking: 0.26em;
-      --hero-eyebrow-color: rgb(var(--fg-rgb) / 0.75);
-      --hero-eyebrow-gap: -3rem;                 /* gap BELOW the eyebrow (space to YELLOW GRAPES); raising it pushes the wordmark DOWN */
-      --hero-eyebrow-top: -8rem;                 /* space ABOVE the eyebrow — make this NEGATIVE (e.g. -4rem) to lift the eyebrow UP (wordmark stays put) */
-      --hero-eyebrow-line-width: 3.5rem;          /* the short connector between the two phrases */
-      --hero-eyebrow-line-color: rgb(var(--fg-rgb) / 0.4);
-
-      /* Hero logo lockup (logo2.svg — grape mark + YELLOW GRAPES text). Sized by height so
-         the ~3.63:1 lockup never distorts; width follows the aspect ratio. Tune freely. */
-      --hero-logo-h: clamp(1.625rem, 3.25vw, 2.6rem);
-
-      /* Serif wordmark (YELLOW over GRAPES, Cormorant Garamond) + the one-line tagline beside it */
-      --wordmark-serif-size: clamp(0.9rem, 1.8vw, 1.6rem);   /* clamp(MIN, PREFERRED=vw, MAX): floor · fluid · ceiling */
-      --wordmark-serif-weight: 500;
-      --wordmark-serif-tracking: 0.2em;           /* letter-spread so YELLOW / GRAPES align as two rows */
-      --wordmark-serif-color: rgb(var(--fg-rgb));
-      --wordmark-line-gap: 0em;                 /* vertical gap between the YELLOW and GRAPES rows */
-      --wordmark-tagline-gap: 8rem;               /* (desktop now uses --hero-rail-width instead; this is the mobile/fallback gap) */
-      --hero-tagline-size: clamp(1.1rem, 1.5vw, 1.5rem);
-      --hero-tagline-color: rgb(var(--fg-rgb) / 0.85);
-
-      /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow */
-      --store-badge-bg: rgb(var(--bg-rgb) / 0.45);            /* a little transparent (map shows through) */
-      --store-badge-border: rgb(var(--fg-rgb) / 0.22);
-      --store-badge-radius: 0.5rem;                          /* gently rounded, a touch sharper */
-      --store-badge-pad: 0.6rem 2.6rem;                      /* vertical horizontal → less top/bottom, more sides = wider & flatter */
-      --store-badge-gap: 1rem;
-      --store-badge-icon-color: var(--hero-colophon-color);  /* icon tone = colophon text */
-
-      /* Type sizes (strong contrast: huge title vs small guide; large serif numeral) */
-      --hero-title-size:  clamp(1.9rem, 4.2vw, 3rem);
-      --hero-guide-size:  clamp(1.05rem, 1.5vw, 1.45rem);
-      --hero-numeral-size: clamp(1.3rem, 1.7vw, 1.8rem); /* modest editorial accent in the countdown; tune to taste */
-
-      /* Hairline rules */
-      --hero-rule-thickness: 1px;
-      --hero-rule-color: rgb(var(--fg-rgb) / 0.7);
-      --hero-colophon-width: 48rem;       /* colophon band width (labels · dash · countdown on one line) */
-      --hero-colophon-color: rgb(var(--fg-rgb) / 0.6); /* colophon text = the "Vol. 1" muted tone */
-      --hero-colophon-line-color: rgb(var(--fg-rgb) / 0.3); /* connector — intentionally LIGHTER than the text */
-      --hero-countdown-line-width: 9rem;     /* the connector to the LEFT of "COMING SOON IN …" */
-      --hero-countdown-brand-gap: 6rem;      /* gap between the countdown (above) and the bottom brand line */
-      /* Colophon (brand line) stuck to the lower-LEFT corner on desktop — two manual knobs: */
-      --hero-colophon-left: 0rem;            /* gap from the text column's left edge */
-      --hero-colophon-bottom: 2.5rem;        /* gap from the bottom (smaller = closer to the corner) */
-
-      /* Hero background: a single pre-rendered image (frosted map + window baked in) fills the
-         hero. Only an optional charcoal veil remains, for text legibility over the image. */
-      --hero-dark-rgb: 26 24 20;          /* charcoal veil channels (same as --fg-rgb) */
-      --hero-dark-fade: 0;                /* 0 = none; raise (or use #tune) to darken the bg for legibility */
-
-      /* Title second-row dash ("————— FOR TAIWAN") */
-      --hero-title-dash-width: 8rem;
-      --hero-title-dash-thickness: 2px;
-
-      /* Spacing / placement */
-      --hero-corner-inset-x: 4rem;      /* left inset the colophon aligns its left edge to (kept for that calc) */
-      --hero-title-top: clamp(2rem, 7vh, 3.5rem); /* drop title into the upper-third, below the header */
-      --hero-title-indent: 0rem;        /* indent title block past the vertical "ELLOW" (desktop) */
-
-      /* Desktop: leave a sliver of the NEXT section visible below the hero as a scroll cue
-         (so users see there's more to scroll to). Bigger = taller peek. */
-      --hero-peek: 6vh;                 /* how much of the following section peeks under the hero */
-
-      /* Right-hand "window" image (desktop/tablet) — full manual control.
-         object-contain keeps the ratio no matter what these values are. Anchored to the
-         lower-right: shrink via width/height, sit lower by lowering --hero-window-bottom. */
-      --hero-window-width: clamp(14rem, 32vw, 26rem);  /* box width (shrunk) */
-      --hero-window-height: min(70vh, 40rem);          /* box height (shrunk) */
-      --hero-window-right: 0rem;                        /* inset from the centred container's right edge */
-      --hero-window-bottom: 4rem;                       /* gap from the bottom (smaller = closer to the bottom) */
+      /* Hero window (desktop) */
+      --hero-window-width: clamp(14rem, 32vw, 26rem);
+      --hero-window-height: min(70vh, 40rem);
+      --hero-window-right: 0rem;
+      --hero-window-bottom: 4rem;
     }
 
-    html { scroll-behavior: smooth; }
-    body { background-color: rgb(var(--bg-rgb)); }
-
-    /* Sticky, translucent header. overflow:visible lets YELLOW float just above GRAPES
-       without clipping. The masthead connector line lives inside the row (between GRAPES
-       and the buttons), not as a full-width border. */
+    /* ═══════════  Header  ═══════════ */
     .site-header {
       height: var(--header-h-desktop);
       background-color: rgb(var(--bg-rgb) / var(--header-opacity));
@@ -203,38 +107,24 @@
       backdrop-filter: blur(var(--header-blur));
       overflow: visible;
     }
-    @media (max-width: 640px) {
-      .site-header { height: var(--header-h-mobile); }
+    .header-row {
+      display: flex; align-items: center; justify-content: flex-end;
+      height: 100%; padding-right: 1.5rem;
     }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; }
 
-    /* Offset in-page scroll targets so they clear the sticky header */
     #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
 
-    /* Logo art. Height + wordmark type are tunable via the :root vars above. */
+    /* ═══════════  Logo  ═══════════ */
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
-    @media (max-width: 640px) { .yg-logo { height: var(--logo-h-mobile); } }
-    .yg-wordmark {
-      font-size: var(--wordmark-size);
-      font-weight: var(--wordmark-weight);
-      letter-spacing: var(--wordmark-tracking);
-    }
-    /* Footer lockup (logo2.svg — grape mark + YELLOW GRAPES text baked in). */
+    .yg-wordmark { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.42em; }
     .footer-logo { display: block; height: 34px; width: auto; }
-    @media (max-width: 767px) { .footer-logo { height: 30px; } }
 
-    /* ───────────  Hero background (desktop only)  ───────────
-       A single pre-rendered image (frosted map + window baked in) fills the hero; only an
-       optional charcoal veil remains for text legibility (default 0; tune via #tune). */
+    /* ═══════════  Hero  ═══════════ */
     .hero-dark {
-      background-color: rgb(var(--hero-dark-rgb) / var(--hero-dark-fade));
+      background-color: rgb(var(--fg-rgb) / var(--hero-dark-fade));
       pointer-events: none;
     }
-
-    /* Right-hand "window": a sharp app-map crop over the frosted bg.
-       Anchored to the centred max-w-7xl container's right edge, vertically centred.
-       Sized by a clamped box + object-contain → ratio ALWAYS preserved (never
-       stretched/cropped) on zoom or resize; the clamp keeps it clear of the
-       left-column text (which is itself capped by --hero-text-max). */
     .hero-window {
       position: absolute;
       right: var(--hero-window-right);
@@ -244,38 +134,105 @@
       object-fit: contain;
       object-position: bottom right;
     }
+    .hero-stack { max-width: var(--hero-text-max); }
 
-    /* Pull the hero up BEHIND the sticky header (desktop only — the map layer is
-       hidden below md) so the full-bleed map fills the reclaimed top band instead
-       of starting clipped under the header. The header keeps z-50 + its frost, so
-       it still paints on top; the rest of the page flow is unaffected. These rules
-       override the element's md:min-h-[…] / md:pt-8 utilities by cascade order
-       (this <style> is parsed after dist/output.css). */
-    @media (min-width: 768px) {
-      .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
-      .hero-content {
-        min-height: calc(100vh - var(--hero-peek)); /* leave a sliver of the next section peeking below */
-        padding-top: var(--header-h-desktop);    /* keep centered content clear of the floating header */
-      }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 0.9rem;
+      margin: 0 0 -3rem 0;
+      position: relative; top: -8rem;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgb(var(--fg-rgb) / 0.75);
+    }
+    .hero-eyebrow-line { flex: 0 0 3.5rem; height: 1px; background: rgb(var(--fg-rgb) / 0.4); }
+
+    .hero-wordmark-row { display: flex; align-items: center; gap: 8rem; flex-wrap: wrap; }
+    .hero-logo { margin: 0; line-height: 0; }
+    .hero-logo img { display: block; height: clamp(1.625rem, 3.25vw, 2.6rem); width: auto; }
+
+    .hero-lede { margin-top: 1.75rem; max-width: 34rem; display: flex; flex-direction: column; gap: 0.9rem; }
+    .hero-lede p {
+      margin: 0;
+      font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+      line-height: 1.7;
+      color: rgb(var(--fg-rgb) / 0.85);
     }
 
-    /* ───────────  Mobile hero  ───────────
-       Pull the frosted map up BEHIND the transparent header (kills the cream "header" band
-       at the very top) and pad the content clear of the header buttons. Also undo the desktop
-       eyebrow offsets (negative top / margin) that would otherwise shove "A GUIDE TO …" off
-       the top of the screen — so the eyebrow shows on mobile too. The header is 88px until the
-       640px breakpoint, then 56px; pull-up + padding match each range. */
-    @media (max-width: 767px) {
-      .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
-      .hero-content { padding-top: calc(var(--header-h-desktop) + 1.5rem); }
+    .hero-wordmark {
+      margin: 0;
+      font-family: var(--font-display-serif);
+      font-weight: 500;
+      font-size: clamp(0.9rem, 1.8vw, 1.6rem);
+      line-height: 1;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgb(var(--fg-rgb));
     }
-    @media (max-width: 640px) {
-      .hero { margin-top: calc(-1 * var(--header-h-mobile)); }
-      .hero-content { padding-top: calc(var(--header-h-mobile) + 1.25rem); }
+    .hero-wordmark span { display: block; }
+    .hero-wordmark span + span { margin-top: 0; }
+
+    .hero-tagline {
+      margin: 0;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 400;
+      font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+      line-height: 1.3;
+      color: rgb(var(--fg-rgb) / 0.85);
+      white-space: nowrap;
     }
 
-    /* Single yellow highlight bar under one word in the headline (the one
-       accent moment in the type). */
+    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.5rem; }
+    .store-badge {
+      display: inline-flex; align-items: center; gap: 1rem;
+      background: rgb(var(--bg-rgb) / 0.45);
+      color: rgb(var(--fg-rgb));
+      border: 1px solid rgb(var(--fg-rgb) / 0.22);
+      border-radius: 0.5rem;
+      padding: 0.6rem 2.6rem;
+    }
+    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--fg-rgb) / 0.6); }
+    .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
+    .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
+
+    .hero-rule { border: 0; height: 1px; background: rgb(var(--fg-rgb) / 0.7); }
+    .hero-rule--countdown { width: 100%; background: rgb(var(--fg-rgb) / 0.3); }
+
+    .hero-label {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 0.6875rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgb(var(--fg-rgb));
+    }
+    .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
+
+    .hero-countdown-band {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 1.1rem;
+      max-width: var(--hero-text-max);
+      margin-top: 2rem;
+    }
+    .hero-countdown-band .hero-label,
+    .hero-countdown-band .display-numeral { color: rgb(var(--fg-rgb) / 0.6); }
+
+    .hero-colophon-brand { margin-top: 6rem; margin-bottom: 2.5rem; }
+    .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
+
+    .hero-countdown { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
+    .display-numeral {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(1.3rem, 1.7vw, 1.8rem);
+      line-height: 0.85;
+      letter-spacing: 0.01em;
+      color: rgb(var(--fg-rgb));
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
     .mark-underline {
       background-image: linear-gradient(rgb(var(--accent-rgb)), rgb(var(--accent-rgb)));
       background-repeat: no-repeat;
@@ -284,182 +241,50 @@
       padding-bottom: 0.02em;
     }
 
-    /* ═══════════  Editorial hero (section 01)  ═══════════
-       Corner wordmark pivot · big sans title + hairline + guide · bottom colophon
-       with the one serif numeral. Desktop-first; mobile falls back to plain flow.
-       Driven entirely by the --hero-* / --font-serif tokens in :root above. */
-
-    /* ───────────  Editorial hero composition  ───────────
-       Header holds only the right-pinned buttons; the wordmark now lives in the hero body. */
-    .header-row {
-      display: flex; align-items: center; justify-content: flex-end;
-      height: 100%; padding-right: var(--header-inset-x);
-    }
-    .header-actions { display: flex; align-items: center; gap: 0.5rem; }
-    @media (min-width: 640px) { .header-actions { gap: 0.75rem; } }
-
-    /* Left column = full-height flex stack: cluster (eyebrow · wordmark+tagline · badges) pushed
-       toward centre, then the countdown, then the brand pinned to the bottom. */
-    .hero-stack { max-width: var(--hero-text-max); }
-    @media (min-width: 768px) { .hero-stack { margin-top: var(--hero-stack-top); } }
-
-    /* Headline wrapper (eyebrow + wordmark/tagline): on desktop it shrinks to the eyebrow's
-       width (its widest child), so the wordmark-row stretched to 100% puts the tagline's right
-       edge exactly at the end of "…THE BOTTLE". */
-    @media (min-width: 768px) { .hero-headline { width: max-content; max-width: var(--hero-text-max); } }
-
-    /* Eyebrow: A GUIDE TO —— THE PLACES, THE PEOPLE & THE BOTTLE */
-    .hero-eyebrow {
-      display: flex; align-items: center; gap: 0.9rem;
-      margin: 0 0 var(--hero-eyebrow-gap) 0;
-      position: relative; top: var(--hero-eyebrow-top);  /* negative top = lift the eyebrow up without moving the wordmark */
-      font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: var(--hero-eyebrow-size);
-      letter-spacing: var(--hero-eyebrow-tracking);
-      text-transform: uppercase;
-      color: var(--hero-eyebrow-color);
-    }
-    .hero-eyebrow-line { flex: 0 0 var(--hero-eyebrow-line-width); height: 1px; background: var(--hero-eyebrow-line-color); }
-    /* Desktop: keep each phrase unbroken so the eyebrow reads as one line
-       (mobile keeps its flex-wrap fallback below so long phrases don't overflow). */
-    @media (min-width: 768px) { .hero-eyebrow > span { white-space: nowrap; } }
-
-    /* Wordmark (Cormorant Garamond, YELLOW over GRAPES) + one-line tagline beside it */
-    .hero-wordmark-row { display: flex; align-items: center; gap: var(--wordmark-tagline-gap); flex-wrap: wrap; }
-    /* Desktop: fill the headline wrapper (= eyebrow width) and push the tagline to the right,
-       so the tagline's right edge lines up with the end of the eyebrow ("…THE BOTTLE"). */
-    @media (min-width: 768px) {
-      /* gap is just a MINIMUM (matters only when the eyebrow is shorter than wordmark+tagline, e.g. zh);
-         in English space-between spreads them far apart and the tagline lands on the eyebrow's edge. */
-      .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
-    }
-    /* Hero logo lockup (logo2.svg) — replaces the old text wordmark. */
-    .hero-logo { margin: 0; line-height: 0; }
-    .hero-logo img { display: block; height: var(--hero-logo-h); width: auto; }
-    /* Hero body copy (the brand narrative that replaced the tagline). Inherits the
-       system-font body stack; narrower measure than the 44rem stack for readability. */
-    .hero-lede { margin-top: 1.75rem; max-width: 34rem; display: flex; flex-direction: column; gap: 0.9rem; }
-    .hero-lede p {
-      margin: 0;
-      font-size: clamp(0.95rem, 1.05vw, 1.05rem);
-      line-height: 1.7;
-      color: rgb(var(--fg-rgb) / 0.85);
-    }
-    .hero-wordmark {
-      margin: 0;
-      font-family: var(--font-display-serif);
-      font-weight: var(--wordmark-serif-weight);
-      font-size: var(--wordmark-serif-size);
-      line-height: 1;
-      letter-spacing: var(--wordmark-serif-tracking);
-      text-transform: uppercase;
-      color: var(--wordmark-serif-color);
-    }
-    .hero-wordmark span { display: block; }
-    .hero-wordmark span + span { margin-top: var(--wordmark-line-gap); }
-    .hero-tagline {
-      margin: 0;
-      font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 400;
-      font-size: var(--hero-tagline-size);
-      line-height: 1.3;
-      color: var(--hero-tagline-color);
-      white-space: nowrap;
-    }
-    @media (max-width: 767px) {
-      /* Mobile: simple stacked flow (desktop is the priority for now). */
-      .hero-tagline { white-space: normal; }
-      .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
-      /* Undo the desktop eyebrow offsets so "A GUIDE TO …" flows normally and stays on-screen. */
-      .hero-eyebrow { position: static; top: auto; margin-bottom: 1.25rem; flex-wrap: wrap; }
-    }
-
-    /* Store badges (App Store / Google Play) — soft, spacious, slightly transparent, no shadow.
-       Gap to the wordmark is its own token (--hero-badges-gap), independent of the eyebrow gap. */
-    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: var(--hero-badges-gap); }
-    .store-badge {
-      display: inline-flex; align-items: center; gap: var(--store-badge-gap);
-      background: var(--store-badge-bg); color: rgb(var(--fg-rgb));
-      border: 1px solid var(--store-badge-border);
-      border-radius: var(--store-badge-radius); padding: var(--store-badge-pad);
-    }
-    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: var(--store-badge-icon-color); }
-    .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
-    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
-    .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
-
-    /* Hairline rules (thickness / colour are tokens). */
-    .hero-rule { border: 0; height: var(--hero-rule-thickness); background: var(--hero-rule-color); }
-    /* Countdown connector — a short line to the LEFT of "COMING SOON IN …", lighter than the text. */
-    .hero-rule--countdown { width: 100%; background: var(--hero-colophon-line-color); }
-    @media (min-width: 768px) { .hero-rule--countdown { width: auto; flex: 0 0 var(--hero-countdown-line-width); } }
-
-    /* Small tracked caps (colophon lines, COMING SOON IN / DAYS). */
-    .hero-label {
-      font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: 0.6875rem;               /* 11px */
-      letter-spacing: var(--hero-label-tracking);
-      text-transform: uppercase;
-      color: rgb(var(--fg-rgb));
-    }
-    .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
-
-    /* Countdown band — connector + "COMING SOON IN [N] DAYS", pulled UP from the bottom.
-       margin-top:auto eats the column's free space so it (and the brand below it) sit low. */
-    .hero-countdown-band {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 1.1rem;
-      max-width: var(--hero-text-max);
-      margin-top: var(--hero-countdown-gap);   /* sits right under the store badges → reads as a pair */
-    }
-    /* Desktop: same rail width, content pushed right → "——— COMING SOON IN N DAYS" right edge
-       lines up with the tagline's right edge above it. The brand line (not the countdown) now
-       absorbs the column's free space, so it stays pinned to the very bottom. */
-    @media (min-width: 768px) {
-      .hero-countdown-band { width: var(--hero-rail-width); justify-content: flex-end; }
-    }
-    .hero-countdown-band .hero-label,
-    .hero-countdown-band .display-numeral { color: var(--hero-colophon-color); }
-
-    /* Brand line. Mobile: sits a fixed gap below the countdown (normal flow). Desktop: pinned
-       absolutely to the lower-LEFT corner of the editorial column, with manual left/bottom gaps
-       (--hero-colophon-left / --hero-colophon-bottom). The column is position:relative, so the
-       colophon anchors to it; left:0 keeps it aligned with the eyebrow/wordmark above. */
-    .hero-colophon-brand { margin-top: var(--hero-countdown-brand-gap); margin-bottom: var(--hero-colophon-bottom); }
-    .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
-    @media (min-width: 768px) {
-      .hero-colophon-brand {
-        position: absolute;
-        left: var(--hero-colophon-left);
-        bottom: var(--hero-colophon-bottom);
-        margin: 0;
-      }
-    }
-
-    /* "COMING SOON IN [N] DAYS" — small caps wrap the large serif numeral, baseline-aligned. */
-    .hero-countdown { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
-    .display-numeral {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      font-size: var(--hero-numeral-size);
-      line-height: 0.85;
-      letter-spacing: 0.01em;
-      color: rgb(var(--fg-rgb));
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-
-    /* CJK graceful fallback: relax the wide Latin tracking for zh so the all-caps /
-       letter-spacing treatment isn't forced onto Chinese. The "Yellow Grapes" wordmark stays
-       English in both locales, so it is intentionally NOT relaxed here. */
+    /* ═══════════  CJK Adjustments  ═══════════ */
     html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
     html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
     html[lang="zh-Hant"] .hero-tagline { line-height: 1.5; }
     html[lang="zh-Hant"] .hero-lede p  { line-height: 1.9; }
+
+    /* ═══════════  Desktop (768px+)  ═══════════ */
+    @media (min-width: 768px) {
+      .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
+      .hero-content {
+        min-height: calc(100vh - var(--hero-peek));
+        padding-top: var(--header-h-desktop);
+      }
+      .hero-stack { margin-top: var(--hero-stack-top); }
+      .hero-headline { width: max-content; max-width: var(--hero-text-max); }
+      .hero-eyebrow > span { white-space: nowrap; }
+      .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
+      .hero-rule--countdown { width: auto; flex: 0 0 9rem; }
+      .hero-countdown-band { width: var(--hero-rail-width); justify-content: flex-end; }
+      .hero-colophon-brand { position: absolute; left: 0; bottom: 2.5rem; margin: 0; }
+    }
+    @media (min-width: 640px) { .header-actions { gap: 0.75rem; } }
+
+    /* ═══════════  Mobile/Tablet (≤767px)  ═══════════ */
+    @media (max-width: 767px) {
+      .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
+      .hero-content { padding-top: calc(var(--header-h-desktop) + 1.5rem); }
+      .hero-tagline { white-space: normal; }
+      .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
+      .hero-eyebrow { position: static; top: auto; margin-bottom: 1.25rem; flex-wrap: wrap; }
+      .footer-logo { height: 30px; }
+    }
+
+    /* ═══════════  Small Mobile (≤639px)  ═══════════ */
+    @media (max-width: 639px) {
+      .site-header { height: var(--header-h-mobile); }
+      .hero { margin-top: calc(-1 * var(--header-h-mobile)); }
+      .hero-content { padding-top: calc(var(--header-h-mobile) + 1.25rem); }
+      .yg-logo { height: var(--logo-h-mobile); }
+    }
   </style>
 </head>
 
-<body id="top" class="font-sans text-fg antialiased">
+<body id="top" class="bg-bg font-sans text-fg antialiased">
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
   <header class="site-header sticky top-0 z-50">
@@ -836,53 +661,5 @@
     })();
   </script>
 
-  <!-- ───────────  Dev-only token tuner  ───────────
-       Hidden in production. Open index.html#tune (or ?tune) to get live sliders for
-       the header wash and the optional dark veil over the background image.
-       Drag to taste, then bake the values you like into :root above. Add more rows by
-       extending the CONTROLS list. Safe to delete this block. -->
-  <script>
-    (function () {
-      if (!/tune/.test(location.hash) && !/tune/.test(location.search)) return;
-      var root = document.documentElement;
-      var CONTROLS = [
-        { label: 'Header opacity', varName: '--header-opacity', fallback: 0.12 },
-        { label: 'Dark fade',      varName: '--hero-dark-fade', fallback: 0 }
-      ];
-      function current(varName, fallback) {
-        var v = parseFloat(getComputedStyle(root).getPropertyValue(varName));
-        return isNaN(v) ? fallback : v;
-      }
-      var panel = document.createElement('div');
-      panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9999;' +
-        'background:rgb(26 24 20 / .9);color:#FAF9F5;font:600 12px/1.4 system-ui,sans-serif;' +
-        'padding:12px 14px;border-radius:10px;box-shadow:0 6px 24px rgb(0 0 0 / .3);' +
-        'display:flex;flex-direction:column;gap:12px;min-width:200px;';
-      CONTROLS.forEach(function (c) {
-        var wrap = document.createElement('div');
-        wrap.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
-        var label = document.createElement('div');
-        var slider = document.createElement('input');
-        var suffix = c.suffix || '';
-        slider.type = 'range';
-        slider.min = '0'; slider.max = String(c.max || 1); slider.step = String(c.step || 0.01);
-        slider.value = String(current(c.varName, c.fallback));
-        slider.style.cssText = 'width:100%;accent-color:#F2C84B;cursor:pointer;';
-        function render() {
-          var n = Number(slider.value);
-          label.textContent = c.label + ': ' + (suffix ? n + suffix : n.toFixed(2));
-        }
-        slider.addEventListener('input', function () {
-          root.style.setProperty(c.varName, slider.value + suffix);
-          render();
-        });
-        render();
-        wrap.appendChild(label);
-        wrap.appendChild(slider);
-        panel.appendChild(wrap);
-      });
-      document.body.appendChild(panel);
-    })();
-  </script>
 </body>
 </html>
