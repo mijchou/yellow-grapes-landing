@@ -105,13 +105,13 @@
 
       /* Hero composition (left column): eyebrow · serif wordmark + tagline · store badges,
          pushed toward the vertical centre, with the countdown + brand lower down. All tunable. */
-      --hero-stack-top: 20vh;          /* push the eyebrow/wordmark/badges cluster down toward centre */
+      --hero-stack-top: 6vh;           /* push the eyebrow/wordmark/badges cluster down toward centre */
       --hero-text-max: 44rem;          /* keep the left-column text clear of the right-hand map window */
       --hero-rail-width: 40rem;        /* shared right edge: the tagline AND the countdown both align to it */
 
       /* Vertical rhythm of the left-column cluster — each gap is now independently tunable
          (the wordmark→badges gap no longer has to equal the eyebrow→wordmark gap). */
-      --hero-badges-gap: 5rem;         /* gap: wordmark → store badges */
+      --hero-badges-gap: 2.5rem;       /* gap: hero body copy → store badges */
       --hero-countdown-gap: 2rem;      /* gap: store badges → "COMING SOON IN … DAYS" (kept tight so the
                                           countdown reads as a pair with the App Store / Google Play badges) */
 
@@ -123,6 +123,10 @@
       --hero-eyebrow-top: -8rem;                 /* space ABOVE the eyebrow — make this NEGATIVE (e.g. -4rem) to lift the eyebrow UP (wordmark stays put) */
       --hero-eyebrow-line-width: 3.5rem;          /* the short connector between the two phrases */
       --hero-eyebrow-line-color: rgb(var(--fg-rgb) / 0.4);
+
+      /* Hero logo lockup (logo2.svg — grape mark + YELLOW GRAPES text). Sized by height so
+         the ~3.63:1 lockup never distorts; width follows the aspect ratio. Tune freely. */
+      --hero-logo-h: clamp(1.625rem, 3.25vw, 2.6rem);
 
       /* Serif wordmark (YELLOW over GRAPES, Cormorant Garamond) + the one-line tagline beside it */
       --wordmark-serif-size: clamp(0.9rem, 1.8vw, 1.6rem);   /* clamp(MIN, PREFERRED=vw, MAX): floor · fluid · ceiling */
@@ -214,6 +218,9 @@
       font-weight: var(--wordmark-weight);
       letter-spacing: var(--wordmark-tracking);
     }
+    /* Footer lockup (logo2.svg — grape mark + YELLOW GRAPES text baked in). */
+    .footer-logo { display: block; height: 34px; width: auto; }
+    @media (max-width: 767px) { .footer-logo { height: 30px; } }
 
     /* ───────────  Hero background (desktop only)  ───────────
        A single pre-rendered image (frosted map + window baked in) fills the hero; only an
@@ -314,6 +321,9 @@
       color: var(--hero-eyebrow-color);
     }
     .hero-eyebrow-line { flex: 0 0 var(--hero-eyebrow-line-width); height: 1px; background: var(--hero-eyebrow-line-color); }
+    /* Desktop: keep each phrase unbroken so the eyebrow reads as one line
+       (mobile keeps its flex-wrap fallback below so long phrases don't overflow). */
+    @media (min-width: 768px) { .hero-eyebrow > span { white-space: nowrap; } }
 
     /* Wordmark (Cormorant Garamond, YELLOW over GRAPES) + one-line tagline beside it */
     .hero-wordmark-row { display: flex; align-items: center; gap: var(--wordmark-tagline-gap); flex-wrap: wrap; }
@@ -323,6 +333,18 @@
       /* gap is just a MINIMUM (matters only when the eyebrow is shorter than wordmark+tagline, e.g. zh);
          in English space-between spreads them far apart and the tagline lands on the eyebrow's edge. */
       .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
+    }
+    /* Hero logo lockup (logo2.svg) — replaces the old text wordmark. */
+    .hero-logo { margin: 0; line-height: 0; }
+    .hero-logo img { display: block; height: var(--hero-logo-h); width: auto; }
+    /* Hero body copy (the brand narrative that replaced the tagline). Inherits the
+       system-font body stack; narrower measure than the 44rem stack for readability. */
+    .hero-lede { margin-top: 1.75rem; max-width: 34rem; display: flex; flex-direction: column; gap: 0.9rem; }
+    .hero-lede p {
+      margin: 0;
+      font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+      line-height: 1.7;
+      color: rgb(var(--fg-rgb) / 0.85);
     }
     .hero-wordmark {
       margin: 0;
@@ -433,6 +455,7 @@
     html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
     html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
     html[lang="zh-Hant"] .hero-tagline { line-height: 1.5; }
+    html[lang="zh-Hant"] .hero-lede p  { line-height: 1.9; }
   </style>
 </head>
 
@@ -496,9 +519,18 @@
 
               <div class="hero-wordmark-row">
                 <!-- Wordmark stays English in both locales -->
-                <h1 class="hero-wordmark"><span>Yellow</span><span>Grapes</span></h1>
-                <p class="hero-tagline" data-i18n="hero.title">A wine map for Taiwan.</p>
+                <h1 class="hero-logo">
+                  <img src="logo/logo2.svg" alt="Yellow Grapes" onerror="this.style.display='none'" />
+                </h1>
               </div>
+            </div>
+
+            <!-- Brand narrative (中/EN via data-i18n; English baked in as the no-JS fallback) -->
+            <div class="hero-lede">
+              <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
+              <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
+              <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
+              <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
             </div>
 
             <!-- Store badges (non-functional placeholders until launch) -->
@@ -638,10 +670,9 @@
   <footer class="border-t border-fg">
     <div class="mx-auto max-w-7xl px-5 py-10 sm:px-8">
       <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        <!-- Logo + wordmark (reused from header) -->
+        <!-- Logo lockup (logo2.svg — grape mark + wordmark in one; anchor carries the label) -->
         <a href="#top" class="flex items-center gap-4 text-fg" aria-label="Yellow Grapes — home">
-          <img class="yg-logo" src="logo/logo.svg" alt="Yellow Grapes logo" />
-          <span class="yg-wordmark font-brand uppercase">Yellow&nbsp;Grapes</span>
+          <img class="footer-logo" src="logo/logo2.svg" alt="" onerror="this.style.display='none'" />
         </a>
 
         <!-- Nav. Privacy / Terms → build-time pages rendered from Firestore (see CLAUDE.md). -->
@@ -676,7 +707,10 @@
     // "Yellow Grapes" wordmark + brand names (App Store / Google Play) stay as-is.
     var I18N = {
       en: {
-        'hero.title': 'A wine map for Taiwan.',
+        'hero.lede1': 'Taiwanese palates are remarkably discerning.',
+        'hero.lede2': 'Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.',
+        'hero.lede3': 'The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.',
+        'hero.lede4': 'We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.',
         'hero.guidePre': 'A Guide To',
         'hero.guidePost': 'The Places, the People &amp; the Bottle',
         'hero.colophonVol': 'Yellow Grapes. Vol. 1',
@@ -705,7 +739,10 @@
         'footer.contact': 'Contact'
       },
       zh: {
-        'hero.title': '台灣葡萄酒地圖。',
+        'hero.lede1': '台灣人的味蕾是非常敏銳的。',
+        'hero.lede2': '同樣一道雞肉飯，大家總是知道去哪個街角找到他最美味的模樣；放眼望去滿街的手搖飲店，也總能嚐出多多綠要買哪間、哪間的牛奶最好，或是哪間用了刺鼻的水果香精。',
+        'hero.lede3': '葡萄酒的美好藏在非常細緻的味覺與嗅覺之中，就是需要如此敏銳的感官方能感受與享受口中味道、香氣的交錯與變化。',
+        'hero.lede4': '我們為台灣喜愛葡萄酒的大家建立了這款葡萄酒地圖，一起尋找更細緻的味蕾享受之旅。',
         'hero.guidePre': '一份指南',
         'hero.guidePost': '在地場所、人物與酒款',
         'hero.colophonVol': 'Yellow Grapes・第一卷',
