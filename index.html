@@ -48,7 +48,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap"
     rel="stylesheet"
   />
 
@@ -92,6 +92,11 @@
       --hero-peek: 6vh;
       --hero-dark-fade: 0;
 
+      /* Right-side lede box positioning (tune these to adjust) */
+      --lede-right: 38%;
+      --lede-top: 12%;
+      --lede-box-size: clamp(16rem, 22vw, 22rem);
+
       /* Hero window (desktop) */
       --hero-window-width: clamp(14rem, 32vw, 26rem);
       --hero-window-height: min(70vh, 40rem);
@@ -108,10 +113,51 @@
       overflow: visible;
     }
     .header-row {
-      display: flex; align-items: center; justify-content: flex-end;
-      height: 100%; padding-right: 1.5rem;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      height: 100%; padding: 1.5rem 1.5rem 0;
+      max-width: 80rem; margin: 0 auto;
     }
-    .header-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .header-left {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgb(var(--fg-rgb) / 0.6);
+    }
+    .header-center {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      top: calc(1.5rem + 1px + 1.5rem); /* below line */
+      text-align: center;
+    }
+    .header-brand-name {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgb(var(--fg-rgb) / 0.25);
+      line-height: 1;
+    }
+    .header-brand-sub {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.2rem, 4vw, 3rem);
+      letter-spacing: 0.15em;
+      color: rgb(var(--fg-rgb) / 0.2);
+      margin-top: 0.25em;
+    }
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .header-line {
+      position: absolute;
+      top: calc(1.5rem + 0.9rem);
+      left: 1.5rem; right: 1.5rem;
+      height: 1px;
+      background: rgb(var(--fg-rgb) / 0.25);
+    }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
 
     #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
 
@@ -125,10 +171,25 @@
       background-color: rgb(var(--fg-rgb) / var(--hero-dark-fade));
       pointer-events: none;
     }
-    .hero-window {
+    /* Combined container for image + text box — keeps their relative position fixed */
+    .hero-composite {
       position: absolute;
-      right: var(--hero-window-right);
-      bottom: var(--hero-window-bottom);
+      right: 2rem;
+      bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .hero-composite .hero-lede-right {
+      position: relative;
+      right: auto; top: auto;
+      margin-bottom: -2.5rem; /* overlap into the image below */
+      margin-right: 6rem; /* move box more to the left */
+      z-index: 1;
+    }
+    .hero-window {
+      position: relative;
+      right: auto; bottom: auto;
       width: var(--hero-window-width);
       height: var(--hero-window-height);
       object-fit: contain;
@@ -138,8 +199,7 @@
 
     .hero-eyebrow {
       display: flex; align-items: center; gap: 0.9rem;
-      margin: 0 0 -3rem 0;
-      position: relative; top: -8rem;
+      margin: 0;
       font-family: 'Urbanist', system-ui, sans-serif;
       font-weight: 700;
       font-size: 0.72rem;
@@ -150,8 +210,8 @@
     .hero-eyebrow-line { flex: 0 0 3.5rem; height: 1px; background: rgb(var(--fg-rgb) / 0.4); }
 
     .hero-wordmark-row { display: flex; align-items: center; gap: 8rem; flex-wrap: wrap; }
-    .hero-logo { margin: 0; line-height: 0; }
-    .hero-logo img { display: block; height: clamp(1.625rem, 3.25vw, 2.6rem); width: auto; }
+    .hero-logo { margin: 0; line-height: 0; margin-top: 1rem; margin-bottom: 1.5rem; margin-left: 2rem; }
+    .hero-logo img { display: block; height: clamp(3.2rem, 6.4vw, 4.8rem); width: auto; }
 
     .hero-lede { margin-top: 1.75rem; max-width: 34rem; display: flex; flex-direction: column; gap: 0.9rem; }
     .hero-lede p {
@@ -159,6 +219,36 @@
       font-size: clamp(0.95rem, 1.05vw, 1.05rem);
       line-height: 1.7;
       color: rgb(var(--fg-rgb) / 0.85);
+    }
+
+    /* Right-side narrative box (desktop) — square, scales with viewport */
+    .hero-lede-right {
+      width: var(--lede-box-size);
+      aspect-ratio: 1;
+      padding: 1.2rem;
+      background: rgb(var(--bg-rgb) / 0.92);
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-lede-right .lede-symbol {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      height: clamp(1.8rem, 2.5vw, 2.5rem);
+      width: auto;
+    }
+    .hero-lede-right .lede-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-right: 2.5rem;
+    }
+    .hero-lede-right p {
+      margin: 0;
+      font-size: clamp(0.62rem, 0.7vw, 0.72rem);
+      line-height: 1.7;
+      color: rgb(var(--fg-rgb) / 0.75);
     }
 
     .hero-wordmark {
@@ -184,14 +274,15 @@
       white-space: nowrap;
     }
 
-    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.5rem; }
+    .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 6rem; }
     .store-badge {
-      display: inline-flex; align-items: center; gap: 1rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 1rem;
       background: rgb(var(--bg-rgb) / 0.45);
       color: rgb(var(--fg-rgb));
       border: 1px solid rgb(var(--fg-rgb) / 0.22);
       border-radius: 0.5rem;
-      padding: 0.6rem 2.6rem;
+      padding: 0.6rem 1.5rem;
+      min-width: 11rem;
     }
     .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--fg-rgb) / 0.6); }
     .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
@@ -214,7 +305,7 @@
     .hero-countdown-band {
       display: flex; align-items: center; flex-wrap: wrap; gap: 1.1rem;
       max-width: var(--hero-text-max);
-      margin-top: 2rem;
+      margin-top: 4rem;
     }
     .hero-countdown-band .hero-label,
     .hero-countdown-band .display-numeral { color: rgb(var(--fg-rgb) / 0.6); }
@@ -270,7 +361,7 @@
       .hero-content { padding-top: calc(var(--header-h-desktop) + 1.5rem); }
       .hero-tagline { white-space: normal; }
       .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
-      .hero-eyebrow { position: static; top: auto; margin-bottom: 1.25rem; flex-wrap: wrap; }
+      .hero-eyebrow { margin-top: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
       .footer-logo { height: 30px; }
     }
 
@@ -288,20 +379,35 @@
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
   <header class="site-header sticky top-0 z-50">
-    <!-- Just the language toggle + waitlist CTA, pinned to the right edge of the screen.
-         The wordmark lives in the hero body now (centred). -->
     <div class="header-row">
-      <div class="header-actions">
-        <a href="#waitlist"
-           class="border border-fg bg-bg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm"
-           data-i18n="hero.cta">
-          Join the Waitlist
-        </a>
-        <button id="langToggle" type="button"
-                class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
-          中
-        </button>
+      <!-- Left: "Crafted in 2026" above the line -->
+      <div class="header-left">
+        <span data-i18n="header.crafted">Crafted in 2026</span>
       </div>
+
+      <!-- Center: brand text below the line -->
+      <div class="header-center">
+        <p class="header-brand-name">Yellow Grapes</p>
+        <p class="header-brand-sub">taïwan</p>
+      </div>
+
+      <!-- Right: buttons below the line -->
+      <div class="header-right">
+        <div class="header-actions">
+          <a href="#waitlist"
+             class="border border-fg bg-bg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm"
+             data-i18n="hero.cta">
+            Join the Waitlist
+          </a>
+          <button id="langToggle" type="button"
+                  class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
+            中
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal line -->
+      <div class="header-line" aria-hidden="true"></div>
     </div>
   </header>
 
@@ -332,30 +438,15 @@
              item shrink so the title wraps instead of overflowing on narrow screens. -->
         <div class="relative col-span-12 flex min-w-0 flex-col md:col-span-9 lg:col-span-8">
 
-          <!-- Cluster: headline (eyebrow + wordmark/tagline) · store badges (pushed toward centre) -->
+          <!-- Cluster: eyebrow · store badges -->
           <div class="hero-stack">
-            <!-- Headline wrapper — shrinks to the eyebrow's width so the tagline right-aligns to it -->
+            <!-- Headline wrapper -->
             <div class="hero-headline">
               <p class="hero-eyebrow">
                 <span data-i18n="hero.guidePre">A Guide To</span>
                 <span class="hero-eyebrow-line" aria-hidden="true"></span>
                 <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
               </p>
-
-              <div class="hero-wordmark-row">
-                <!-- Wordmark stays English in both locales -->
-                <h1 class="hero-logo">
-                  <img src="logo/logo2.svg" alt="Yellow Grapes" onerror="this.style.display='none'" />
-                </h1>
-              </div>
-            </div>
-
-            <!-- Brand narrative (中/EN via data-i18n; English baked in as the no-JS fallback) -->
-            <div class="hero-lede">
-              <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
-              <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
-              <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
-              <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
             </div>
 
             <!-- Store badges (non-functional placeholders until launch) -->
@@ -399,15 +490,26 @@
           </div>
         </div>
 
-        <!-- The clear "window" into the frosted map — desktop/tablet only.
-             object-contain guarantees the portrait crop never distorts or crops,
-             at any zoom / viewport size. -->
-        <img
-          src="images/app-map-window.png"
-          alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
-          class="hero-window pointer-events-none hidden select-none md:block"
-          onerror="this.style.display='none'"
-        />
+        <!-- Combined container: text box + map image bound together (desktop only) -->
+        <div class="hero-composite hidden md:flex">
+          <!-- Brand narrative — square box overlapping the map corner -->
+          <div class="hero-lede-right">
+            <img src="logo/logo-symbol.svg" alt="" class="lede-symbol" aria-hidden="true" />
+            <div class="lede-text">
+              <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
+              <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
+              <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
+              <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
+            </div>
+          </div>
+          <!-- The clear "window" into the frosted map -->
+          <img
+            src="images/app-map-window.png"
+            alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
+            class="hero-window pointer-events-none select-none"
+            onerror="this.style.display='none'"
+          />
+        </div>
       </div>
     </section>
 
@@ -570,6 +672,7 @@
     // "Yellow Grapes" wordmark + brand names (App Store / Google Play) stay as-is.
     var I18N = {
       en: {
+        'header.crafted': 'Crafted in 2026',
         'hero.lede1': 'Taiwanese palates are remarkably discerning.',
         'hero.lede2': 'Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.',
         'hero.lede3': 'The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.',
@@ -603,6 +706,7 @@
         'footer.contact': 'Contact'
       },
       zh: {
+        'header.crafted': '製作於 2026 年',
         'hero.lede1': '台灣人的味蕾是非常敏銳的。',
         'hero.lede2': '同樣一道雞肉飯，大家總是知道去哪個街角找到他最美味的模樣；放眼望去滿街的手搖飲店，也總能嚐出多多綠要買哪間、哪間的牛奶最好，或是哪間用了刺鼻的水果香精。',
         'hero.lede3': '葡萄酒的美好藏在非常細緻的味覺與嗅覺之中，就是需要如此敏銳的感官方能感受與享受口中味道、香氣的交錯與變化。',
