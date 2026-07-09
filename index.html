@@ -485,6 +485,11 @@
               <p class="font-brand text-lg font-bold text-fg" data-i18n="thanks.title">You're on the list. 🍇</p>
               <p class="mt-2 text-sm text-fgmuted" data-i18n="thanks.body">Thanks for joining — we'll be in touch when early access opens.</p>
             </div>
+
+            <!-- Error state (shown on submission failure) -->
+            <div id="waitlistError" class="mt-6 hidden border border-red-500 bg-red-50 px-6 py-4" tabindex="-1">
+              <p class="text-sm font-medium text-red-700" data-i18n="error.submit">Something went wrong. Please try again.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -512,18 +517,51 @@
   </footer>
 
   <script>
-    // Waitlist form — UI only (no backend). Validates, then shows the thanks state.
+    // Waitlist form — submits to Google Sheets via Apps Script.
+    // Replace WAITLIST_ENDPOINT with your deployed Apps Script web app URL.
+    var WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzyqzyx8CQMIsjkKTCEk4ULodlh3qSqQnS4s6si_zZ0EqEE67pzsCu_dhwcDSi4V-oL/exec';
+
     (function () {
       var form = document.getElementById('waitlistForm');
       var thanks = document.getElementById('waitlistThanks');
+      var errorEl = document.getElementById('waitlistError');
+      var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+      var btnText = submitBtn ? submitBtn.textContent : '';
       if (!form) return;
+
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (!form.reportValidity()) return; // native validation UI
-        // TODO: wire submission to a backend here (Formspree / Getform / API).
-        form.classList.add('hidden');
-        thanks.classList.remove('hidden');
-        thanks.focus();
+        if (!form.reportValidity()) return;
+
+        // Hide previous error, show loading state
+        errorEl.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '...';
+
+        var email = form.elements.email.value;
+        var platform = form.elements.platform.value;
+
+        fetch(WAITLIST_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ email: email, platform: platform })
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data.success) {
+              form.classList.add('hidden');
+              thanks.classList.remove('hidden');
+              thanks.focus();
+            } else {
+              throw new Error(data.error || 'Submission failed');
+            }
+          })
+          .catch(function () {
+            errorEl.classList.remove('hidden');
+            errorEl.focus();
+            submitBtn.disabled = false;
+            submitBtn.textContent = btnText;
+          });
       });
     })();
 
@@ -558,6 +596,7 @@
         'form.submit': 'Join the waitlist',
         'thanks.title': "You're on the list. 🍇",
         'thanks.body': "Thanks for joining — we'll be in touch when early access opens.",
+        'error.submit': 'Something went wrong. Please try again.',
         'footer.home': 'Home',
         'footer.privacy': 'Privacy',
         'footer.terms': 'Terms',
@@ -590,6 +629,7 @@
         'form.submit': '加入等候名單',
         'thanks.title': '你已加入等候名單。🍇',
         'thanks.body': '感謝加入 — 開放搶先體驗時我們會與你聯繫。',
+        'error.submit': '發生錯誤，請再試一次。',
         'footer.home': '首頁',
         'footer.privacy': '隱私權',
         'footer.terms': '服務條款',

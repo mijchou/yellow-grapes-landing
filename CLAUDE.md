@@ -78,8 +78,9 @@ in section 02, which stay rounded on purpose to mimic the app. The sibling app
   with the app's search bar + filter chips recreated in HTML pinned on top. Each
   map `<img>` `onerror`-hides if missing. The old portrait `images/app-map.png`
   now only serves as the OG/Twitter preview image.
-- The waitlist form is **UI-only** — client-side validation + a "thanks" state,
-  no submission. Wire a backend where the `// TODO` marks the submit handler.
+- The waitlist form submits to **Google Sheets via Apps Script**. The endpoint URL
+  is stored in `WAITLIST_ENDPOINT` near the top of the `<script>` block. Submissions
+  are POSTed as JSON (`{email, platform}`) and appended as rows in the linked Sheet.
 - Tailwind only generates classes it finds **literally in the HTML** it scans
   (`content: ['./*.html']` — `index.html` plus the generated `terms.html` /
   `privacy.html`). Always run `build:legal` **before** the Tailwind build so the
