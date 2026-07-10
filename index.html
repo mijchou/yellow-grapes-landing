@@ -104,7 +104,7 @@
       --hero-window-bottom: 4rem;
 
       /* Hero center panels (text box + window side by side) */
-      --hero-panel-size: clamp(12rem, 22vw, 18rem);
+      --hero-panel-size: clamp(14.4rem, 26.4vw, 21.6rem);
     }
 
     /* ═══════════  Header  ═══════════ */
@@ -220,14 +220,18 @@
       display: flex;
       width: calc(var(--hero-panel-size) * 2);
       justify-content: space-between;
+      align-items: flex-end;
       margin-bottom: 0.75rem;
     }
-    .hero-wordmarks-row .hero-brand-name {
-      text-align: left;
+    .hero-brand-name-img {
+      height: clamp(0.8rem, 1.5vw, 1.2rem);
+      width: auto;
+      opacity: 0.65;
     }
-    .hero-wordmarks-row .hero-brand-sub {
-      position: static;
-      text-align: right;
+    .hero-brand-sub-img {
+      height: clamp(0.4rem, 0.8vw, 0.66rem);
+      width: auto;
+      opacity: 0.6;
     }
     .hero-panels {
       display: flex;
@@ -254,17 +258,11 @@
       display: flex;
       width: calc(var(--hero-panel-size) * 2);
       justify-content: center;
-      gap: 0;
+      gap: 1rem;
       margin-top: 1rem;
     }
     .hero-store-row .store-badge {
       flex: 0 0 auto;
-    }
-    .hero-store-row .store-badge:first-child {
-      margin-right: 0;
-    }
-    .hero-store-row .store-badge:last-child {
-      margin-left: 0;
     }
 
     /* Legacy composite (hidden on desktop, used for mobile) */
@@ -458,6 +456,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        margin-top: -4rem;
       }
       .hero-stack { margin-top: var(--hero-stack-top); }
       .hero-headline { width: max-content; max-width: var(--hero-text-max); }
@@ -475,7 +474,11 @@
         margin: 0;
         width: auto;
       }
-      .hero-colophon-brand { margin: 0; }
+      .hero-colophon-brand {
+        margin: 0;
+        margin-left: auto;
+        text-align: right;
+      }
     }
     @media (min-width: 640px) { .header-actions { gap: 0.75rem; } }
 
@@ -569,8 +572,8 @@
 
           <!-- Wordmarks row — Yellow Grapes left, taiwan right -->
           <div class="hero-wordmarks-row">
-            <p class="hero-brand-name">Yellow Grapes</p>
-            <p class="hero-brand-sub">taïwan</p>
+            <img src="logo/YELLOW GRAPES.svg" alt="Yellow Grapes" class="hero-brand-name-img" />
+            <img src="logo/taiwan.svg" alt="taïwan" class="hero-brand-sub-img" />
           </div>
 
           <!-- Panels — text box (left) + window image (right) -->
@@ -644,9 +647,9 @@
           </div>
         </div>
 
-        <!-- Bottom bar: colophon (left) + countdown (right) -->
+        <!-- Bottom bar: countdown (left) + colophon (right) -->
         <div class="hero-bottom-bar relative flex min-w-0">
-          <!-- Countdown band — lower right -->
+          <!-- Countdown band — lower left -->
           <div class="hero-countdown-band">
             <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
             <div id="countdown">
@@ -659,7 +662,7 @@
             <p id="countdownDone" class="hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
           </div>
 
-          <!-- Brand line — pinned bottom-left -->
+          <!-- Brand line — pinned bottom-right -->
           <div class="hero-colophon-brand">
             <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes. Vol. 1</p>
             <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
