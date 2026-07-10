@@ -102,6 +102,9 @@
       --hero-window-height: min(70vh, 40rem);
       --hero-window-right: 0rem;
       --hero-window-bottom: 4rem;
+
+      /* Hero center panels (text box + window side by side) */
+      --hero-panel-size: clamp(12rem, 22vw, 18rem);
     }
 
     /* ═══════════  Header  ═══════════ */
@@ -133,20 +136,19 @@
     }
     .header-brand-name {
       font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 500;
-      font-size: clamp(2.5rem, 8vw, 6rem);
+      font-weight: 700;
+      font-size: clamp(2rem, 6vw, 4.5rem);
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: rgb(var(--fg-rgb) / 0.25);
+      color: rgb(var(--fg-rgb) / 0.6);
       line-height: 1;
     }
     .header-brand-sub {
       font-family: 'DM Sans', system-ui, sans-serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: clamp(1.2rem, 4vw, 3rem);
+      font-weight: 600;
+      font-size: clamp(1rem, 3vw, 2.2rem);
       letter-spacing: 0.15em;
-      color: rgb(var(--fg-rgb) / 0.2);
+      color: rgb(var(--fg-rgb) / 0.4);
       margin-top: 0.25em;
     }
     .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
@@ -157,7 +159,36 @@
       height: 1px;
       background: rgb(var(--fg-rgb) / 0.25);
     }
-    .header-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; }
+
+    /* ═══════════  Hero Wordmark Block  ═══════════ */
+    .hero-wordmark-block {
+      position: relative;
+      display: inline-block;
+      margin-top: 1.5rem;
+    }
+    .hero-brand-name {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 3vw, 2.25rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgb(var(--fg-rgb) / 0.6);
+      line-height: 1;
+      white-space: nowrap;
+      margin: 0;
+    }
+    .hero-brand-sub {
+      position: absolute;
+      right: -0.5em;
+      bottom: -0.8em;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(0.5rem, 1.5vw, 1.1rem);
+      letter-spacing: 0.15em;
+      color: rgb(var(--fg-rgb) / 0.4);
+      margin: 0;
+    }
 
     #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
 
@@ -171,25 +202,74 @@
       background-color: rgb(var(--fg-rgb) / var(--hero-dark-fade));
       pointer-events: none;
     }
-    /* Combined container for image + text box — keeps their relative position fixed */
-    .hero-composite {
-      position: absolute;
-      right: 2rem;
-      bottom: 2rem;
+
+    /* Centered hero composition — text box + window side by side */
+    .hero-center-block {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
+      align-items: center;
+      width: 100%;
+      margin-top: 2rem;
     }
-    .hero-composite .hero-lede-right {
-      position: relative;
-      right: auto; top: auto;
-      margin-bottom: -2.5rem; /* overlap into the image below */
-      margin-right: 6rem; /* move box more to the left */
-      z-index: 1;
+    .hero-center-block .hero-eyebrow {
+      align-self: flex-start;
+      margin-left: calc(50% - var(--hero-panel-size));
+      margin-bottom: 1.5rem;
     }
-    .hero-window {
-      position: relative;
-      right: auto; bottom: auto;
+    .hero-wordmarks-row {
+      display: flex;
+      width: calc(var(--hero-panel-size) * 2);
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .hero-wordmarks-row .hero-brand-name {
+      text-align: left;
+    }
+    .hero-wordmarks-row .hero-brand-sub {
+      position: static;
+      text-align: right;
+    }
+    .hero-panels {
+      display: flex;
+      align-items: stretch;
+    }
+    .hero-panels .hero-lede-left {
+      width: var(--hero-panel-size);
+      height: var(--hero-panel-size);
+      padding: 1.2rem;
+      background: rgb(var(--bg-rgb) / 0.92);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgb(var(--fg-rgb) / 0.1);
+      border-right: none;
+    }
+    .hero-panels .hero-window {
+      width: var(--hero-panel-size);
+      height: var(--hero-panel-size);
+      object-fit: cover;
+      object-position: center;
+      border: 1px solid rgb(var(--fg-rgb) / 0.1);
+    }
+    .hero-store-row {
+      display: flex;
+      width: calc(var(--hero-panel-size) * 2);
+      justify-content: center;
+      gap: 0;
+      margin-top: 1rem;
+    }
+    .hero-store-row .store-badge {
+      flex: 0 0 auto;
+    }
+    .hero-store-row .store-badge:first-child {
+      margin-right: 0;
+    }
+    .hero-store-row .store-badge:last-child {
+      margin-left: 0;
+    }
+
+    /* Legacy composite (hidden on desktop, used for mobile) */
+    .hero-composite { display: none; }
+    .hero-window-standalone {
       width: var(--hero-window-width);
       height: var(--hero-window-height);
       object-fit: contain;
@@ -221,15 +301,8 @@
       color: rgb(var(--fg-rgb) / 0.85);
     }
 
-    /* Right-side narrative box (desktop) — square, scales with viewport */
-    .hero-lede-right {
-      width: var(--lede-box-size);
-      aspect-ratio: 1;
-      padding: 1.2rem;
-      background: rgb(var(--bg-rgb) / 0.92);
-      display: flex;
-      flex-direction: column;
-    }
+    /* Narrative box styles (shared) */
+    .hero-lede-left .lede-symbol,
     .hero-lede-right .lede-symbol {
       position: absolute;
       top: 1rem;
@@ -237,6 +310,7 @@
       height: clamp(1.8rem, 2.5vw, 2.5rem);
       width: auto;
     }
+    .hero-lede-left .lede-text,
     .hero-lede-right .lede-text {
       display: flex;
       flex-direction: column;
@@ -244,11 +318,26 @@
       margin-top: auto;
       padding-right: 2.5rem;
     }
+    .hero-lede-left p,
     .hero-lede-right p {
       margin: 0;
-      font-size: clamp(0.62rem, 0.7vw, 0.72rem);
+      font-size: clamp(0.55rem, 0.65vw, 0.68rem);
       line-height: 1.7;
       color: rgb(var(--fg-rgb) / 0.75);
+    }
+    .hero-lede-left {
+      position: relative;
+    }
+
+    /* Legacy right-side box (for mobile fallback) */
+    .hero-lede-right {
+      width: var(--lede-box-size);
+      aspect-ratio: 1;
+      padding: 1.2rem;
+      background: rgb(var(--bg-rgb) / 0.92);
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
 
     .hero-wordmark {
@@ -303,17 +392,31 @@
     .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
 
     .hero-countdown-band {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 1.1rem;
-      max-width: var(--hero-text-max);
-      margin-top: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      white-space: nowrap;
     }
     .hero-countdown-band .hero-label,
     .hero-countdown-band .display-numeral { color: rgb(var(--fg-rgb) / 0.6); }
 
+    .hero-bottom-bar {
+      width: 100%;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
     .hero-colophon-brand { margin-top: 6rem; margin-bottom: 2.5rem; }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
 
-    .hero-countdown { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
+    .hero-countdown {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      white-space: nowrap;
+    }
+    .hero-countdown .hero-label {
+      display: inline;
+    }
     .display-numeral {
       font-family: var(--font-serif);
       font-weight: 400;
@@ -336,7 +439,9 @@
     html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
     html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
     html[lang="zh-Hant"] .hero-tagline { line-height: 1.5; }
-    html[lang="zh-Hant"] .hero-lede p  { line-height: 1.9; }
+    html[lang="zh-Hant"] .hero-lede p,
+    html[lang="zh-Hant"] .hero-lede-left p,
+    html[lang="zh-Hant"] .hero-lede-right p { line-height: 1.9; }
 
     /* ═══════════  Desktop (768px+)  ═══════════ */
     @media (min-width: 768px) {
@@ -344,14 +449,33 @@
       .hero-content {
         min-height: calc(100vh - var(--hero-peek));
         padding-top: var(--header-h-desktop);
+        display: flex;
+        flex-direction: column;
+      }
+      .hero-center-block {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
       .hero-stack { margin-top: var(--hero-stack-top); }
       .hero-headline { width: max-content; max-width: var(--hero-text-max); }
       .hero-eyebrow > span { white-space: nowrap; }
       .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
-      .hero-rule--countdown { width: auto; flex: 0 0 9rem; }
-      .hero-countdown-band { width: var(--hero-rail-width); justify-content: flex-end; }
-      .hero-colophon-brand { position: absolute; left: 0; bottom: 2.5rem; margin: 0; }
+      .hero-rule--countdown { width: auto; flex: 0 0 6rem; }
+      .hero-bottom-bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0 2rem 2.5rem;
+      }
+      .hero-countdown-band {
+        margin: 0;
+        width: auto;
+      }
+      .hero-colophon-brand { margin: 0; }
     }
     @media (min-width: 640px) { .header-actions { gap: 0.75rem; } }
 
@@ -385,8 +509,8 @@
         <span data-i18n="header.crafted">Crafted in 2026</span>
       </div>
 
-      <!-- Center: brand text below the line -->
-      <div class="header-center">
+      <!-- Center: brand text (hidden — now in hero section) -->
+      <div class="header-center hidden">
         <p class="header-brand-name">Yellow Grapes</p>
         <p class="header-brand-sub">taïwan</p>
       </div>
@@ -432,24 +556,75 @@
       <!-- Content — editorial composition. Keep the grid + min-height (they drive the
            desktop map pull-up). The left column is a full-height flex stack: title block
            (upper) · colophon (bottom). -->
-      <div class="hero-content relative mx-auto grid max-w-7xl grid-cols-12 px-5 pb-16 pt-12 sm:px-8 md:min-h-[calc(100vh_-_var(--header-h-desktop))] md:pb-10 md:pt-8">
+      <div class="hero-content relative mx-auto max-w-7xl px-5 pb-16 pt-12 sm:px-8 md:min-h-[calc(100vh_-_var(--header-h-desktop))] md:pb-10 md:pt-8">
 
-        <!-- Left editorial column (full-height flex on desktop). min-w-0 lets the grid
-             item shrink so the title wraps instead of overflowing on narrow screens. -->
-        <div class="relative col-span-12 flex min-w-0 flex-col md:col-span-9 lg:col-span-8">
+        <!-- Centered hero composition (desktop) -->
+        <div class="hero-center-block hidden md:flex">
+          <!-- Eyebrow — left-aligned to text box -->
+          <p class="hero-eyebrow">
+            <span data-i18n="hero.guidePre">A Guide To</span>
+            <span class="hero-eyebrow-line" aria-hidden="true"></span>
+            <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
+          </p>
 
-          <!-- Cluster: eyebrow · store badges -->
+          <!-- Wordmarks row — Yellow Grapes left, taiwan right -->
+          <div class="hero-wordmarks-row">
+            <p class="hero-brand-name">Yellow Grapes</p>
+            <p class="hero-brand-sub">taïwan</p>
+          </div>
+
+          <!-- Panels — text box (left) + window image (right) -->
+          <div class="hero-panels">
+            <div class="hero-lede-left">
+              <img src="logo/logo-symbol.svg" alt="" class="lede-symbol" aria-hidden="true" />
+              <div class="lede-text">
+                <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
+                <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
+                <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
+                <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
+              </div>
+            </div>
+            <img
+              src="images/app-map-window.png"
+              alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
+              class="hero-window pointer-events-none select-none"
+              onerror="this.style.display='none'"
+            />
+          </div>
+
+          <!-- Store buttons — App Store right-aligned to text box, Play Store left-aligned to window -->
+          <div class="hero-store-row">
+            <span class="store-badge">
+              <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+              <span class="badge-text">
+                <span class="badge-top" data-i18n="store.appleTop">Download on the</span>
+                <span class="badge-name">App Store</span>
+              </span>
+            </span>
+            <span class="store-badge">
+              <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/></svg>
+              <span class="badge-text">
+                <span class="badge-top" data-i18n="store.googleTop">Get it on</span>
+                <span class="badge-name">Google Play</span>
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Mobile layout -->
+        <div class="relative flex min-w-0 flex-col md:hidden">
           <div class="hero-stack">
-            <!-- Headline wrapper -->
             <div class="hero-headline">
               <p class="hero-eyebrow">
                 <span data-i18n="hero.guidePre">A Guide To</span>
                 <span class="hero-eyebrow-line" aria-hidden="true"></span>
                 <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
               </p>
+              <div class="hero-wordmark-block">
+                <p class="hero-brand-name">Yellow Grapes</p>
+                <p class="hero-brand-sub">taïwan</p>
+              </div>
             </div>
-
-            <!-- Store badges (non-functional placeholders until launch) -->
             <div class="hero-store">
               <span class="store-badge">
                 <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
@@ -467,12 +642,13 @@
               </span>
             </div>
           </div>
+        </div>
 
-          <!-- Countdown band — pulled up from the bottom: lighter connector + live day-count -->
+        <!-- Bottom bar: colophon (left) + countdown (right) -->
+        <div class="hero-bottom-bar relative flex min-w-0">
+          <!-- Countdown band — lower right -->
           <div class="hero-countdown-band">
             <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
-            <!-- The wrapper keeps id="countdown" so the existing done-state toggle still works;
-                 #cd-days is the live launch countdown (sourced from 2026-09-24 in the script). -->
             <div id="countdown">
               <p class="hero-countdown">
                 <span class="hero-label" data-i18n="hero.comingSoonPre">Coming Soon In</span>
@@ -488,27 +664,6 @@
             <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes. Vol. 1</p>
             <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
           </div>
-        </div>
-
-        <!-- Combined container: text box + map image bound together (desktop only) -->
-        <div class="hero-composite hidden md:flex">
-          <!-- Brand narrative — square box overlapping the map corner -->
-          <div class="hero-lede-right">
-            <img src="logo/logo-symbol.svg" alt="" class="lede-symbol" aria-hidden="true" />
-            <div class="lede-text">
-              <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
-              <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
-              <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
-              <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
-            </div>
-          </div>
-          <!-- The clear "window" into the frosted map -->
-          <img
-            src="images/app-map-window.png"
-            alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
-            class="hero-window pointer-events-none select-none"
-            onerror="this.style.display='none'"
-          />
         </div>
       </div>
     </section>
@@ -712,7 +867,7 @@
         'hero.lede3': '葡萄酒的美好藏在非常細緻的味覺與嗅覺之中，就是需要如此敏銳的感官方能感受與享受口中味道、香氣的交錯與變化。',
         'hero.lede4': '我們為台灣喜愛葡萄酒的大家建立了這款葡萄酒地圖，一起尋找更細緻的味蕾享受之旅。',
         'hero.guidePre': '一份指南',
-        'hero.guidePost': '在地場所、人物與酒款',
+        'hero.guidePost': '地方、人與葡萄酒',
         'hero.colophonVol': 'Yellow Grapes・第一卷',
         'hero.colophonBy': '由 Torsade Tech 出品',
         'hero.comingSoonPre': '距上線還有',
