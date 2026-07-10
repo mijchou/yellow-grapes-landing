@@ -104,7 +104,7 @@
       --hero-window-bottom: 4rem;
 
       /* Hero center panels (text box + window side by side) */
-      --hero-panel-size: clamp(14.4rem, 26.4vw, 21.6rem);
+      --hero-panel-size: clamp(18rem, 26.4vw, 21.6rem);
     }
 
     /* ═══════════  Header  ═══════════ */
@@ -121,12 +121,16 @@
       max-width: 80rem; margin: 0 auto;
     }
     .header-left {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
       font-family: 'Urbanist', system-ui, sans-serif;
       font-weight: 700;
       font-size: 0.65rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: rgb(var(--fg-rgb) / 0.6);
+      line-height: 1;
     }
     .header-center {
       position: absolute;
@@ -160,6 +164,15 @@
       background: rgb(var(--fg-rgb) / 0.25);
     }
     .header-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; }
+    .header-btn {
+      border-color: rgb(var(--fg-rgb));
+      color: rgb(var(--fg-rgb));
+      background: rgb(var(--bg-rgb));
+    }
+    .header-btn:hover {
+      background: rgb(var(--fg-rgb));
+      color: rgb(var(--bg-rgb));
+    }
 
     /* ═══════════  Hero Wordmark Block  ═══════════ */
     .hero-wordmark-block {
@@ -213,14 +226,14 @@
     .hero-center-block .hero-eyebrow {
       align-self: flex-start;
       margin-left: calc(50% - var(--hero-panel-size));
-      margin-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
     }
     .hero-wordmarks-row {
       display: flex;
       width: calc(var(--hero-panel-size) * 2);
       justify-content: space-between;
       align-items: flex-end;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
     }
     .hero-brand-name-img {
       height: clamp(0.8rem, 1.5vw, 1.2rem);
@@ -245,6 +258,7 @@
       flex-direction: column;
       border: 1px solid rgb(var(--fg-rgb) / 0.1);
       border-right: none;
+      overflow: hidden;
     }
     .hero-panels .hero-window {
       width: var(--hero-panel-size);
@@ -257,7 +271,7 @@
       display: flex;
       justify-content: center;
       gap: 1rem;
-      margin-top: 1rem;
+      margin-top: 2.5rem;
       width: 100%;
     }
     .hero-store-row .store-badge {
@@ -319,8 +333,8 @@
     .hero-lede-left p,
     .hero-lede-right p {
       margin: 0;
-      font-size: clamp(0.55rem, 0.65vw, 0.68rem);
-      line-height: 1.7;
+      font-size: clamp(0.48rem, 0.6vw, 0.68rem);
+      line-height: 1.65;
       color: rgb(var(--fg-rgb) / 0.75);
     }
     .hero-lede-left {
@@ -372,6 +386,7 @@
       min-width: 11rem;
     }
     .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--fg-rgb) / 0.6); }
+    .store-badge--android svg { height: 1.28rem; width: 1.28rem; }
     .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
     .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
     .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
@@ -399,11 +414,14 @@
     .hero-countdown-band .display-numeral { color: rgb(var(--fg-rgb) / 0.6); }
 
     .hero-bottom-bar {
-      width: 100%;
+      position: absolute;
+      left: 0; right: 0; bottom: 2rem;
+      display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      padding: 0 2rem;
     }
-    .hero-colophon-brand { margin-top: 6rem; margin-bottom: 2.5rem; }
+    .hero-colophon-brand { margin: 0; }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
 
     .hero-countdown {
@@ -521,12 +539,12 @@
       <div class="header-right">
         <div class="header-actions">
           <a href="#waitlist"
-             class="border border-fg bg-bg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm"
+             class="header-btn border px-3 py-2 text-xs font-bold uppercase tracking-wide transition-colors sm:text-sm"
              data-i18n="hero.cta">
             Join the Waitlist
           </a>
           <button id="langToggle" type="button"
-                  class="border border-fg px-3 py-2 text-xs font-bold uppercase tracking-wide text-fg transition-colors hover:bg-fg hover:text-bg sm:text-sm">
+                  class="header-btn border px-3 py-2 text-xs font-bold uppercase tracking-wide transition-colors sm:text-sm">
             中
           </button>
         </div>
@@ -603,7 +621,7 @@
                 <span class="badge-name">App Store</span>
               </span>
             </span>
-            <span class="store-badge">
+            <span class="store-badge store-badge--android">
               <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/></svg>
               <span class="badge-text">
                 <span class="badge-top" data-i18n="store.googleTop">Get it on</span>
@@ -635,7 +653,7 @@
                   <span class="badge-name">App Store</span>
                 </span>
               </span>
-              <span class="store-badge">
+              <span class="store-badge store-badge--android">
                 <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/></svg>
                 <span class="badge-text">
                   <span class="badge-top" data-i18n="store.googleTop">Get it on</span>
@@ -778,7 +796,7 @@
   <script>
     // Waitlist form — submits to Google Sheets via Apps Script.
     // Replace WAITLIST_ENDPOINT with your deployed Apps Script web app URL.
-    var WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycby2ANo_T2UGxQRabcsMap6-ZHDc2DXjNmdNKRx37qbazvJUV6c1gKYxTDLKm-gHcLgzXg/exec';
+    var WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzctxnFzJqICOe6sUx94vcrcjSONL4I9IWbDloPYbyDm2nqok7Tl6p8x9bxvwb8xXSGiA/exec';
 
     (function () {
       var form = document.getElementById('waitlistForm');
