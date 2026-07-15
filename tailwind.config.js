@@ -20,6 +20,7 @@ module.exports = {
         accent: 'rgb(var(--accent-rgb) / <alpha-value>)',          // lemon-curd yellow (fills/marks only)
         accentstrong: 'rgb(var(--accent-strong-rgb) / <alpha-value>)', // hover / focus / yellow borders
         onaccent: 'rgb(var(--fg-rgb) / <alpha-value>)',            // text on yellow = charcoal (never white)
+        sage: 'rgb(var(--green-rgb) / <alpha-value>)',             // #606D5D — directory panel, section eyebrows, footer meta
       },
       fontFamily: {
         // App body/UI uses the platform system font (SF Pro / Roboto).

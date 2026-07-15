@@ -71,6 +71,8 @@
       --fg-muted-rgb: 92 87 78;
       --accent-rgb: 242 200 75;
       --accent-strong-rgb: 224 180 49;
+      --green-rgb: 96 109 93;        /* #606D5D — soft sage: directory panel, section eyebrows, footer meta */
+      --map-bg-rgb: 230 228 221;     /* #E6E4DD — THE MAP section bg (blends with the grapes render) */
       --line: rgb(26 24 20 / 0.16);
 
       /* Layout */
@@ -214,7 +216,7 @@
       margin: 0;
     }
 
-    #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
+    #the-map, #field-notes, #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
 
     /* ═══════════  Logo  ═══════════ */
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
@@ -471,6 +473,157 @@
       padding-bottom: 0.02em;
     }
 
+    /* ═══════════  Header section nav (desktop only, above the rule)  ═══════════ */
+    /* Hidden on mobile via inline CSS (not Tailwind's .hidden) because this
+       <style> loads after dist/output.css and would otherwise win the cascade. */
+    .header-nav {
+      display: none; align-items: center; gap: 0.55rem;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.6); line-height: 1;
+    }
+    @media (min-width: 768px) { .header-nav { display: flex; } }
+    .header-nav a { color: inherit; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
+    .header-nav a:hover { color: rgb(var(--fg-rgb)); }
+    .header-nav .sep { color: rgb(var(--fg-rgb) / 0.3); }
+
+    /* ═══════════  Hero slogan + intro (replaces the wordmark)  ═══════════ */
+    .hero-slogan {
+      margin: 0;
+      font-family: var(--font-display-serif);
+      font-weight: 500;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+      color: rgb(var(--fg-rgb));
+      max-width: 14em;
+    }
+    .hero-intro {
+      margin: 0;
+      max-width: 30rem;
+      font-size: clamp(0.9rem, 1vw, 1rem);
+      line-height: 1.7;
+      color: rgb(var(--fg-rgb) / 0.8);
+    }
+
+    /* ═══════════  Shared editorial section chrome  ═══════════ */
+    .section-eyebrow {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin: 0;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.72rem; letter-spacing: 0.26em;
+      text-transform: uppercase; color: rgb(var(--green-rgb));
+    }
+    .section-eyebrow .section-num { color: rgb(var(--fg-rgb) / 0.45); }
+    .section-title {
+      margin: 0;
+      font-family: var(--font-display-serif);
+      font-weight: 500;
+      font-size: clamp(2.3rem, 5vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+      color: rgb(var(--fg-rgb));
+    }
+    .section-desc {
+      margin: 0;
+      font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+      line-height: 1.7;
+      color: rgb(var(--fg-rgb) / 0.85);
+      max-width: 26rem;
+    }
+    .meta-line {
+      margin: 0;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.55);
+    }
+    .meta-line--sage { color: rgb(var(--green-rgb)); }
+
+    .section-head { display: flex; flex-direction: column; gap: 1.25rem; }
+    .section-head__lead { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+    .section-head__aside { display: flex; flex-direction: column; gap: 1rem; }
+    @media (min-width: 768px) {
+      .section-head { flex-direction: row; justify-content: space-between; align-items: flex-end; gap: 2.5rem; }
+      .section-head--top { align-items: flex-start; }
+      .section-head__lead { max-width: 42rem; }
+      .section-head__aside { align-items: flex-end; text-align: right; flex: 0 0 auto; max-width: 24rem; }
+    }
+
+    /* ═══════════  01 · THE MAP  ═══════════ */
+    .map-section { background: rgb(var(--map-bg-rgb)); }
+    .map-grid { display: grid; grid-template-columns: 1fr; margin-top: 2.5rem; }
+    @media (min-width: 768px) { .map-grid { grid-template-columns: 20rem 1fr; } }
+    @media (min-width: 1024px) { .map-grid { grid-template-columns: 23rem 1fr; } }
+    .map-panel {
+      background: rgb(var(--green-rgb));
+      color: rgb(var(--bg-rgb));
+      padding: 2.25rem 2rem;
+      display: flex; flex-direction: column;
+      min-height: 24rem;
+    }
+    .map-panel-label {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.66rem; letter-spacing: 0.24em;
+      text-transform: uppercase; color: rgb(var(--bg-rgb) / 0.7);
+    }
+    .map-panel-title {
+      margin: 1.4rem 0 0;
+      font-family: var(--font-display-serif); font-weight: 500;
+      font-size: clamp(1.9rem, 2.6vw, 2.7rem); line-height: 1.05;
+      color: rgb(var(--bg-rgb));
+    }
+    .map-dir {
+      margin-top: auto; padding-top: 1rem;
+      border-top: 1px solid rgb(var(--bg-rgb) / 0.28);
+      display: flex; flex-direction: column; gap: 0.4rem;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 600; font-size: 0.72rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgb(var(--bg-rgb) / 0.9);
+    }
+    .map-dir-row { display: flex; align-items: baseline; gap: 0.7rem; }
+    .map-dir-row .dir-num { color: rgb(var(--bg-rgb) / 0.55); font-variant-numeric: tabular-nums; }
+    .map-dir-row .dir-count { color: rgb(var(--bg-rgb) / 0.7); font-variant-numeric: tabular-nums; }
+    .map-media { position: relative; min-height: 15rem; background: rgb(var(--map-bg-rgb)); }
+    .map-media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
+    /* ═══════════  02 · FIELD NOTES  ═══════════ */
+    .fn-grid { display: grid; grid-template-columns: 1fr; gap: 2.75rem; margin-top: 2.75rem; }
+    @media (min-width: 768px) { .fn-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; } }
+    .fn-card { display: flex; flex-direction: column; }
+    .fn-card-img {
+      display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
+      background: rgb(var(--fg-rgb) / 0.06);
+    }
+    .fn-card-label {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 1.1rem; padding-top: 0.75rem;
+      border-top: 1px solid rgb(var(--fg-rgb) / 0.7);
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.66rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.85);
+    }
+    .fn-card-title {
+      margin: 0.95rem 0 0;
+      font-family: var(--font-display-serif); font-weight: 500;
+      font-size: clamp(1.6rem, 2vw, 2rem); line-height: 1.08;
+      color: rgb(var(--fg-rgb));
+    }
+    .fn-card-body {
+      margin: 0.9rem 0 0;
+      font-size: 0.95rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.8);
+    }
+
+    /* ═══════════  Footer  ═══════════ */
+    .footer-grid { display: flex; flex-direction: column; gap: 2.5rem; }
+    .footer-tagline { margin: 1.25rem 0 0; font-size: 0.95rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.75); max-width: 22rem; }
+    .footer-meta { margin-top: 1.5rem; }
+    .footer-right { display: flex; flex-direction: column; gap: 1.25rem; }
+    .footer-copy { margin: 0; font-size: 0.75rem; line-height: 1.5; color: rgb(var(--fg-rgb) / 0.5); max-width: 24rem; }
+    @media (min-width: 768px) {
+      .footer-grid { flex-direction: row; justify-content: space-between; align-items: flex-start; gap: 3rem; }
+      .footer-right { align-items: flex-end; text-align: right; }
+    }
+
     /* ═══════════  CJK Adjustments  ═══════════ */
     html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
     html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
@@ -481,6 +634,8 @@
 
     /* ═══════════  Desktop (768px+)  ═══════════ */
     @media (min-width: 768px) {
+      /* Nav now provides the top-right content; the buttons sit just below the rule. */
+      .header-actions { margin-top: 0.75rem; }
       .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
       .hero-content {
         min-height: calc(100vh - var(--hero-peek));
@@ -536,6 +691,8 @@
       .hero-tagline { white-space: normal; }
       .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
       .hero-eyebrow { margin-top: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+      .hero-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .hero-intro { max-width: 100%; }
       .footer-logo { height: 30px; }
 
       /* The hero is short on mobile — there's no room to pin the bottom bar over
@@ -578,8 +735,15 @@
         <p class="header-brand-sub">taïwan</p>
       </div>
 
-      <!-- Right: buttons below the line -->
+      <!-- Right: section nav (above the line, aligns with "Crafted in 2026") + buttons (below the line) -->
       <div class="header-right">
+        <nav class="header-nav" aria-label="Sections">
+          <a href="#the-map" data-i18n="nav.map">The Map</a>
+          <span class="sep" aria-hidden="true">·</span>
+          <a href="#field-notes" data-i18n="nav.fieldnotes">Field Notes</a>
+          <span class="sep" aria-hidden="true">·</span>
+          <a href="#waitlist" data-i18n="nav.arrival">Arrival</a>
+        </nav>
         <div class="header-actions">
           <a href="#waitlist"
              class="header-btn text-xs font-bold uppercase tracking-wide transition-colors sm:text-sm"
@@ -626,13 +790,14 @@
           <!-- Left column — eyebrow · wordmark · taïwan · store buttons (left-aligned) -->
           <div class="hero-left-col">
             <p class="hero-eyebrow">
-              <span data-i18n="hero.guidePre">A Guide To</span>
+              <span data-i18n="hero.guidePre">A Field Guide To</span>
               <span class="hero-eyebrow-line" aria-hidden="true"></span>
               <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
             </p>
 
-            <img src="logo/YELLOW GRAPES.svg" alt="Yellow Grapes" class="hero-brand-name-img" />
+            <h1 class="hero-slogan" data-i18n="hero.slogan">A city to taste with</h1>
             <img src="logo/taiwan.svg" alt="taïwan" class="hero-brand-sub-img" />
+            <p class="hero-intro" data-i18n="hero.intro">Yellow Pages is a considered map of Taiwan's wine bars, bottle shops, restaurants, importers, and the people quietly shaping how the city tastes.</p>
 
             <!-- Store buttons — below the taïwan wordmark, left-aligned -->
             <div class="hero-store-row">
@@ -672,14 +837,13 @@
           <div class="hero-stack">
             <div class="hero-headline">
               <p class="hero-eyebrow">
-                <span data-i18n="hero.guidePre">A Guide To</span>
+                <span data-i18n="hero.guidePre">A Field Guide To</span>
                 <span class="hero-eyebrow-line" aria-hidden="true"></span>
                 <span data-i18n="hero.guidePost">The Places, the People &amp; the Bottle</span>
               </p>
-              <div class="hero-wordmark-block">
-                <p class="hero-brand-name">Yellow Grapes</p>
-                <p class="hero-brand-sub">taïwan</p>
-              </div>
+              <h1 class="hero-slogan" data-i18n="hero.slogan">A city to taste with</h1>
+              <img src="logo/taiwan.svg" alt="taïwan" class="hero-brand-sub-img" />
+              <p class="hero-intro" data-i18n="hero.intro">Yellow Pages is a considered map of Taiwan's wine bars, bottle shops, restaurants, importers, and the people quietly shaping how the city tastes.</p>
             </div>
             <div class="hero-store">
               <span class="store-badge">
@@ -708,7 +872,7 @@
       <div class="hero-bottom-bar flex min-w-0">
         <!-- Brand line — pinned bottom-left -->
         <div class="hero-colophon-brand">
-          <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes. Vol. 1</p>
+          <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes · Edition 01</p>
           <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
         </div>
 
@@ -727,30 +891,121 @@
       </div>
     </section>
 
-    <!-- ───────────────────────  02 · APP WINDOW (mobile only)  ───────────────────────
-         A clean crop of the in-app map. Desktop shows this in the hero instead. -->
-    <section id="map" class="md:hidden">
-      <img
-        src="images/app-map-window.png"
-        alt="The Yellow Grapes app showing wine merchants across Taipei on one map"
-        class="block h-auto w-full"
-        loading="lazy"
-        onerror="this.style.display='none'"
-      />
+    <!-- ───────────────────────  01 · THE MAP  ───────────────────────
+         Warm cream-grey section (#E6E4DD) so the grapes render blends in. A sage
+         "curated directory" panel sits beside the image. -->
+    <section id="the-map" class="map-section border-t border-fg">
+      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+        <div class="section-head section-head--top">
+          <div class="section-head__lead">
+            <p class="section-eyebrow">
+              <span data-i18n="map.eyebrow">The Map</span>
+              <span class="section-num">/ 01</span>
+            </p>
+            <h2 class="section-title" data-i18n="map.heading">A city indexed by taste.</h2>
+          </div>
+          <div class="section-head__aside">
+            <p class="meta-line">23.6978&deg; N &middot; 120.9605&deg; E</p>
+            <p class="section-desc" data-i18n="map.desc">Browse by district, mood, and the kind of bottle you hope to find. Each place is selected for character—not visibility, hype, or ranking.</p>
+          </div>
+        </div>
+
+        <div class="map-grid">
+          <!-- Left: curated directory panel (sage) -->
+          <div class="map-panel">
+            <p class="map-panel-label" data-i18n="map.panelLabel">Curated Directory</p>
+            <p class="map-panel-title" data-i18n="map.panelTitle">127 places worth knowing</p>
+            <div class="map-dir">
+              <p class="map-dir-row"><span class="dir-num">01</span><span class="dir-name" data-i18n="map.dirWineBars">Wine Bars</span><span class="dir-count">&middot; 48</span></p>
+              <p class="map-dir-row"><span class="dir-num">02</span><span class="dir-name" data-i18n="map.dirBottleShops">Bottle Shops</span><span class="dir-count">&middot; 31</span></p>
+              <p class="map-dir-row"><span class="dir-num">03</span><span class="dir-name" data-i18n="map.dirRestaurants">Restaurants</span><span class="dir-count">&middot; 35</span></p>
+              <p class="map-dir-row"><span class="dir-num">04</span><span class="dir-name" data-i18n="map.dirImporters">Importers + Others</span><span class="dir-count">&middot; 13</span></p>
+            </div>
+          </div>
+          <!-- Right: grapes render — blends into the section background -->
+          <div class="map-media">
+            <img src="images/grapes.png" alt="A bowl of yellow grapes" loading="lazy" onerror="this.style.display='none'" />
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- ───────────────────────  03 · WAITLIST  ─────────────────────── -->
+    <!-- ───────────────────────  02 · FIELD NOTES  ───────────────────────
+         Three editorial place cards. Images are Unsplash placeholders — swap for
+         local images/ photos before launch (each degrades to a tinted block). -->
+    <section id="field-notes" class="border-t border-fg">
+      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+        <div class="section-head">
+          <div class="section-head__lead">
+            <p class="section-eyebrow">
+              <span data-i18n="fn.eyebrow">Field Notes</span>
+              <span class="section-num">/ 02</span>
+            </p>
+            <h2 class="section-title" data-i18n="fn.heading">Places with a point of view.</h2>
+          </div>
+          <div class="section-head__aside">
+            <p class="meta-line" data-i18n="fn.meta">Selected slowly. Updated often.</p>
+          </div>
+        </div>
+
+        <div class="fn-grid">
+          <!-- Card 1 -->
+          <article class="fn-card">
+            <img class="fn-card-img"
+              src="https://images.unsplash.com/photo-1584916201218-f4242ceb4809?auto=format&fit=crop&w=800&q=70"
+              alt="Shelves of wine bottles in a small bottle shop"
+              loading="lazy" onerror="this.style.display='none'" />
+            <p class="fn-card-label">
+              <span data-i18n="fn.c1cat">Bottle Shop</span>
+              <span data-i18n="fn.c1dist">Da'an</span>
+            </p>
+            <h3 class="fn-card-title" data-i18n="fn.c1title">A cellar hiding in plain sight</h3>
+            <p class="fn-card-body" data-i18n="fn.c1body">A compact room of thoughtful bottles, patient advice, and labels you won't meet twice.</p>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="fn-card">
+            <img class="fn-card-img"
+              src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=800&q=70"
+              alt="A dim, characterful wine bar interior"
+              loading="lazy" onerror="this.style.display='none'" />
+            <p class="fn-card-label">
+              <span data-i18n="fn.c2cat">Wine Bar</span>
+              <span data-i18n="fn.c2dist">Zhongshan</span>
+            </p>
+            <h3 class="fn-card-title" data-i18n="fn.c2title">A bar built for one more glass</h3>
+            <p class="fn-card-body" data-i18n="fn.c2body">Low lights, a generous by-the-glass list, and the kind of room that makes an evening stretch.</p>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="fn-card">
+            <img class="fn-card-img"
+              src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=70"
+              alt="A restaurant dining room with a wine-forward cellar"
+              loading="lazy" onerror="this.style.display='none'" />
+            <p class="fn-card-label">
+              <span data-i18n="fn.c3cat">Restaurant</span>
+              <span data-i18n="fn.c3dist">Xinyi</span>
+            </p>
+            <h3 class="fn-card-title" data-i18n="fn.c3title">Dinner, with the bottle in mind</h3>
+            <p class="fn-card-body" data-i18n="fn.c3body">Seasonal plates, a quietly adventurous cellar, and pairings that never feel prescribed.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────  03 · ARRIVAL (waitlist)  ─────────────────────── -->
     <section id="waitlist" class="border-t border-fg">
       <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
         <div class="grid grid-cols-12 gap-y-10 md:items-start md:gap-x-12">
 
           <!-- Left: eyebrow + heading + copy + form (the questionnaire) -->
           <div class="col-span-12 md:col-span-6">
-            <p class="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em] text-fg">
-              <span class="inline-block h-2.5 w-2.5 bg-accent" aria-hidden="true"></span>
-              <span data-i18n="waitlist.eyebrow">Early Access</span>
+            <p class="section-eyebrow">
+              <span data-i18n="waitlist.eyebrow">Arrival</span>
+              <span class="section-num">/ 03</span>
             </p>
-            <h2 class="mt-6 font-brand text-4xl font-extrabold leading-[0.98] tracking-tight text-fg sm:text-5xl lg:text-6xl" data-i18n="waitlist.heading">
+            <h2 class="section-title mt-6" data-i18n="waitlist.heading">
               Join the waitlist.
             </h2>
             <p class="mt-5 max-w-sm text-base leading-relaxed text-fgmuted" data-i18n="waitlist.desc">
@@ -824,20 +1079,27 @@
 
   <!-- ─────────────────────────────  FOOTER  ───────────────────────────── -->
   <footer class="border-t border-fg">
-    <div class="mx-auto max-w-7xl px-5 py-10 sm:px-8">
-      <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        <!-- Logo lockup (logo2.svg — grape mark + wordmark in one; anchor carries the label) -->
-        <a href="#top" class="flex items-center gap-4 text-fg" aria-label="Yellow Grapes — home">
-          <img class="footer-logo" src="logo/logo2.svg" alt="" onerror="this.style.display='none'" />
-        </a>
+    <div class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-14">
+      <div class="footer-grid">
+        <!-- Left: logo lockup (logo2.svg) + tagline + edition/place meta -->
+        <div>
+          <a href="#top" class="flex items-center gap-4 text-fg" aria-label="Yellow Grapes — home">
+            <img class="footer-logo" src="logo/logo2.svg" alt="" onerror="this.style.display='none'" />
+          </a>
+          <p class="footer-tagline" data-i18n="footer.tagline">A living index of the city's wine culture.</p>
+          <p class="meta-line meta-line--sage footer-meta" data-i18n="footer.meta">Yellow Grapes &middot; Edition 01 &middot; Taiwan</p>
+        </div>
 
-        <!-- Nav. Privacy / Terms → build-time pages rendered from Firestore (see CLAUDE.md). -->
-        <nav class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-fgmuted">
-          <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.home">Home</a>
-          <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
-          <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.terms">Terms</a>
-          <a href="#waitlist" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
-        </nav>
+        <!-- Right: nav + copyright. Privacy / Terms → build-time pages from Firestore (see CLAUDE.md). -->
+        <div class="footer-right">
+          <nav class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-fgmuted">
+            <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.home">Home</a>
+            <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
+            <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.terms">Terms</a>
+            <a href="#waitlist" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
+          </nav>
+          <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited. All rights reserved.</p>
+        </div>
       </div>
     </div>
   </footer>
@@ -897,13 +1159,18 @@
     var I18N = {
       en: {
         'header.crafted': 'Crafted in 2026',
+        'nav.map': 'The Map',
+        'nav.fieldnotes': 'Field Notes',
+        'nav.arrival': 'Arrival',
+        'hero.slogan': 'A city to taste with',
+        'hero.intro': "Yellow Pages is a considered map of Taiwan's wine bars, bottle shops, restaurants, importers, and the people quietly shaping how the city tastes.",
         'hero.lede1': 'Taiwanese palates are remarkably discerning.',
         'hero.lede2': 'Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.',
         'hero.lede3': 'The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.',
         'hero.lede4': 'We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.',
-        'hero.guidePre': 'A Guide To',
+        'hero.guidePre': 'A Field Guide To',
         'hero.guidePost': 'The Places, the People &amp; the Bottle',
-        'hero.colophonVol': 'Yellow Grapes. Vol. 1',
+        'hero.colophonVol': 'Yellow Grapes · Edition 01',
         'hero.colophonBy': 'By Torsade Tech',
         'hero.comingSoonPre': 'Coming Soon In',
         'hero.comingSoonPost': 'Days',
@@ -915,7 +1182,7 @@
         'countdown.minutes': 'Minutes',
         'countdown.seconds': 'Seconds',
         'countdown.done': "We're live! 🍇",
-        'waitlist.eyebrow': 'Early Access',
+        'waitlist.eyebrow': 'Arrival',
         'waitlist.heading': 'Join the waitlist.',
         'waitlist.desc': "Drop your email and let us know your platform — we'll tell you the moment early access opens.",
         'form.email': 'Email address',
@@ -924,6 +1191,33 @@
         'thanks.title': "You're on the list. 🍇",
         'thanks.body': "Thanks for joining — we'll be in touch when early access opens.",
         'error.submit': 'Something went wrong. Please try again.',
+        'map.eyebrow': 'The Map',
+        'map.heading': 'A city indexed by taste.',
+        'map.desc': 'Browse by district, mood, and the kind of bottle you hope to find. Each place is selected for character—not visibility, hype, or ranking.',
+        'map.panelLabel': 'Curated Directory',
+        'map.panelTitle': '127 places worth knowing',
+        'map.dirWineBars': 'Wine Bars',
+        'map.dirBottleShops': 'Bottle Shops',
+        'map.dirRestaurants': 'Restaurants',
+        'map.dirImporters': 'Importers + Others',
+        'fn.eyebrow': 'Field Notes',
+        'fn.heading': 'Places with a point of view.',
+        'fn.meta': 'Selected slowly. Updated often.',
+        'fn.c1cat': 'Bottle Shop',
+        'fn.c1dist': "Da'an",
+        'fn.c1title': 'A cellar hiding in plain sight',
+        'fn.c1body': "A compact room of thoughtful bottles, patient advice, and labels you won't meet twice.",
+        'fn.c2cat': 'Wine Bar',
+        'fn.c2dist': 'Zhongshan',
+        'fn.c2title': 'A bar built for one more glass',
+        'fn.c2body': 'Low lights, a generous by-the-glass list, and the kind of room that makes an evening stretch.',
+        'fn.c3cat': 'Restaurant',
+        'fn.c3dist': 'Xinyi',
+        'fn.c3title': 'Dinner, with the bottle in mind',
+        'fn.c3body': 'Seasonal plates, a quietly adventurous cellar, and pairings that never feel prescribed.',
+        'footer.tagline': "A living index of the city's wine culture.",
+        'footer.meta': 'Yellow Grapes · Edition 01 · Taiwan',
+        'footer.copyright': 'Copyright © 2026 Torsade Technologies Company Limited. All rights reserved.',
         'footer.home': 'Home',
         'footer.privacy': 'Privacy',
         'footer.terms': 'Terms',
@@ -931,13 +1225,18 @@
       },
       zh: {
         'header.crafted': '製作於 2026 年',
+        'nav.map': '地圖',
+        'nav.fieldnotes': '田野筆記',
+        'nav.arrival': '抵達',
+        'hero.slogan': '一座用味蕾品讀的城市',
+        'hero.intro': 'Yellow Pages 是一份用心編纂的台灣葡萄酒地圖 — 收錄各地的葡萄酒吧、選酒店、餐廳與進口商，以及那些默默形塑這座城市味道的人。',
         'hero.lede1': '台灣人的味蕾是非常敏銳的。',
         'hero.lede2': '同樣一道雞肉飯，大家總是知道去哪個街角找到他最美味的模樣；放眼望去滿街的手搖飲店，也總能嚐出多多綠要買哪間、哪間的牛奶最好，或是哪間用了刺鼻的水果香精。',
         'hero.lede3': '葡萄酒的美好藏在非常細緻的味覺與嗅覺之中，就是需要如此敏銳的感官方能感受與享受口中味道、香氣的交錯與變化。',
         'hero.lede4': '我們為台灣喜愛葡萄酒的大家建立了這款葡萄酒地圖，一起尋找更細緻的味蕾享受之旅。',
         'hero.guidePre': '一份指南',
         'hero.guidePost': '找到屬於我們的地方、人與葡萄酒',
-        'hero.colophonVol': 'Yellow Grapes・第一卷',
+        'hero.colophonVol': 'Yellow Grapes · 第一版',
         'hero.colophonBy': '由 Torsade Tech 出品',
         'hero.comingSoonPre': '距上線還有',
         'hero.comingSoonPost': '天',
@@ -949,7 +1248,7 @@
         'countdown.minutes': '分鐘',
         'countdown.seconds': '秒',
         'countdown.done': '正式上線！🍇',
-        'waitlist.eyebrow': '搶先體驗',
+        'waitlist.eyebrow': '抵達',
         'waitlist.heading': '加入等候名單。',
         'waitlist.desc': '留下你的電子郵件並選擇使用平台 — 開放搶先體驗時，我們會立刻通知你。',
         'form.email': '電子郵件',
@@ -958,6 +1257,33 @@
         'thanks.title': '你已加入等候名單。🍇',
         'thanks.body': '感謝加入 — 開放搶先體驗時我們會與你聯繫。',
         'error.submit': '發生錯誤，請再試一次。',
+        'map.eyebrow': '地圖',
+        'map.heading': '以味蕾索引的城市。',
+        'map.desc': '依區域、氛圍，以及你想尋找的那支酒瀏覽。每一處都因其個性而入選 — 無關名氣、話題或排名。',
+        'map.panelLabel': '精選名錄',
+        'map.panelTitle': '127 個值得認識的地方',
+        'map.dirWineBars': '葡萄酒吧',
+        'map.dirBottleShops': '選酒店',
+        'map.dirRestaurants': '餐廳',
+        'map.dirImporters': '進口商與其他',
+        'fn.eyebrow': '田野筆記',
+        'fn.heading': '有態度的地方。',
+        'fn.meta': '慢慢挑選，時常更新。',
+        'fn.c1cat': '選酒店',
+        'fn.c1dist': '大安',
+        'fn.c1title': '藏身於日常的酒窖',
+        'fn.c1body': '一間小巧的選酒空間，選瓶用心、建議耐心，還有你不會再遇見第二次的酒標。',
+        'fn.c2cat': '葡萄酒吧',
+        'fn.c2dist': '中山',
+        'fn.c2title': '為了再來一杯而生的酒吧',
+        'fn.c2body': '微暗的燈光、慷慨的單杯酒單，還有讓夜晚不知不覺拉長的空間。',
+        'fn.c3cat': '餐廳',
+        'fn.c3dist': '信義',
+        'fn.c3title': '以酒佐餐的晚宴',
+        'fn.c3body': '當季料理、低調而大膽的酒藏，還有從不流於公式的餐酒搭配。',
+        'footer.tagline': '一部持續生長的城市葡萄酒文化索引。',
+        'footer.meta': 'Yellow Grapes · 第一版 · 台灣',
+        'footer.copyright': '版權所有 © 2026 Torsade Technologies Company Limited。保留一切權利。',
         'footer.home': '首頁',
         'footer.privacy': '隱私權',
         'footer.terms': '服務條款',
