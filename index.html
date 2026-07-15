@@ -168,7 +168,7 @@
       height: 1px;
       background: rgb(var(--fg-rgb) / 0.25);
     }
-    .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
+    .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; margin-top: 1.5rem; }
     /* Text-only buttons: no container, underlined, tinted to match the
        .hero-eyebrow label (fg @ 0.75). */
     .header-btn {
@@ -252,11 +252,14 @@
       width: auto;
       opacity: 0.6;
     }
-    /* Right column: the standalone narrative box */
+    /* Right column: the standalone narrative box. margin-left:auto keeps it
+       hard-right whether it shares the row with the branding or wraps below it
+       (tight desktop widths near the md breakpoint). */
     .hero-right-col {
       display: flex;
       justify-content: flex-end;
       flex: 0 0 auto;
+      margin-left: auto;
     }
     .hero-lede-left {
       position: relative;
@@ -279,6 +282,19 @@
     .hero-store-row .store-badge {
       flex: 0 0 auto;
       min-width: 11.5rem;
+    }
+
+    /* Narrative box relocated into the waitlist section (right column):
+       fill the column, grow to fit, and use a readable body size. */
+    .waitlist-lede .hero-lede-left {
+      width: 100%;
+      height: auto;
+      min-height: var(--hero-panel-size);
+    }
+    .waitlist-lede .lede-text { margin-top: 0; }
+    .waitlist-lede .hero-lede-left p {
+      font-size: 0.9rem;
+      line-height: 1.75;
     }
 
     /* Legacy composite (hidden on desktop, used for mobile) */
@@ -489,8 +505,9 @@
       .hero-headline { width: max-content; max-width: var(--hero-text-max); }
       .hero-eyebrow > span { white-space: nowrap; }
       .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
-      /* Decorative rule shrinks first so the numeral + label never clip */
-      .hero-rule--countdown { width: auto; flex: 0 1 6rem; min-width: 0; }
+      /* Countdown now sits inline under the store buttons (left column) —
+         fixed-width rule so the leading line is always visible. */
+      .hero-rule--countdown { width: 3.5rem; flex: 0 0 3.5rem; }
       .hero-bottom-bar {
         position: absolute;
         left: 1.5rem;
@@ -503,13 +520,14 @@
       }
       .hero-countdown-band {
         margin: 0;
-        margin-left: auto;
         width: auto;
-        justify-content: flex-end;
-        min-width: 0;
+        justify-content: flex-start;
       }
+      /* The bottom-bar countdown is the mobile-only copy — hide it on desktop
+         (inline style wins the cascade over Tailwind's md:hidden). */
+      .hero-countdown-band--bottom { display: none; }
     }
-    @media (min-width: 640px) { .header-actions { gap: 0.75rem; } }
+    @media (min-width: 640px) { .header-actions { gap: 0.25rem; } }
 
     /* ═══════════  Mobile/Tablet (≤767px)  ═══════════ */
     @media (max-width: 767px) {
@@ -633,18 +651,18 @@
                 </span>
               </span>
             </div>
-          </div>
 
-          <!-- Right column — standalone narrative box (below the header actions) -->
-          <div class="hero-right-col">
-            <div class="hero-lede-left">
-              <img src="logo/logo-symbol.svg" alt="" class="lede-symbol" aria-hidden="true" />
-              <div class="lede-text">
-                <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
-                <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
-                <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
-                <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
+            <!-- Launch countdown — below the download buttons, left-aligned -->
+            <div class="hero-countdown-band">
+              <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
+              <div class="js-countdown">
+                <p class="hero-countdown">
+                  <span class="hero-label" data-i18n="hero.comingSoonPre">Coming Soon In</span>
+                  <span class="cd-days display-numeral">00</span>
+                  <span class="hero-label" data-i18n="hero.comingSoonPost">Days</span>
+                </p>
               </div>
+              <p class="js-countdown-done hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
             </div>
           </div>
         </div>
@@ -694,17 +712,17 @@
           <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
         </div>
 
-        <!-- Countdown band — lower right -->
-        <div class="hero-countdown-band">
+        <!-- Countdown band — mobile only (desktop shows it under the store buttons) -->
+        <div class="hero-countdown-band hero-countdown-band--bottom">
           <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
-          <div id="countdown">
+          <div class="js-countdown">
             <p class="hero-countdown">
               <span class="hero-label" data-i18n="hero.comingSoonPre">Coming Soon In</span>
-              <span id="cd-days" class="display-numeral">00</span>
+              <span class="cd-days display-numeral">00</span>
               <span class="hero-label" data-i18n="hero.comingSoonPost">Days</span>
             </p>
           </div>
-          <p id="countdownDone" class="hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
+          <p class="js-countdown-done hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
         </div>
       </div>
     </section>
@@ -724,10 +742,10 @@
     <!-- ───────────────────────  03 · WAITLIST  ─────────────────────── -->
     <section id="waitlist" class="border-t border-fg">
       <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <div class="grid grid-cols-12 gap-y-10 md:gap-x-12">
+        <div class="grid grid-cols-12 gap-y-10 md:items-start md:gap-x-12">
 
-          <!-- Left: eyebrow + heading + copy -->
-          <div class="col-span-12 md:col-span-5">
+          <!-- Left: eyebrow + heading + copy + form (the questionnaire) -->
+          <div class="col-span-12 md:col-span-6">
             <p class="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.32em] text-fg">
               <span class="inline-block h-2.5 w-2.5 bg-accent" aria-hidden="true"></span>
               <span data-i18n="waitlist.eyebrow">Early Access</span>
@@ -739,11 +757,8 @@
               Drop your email and let us know your platform — we'll tell you the
               moment early access opens.
             </p>
-          </div>
 
-          <!-- Right: form (UI only — no backend wired) -->
-          <div class="col-span-12 md:col-span-6 md:col-start-7">
-            <form id="waitlistForm" class="space-y-6" novalidate>
+            <form id="waitlistForm" class="mt-8 space-y-6" novalidate>
               <div>
                 <label for="email" class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg" data-i18n="form.email">Email address</label>
                 <input
@@ -787,6 +802,19 @@
             <!-- Error state (shown on submission failure) -->
             <div id="waitlistError" class="mt-6 hidden border border-red-500 bg-red-50 px-6 py-4" tabindex="-1">
               <p class="text-sm font-medium text-red-700" data-i18n="error.submit">Something went wrong. Please try again.</p>
+            </div>
+          </div>
+
+          <!-- Right: narrative text box (moved here from the hero) -->
+          <div class="waitlist-lede col-span-12 md:col-span-5 md:col-start-8">
+            <div class="hero-lede-left">
+              <img src="logo/logo-symbol.svg" alt="" class="lede-symbol" aria-hidden="true" />
+              <div class="lede-text">
+                <p data-i18n="hero.lede1">Taiwanese palates are remarkably discerning.</p>
+                <p data-i18n="hero.lede2">Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.</p>
+                <p data-i18n="hero.lede3">The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.</p>
+                <p data-i18n="hero.lede4">We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -971,30 +999,24 @@
     // ─────────────  Launch countdown → 2026-09-24 00:00 Asia/Taipei  ─────────────
     (function () {
       var target = new Date('2026-09-24T00:00:00+08:00').getTime();
-      var grid = document.getElementById('countdown');
-      var done = document.getElementById('countdownDone');
-      var elD = document.getElementById('cd-days');
-      var elH = document.getElementById('cd-hours');
-      var elM = document.getElementById('cd-mins');
-      var elS = document.getElementById('cd-secs');
-      if (!grid || !elD) return;
-      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      // Two instances share the same classes (desktop: under the store buttons;
+      // mobile: in the bottom bar) — update them all.
+      var grids = document.querySelectorAll('.js-countdown');
+      var dones = document.querySelectorAll('.js-countdown-done');
+      var elsD = document.querySelectorAll('.cd-days');
+      if (!elsD.length) return;
+      var setAll = function (nodes, fn) { Array.prototype.forEach.call(nodes, fn); };
 
       function tick() {
         var diff = target - Date.now();
         if (diff <= 0) {
-          grid.classList.add('hidden');
-          if (done) done.classList.remove('hidden');
+          setAll(grids, function (g) { g.classList.add('hidden'); });
+          setAll(dones, function (d) { d.classList.remove('hidden'); });
           clearInterval(timer);
           return;
         }
-        var s = Math.floor(diff / 1000);
-        elD.textContent = Math.floor(s / 86400);
-        // h/m/s are computed but only rendered if their spans exist — the editorial hero
-        // shows days only; re-add #cd-hours / #cd-mins / #cd-secs to surface them later.
-        if (elH) elH.textContent = pad(Math.floor((s % 86400) / 3600));
-        if (elM) elM.textContent = pad(Math.floor((s % 3600) / 60));
-        if (elS) elS.textContent = pad(s % 60);
+        var days = String(Math.floor(diff / 1000 / 86400));
+        setAll(elsD, function (el) { el.textContent = days; });
       }
       tick();
       var timer = setInterval(tick, 1000);
