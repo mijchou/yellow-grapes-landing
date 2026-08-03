@@ -759,8 +759,9 @@ serif;
       <div class="header-right">
         <nav class="header-nav" aria-label="Sections">
           <a href="#the-map" data-i18n="nav.map">The Map</a>
-          <span class="sep" aria-hidden="true">·</span>
-          <a href="#field-notes" data-i18n="nav.fieldnotes">Field Notes</a>
+          <!-- Field Notes link removed while section 02 is hidden. TO REOPEN, restore:
+               <span class="sep" aria-hidden="true">·</span>
+               <a href="#field-notes" data-i18n="nav.fieldnotes">Field Notes</a> -->
           <span class="sep" aria-hidden="true">·</span>
           <a href="#waitlist" data-i18n="nav.arrival">The Invitation</a>
         </nav>
@@ -943,6 +944,15 @@ serif;
       </div>
     </section>
 
+    <!-- ══ 02 · FIELD NOTES — TEMPORARILY HIDDEN (2026-08-04) ══════════════
+         Wrapped in <template> so nothing renders and the three Unsplash images
+         are never fetched. <template> (not an HTML comment) because the block
+         contains comments of its own, and comments can't nest.
+         TO REOPEN: delete this <template> tag and its </template> below, then
+         (a) restore the nav anchor in the header (see the note there) and
+         (b) change the Invitation's eyebrow back from "/ 02" to "/ 03". -->
+    <template id="field-notes-disabled">
+
     <!-- ───────────────────────  02 · FIELD NOTES  ───────────────────────
          Three editorial place cards. Images are Unsplash placeholders — swap for
          local images/ photos before launch (each degrades to a tinted block). -->
@@ -1007,7 +1017,12 @@ serif;
       </div>
     </section>
 
-    <!-- ───────────────────────  03 · ARRIVAL (waitlist)  ─────────────────────── -->
+    </template>
+    <!-- ══ end of hidden 02 · FIELD NOTES ═════════════════════════════════ -->
+
+    <!-- ───────────────────────  02 · ARRIVAL (waitlist)  ───────────────────────
+         Numbered 03 originally — renumbered to 02 while FIELD NOTES is hidden,
+         so the page reads 01 → 02 with no gap. Restore to 03 when it reopens. -->
     <section id="waitlist" class="border-t border-fg">
       <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
         <div class="grid grid-cols-12 gap-y-10 md:items-start md:gap-x-12">
@@ -1016,7 +1031,7 @@ serif;
           <div class="col-span-12 md:col-span-6">
             <p class="section-eyebrow">
               <span data-i18n="waitlist.eyebrow">The Invitation</span>
-              <span class="section-num">/ 03</span>
+              <span class="section-num">/ 02</span>
             </p>
             <h2 class="section-title mt-6" data-i18n="waitlist.heading">
               Join the waitlist.
@@ -1281,7 +1296,7 @@ serif;
         'fn.c3dist': '信義',
         'fn.c3title': '以酒佐餐的晚宴',
         'fn.c3body': '當季料理、低調而大膽的酒藏，還有從不流於公式的餐酒搭配。',
-        'footer.tagline': '一部持續生長的城市葡萄酒文化索引。',
+        'footer.tagline': '',
         'footer.meta': 'Yellow Grapes · 第一版 · 台灣',
         'footer.copyright': '版權所有 © 2026 Torsade Technologies Company Limited。保留一切權利。',
         'footer.home': '首頁',
