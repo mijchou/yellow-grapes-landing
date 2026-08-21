@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Yellow Grapes invitation</title>
+    <style>
+      :root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #faf9f5; color: #1a1814; }
+      main { width: min(28rem, calc(100% - 3rem)); text-align: center; }
+      h1 { font-size: 1.5rem; margin: 0 0 .75rem; }
+      p { margin: 0; line-height: 1.55; color: #5c574e; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Yellow Grapes invitation</h1>
+      <p id="message" role="status">Opening Yellow Grapes…</p>
+    </main>
+
+    <!-- Generated only in the deployment artifact after the required App Store
+         URL has been validated. It is intentionally not committed. -->
+    <script src="store-config.js"></script>
+    <script src="redirect.js"></script>
+    <script>
+      (function () {
+        // Never leave a bearer token in the page's visible history. This runs
+        // before any store redirect and the page loads no third-party content.
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, '', '/manager-invite/');
+        }
+
+        var destination = window.YellowGrapesManagerInvite.destinationForDevice(
+          window.navigator,
+          window.YELLOW_GRAPES_IOS_APP_STORE_URL
+        );
+        if (destination) {
+          window.location.replace(destination);
+          return;
+        }
+
+        document.getElementById('message').textContent =
+          'Please open this invitation on a mobile phone or tablet with Yellow Grapes installed.';
+      })();
+    </script>
+  </body>
+</html>

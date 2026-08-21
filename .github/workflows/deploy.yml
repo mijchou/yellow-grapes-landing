@@ -52,14 +52,24 @@ jobs:
       - name: Build CSS
         run: npm run build
 
+      - name: Test manager invite fallback routing
+        run: npm run test:manager-invite
+
       # Assemble only the deployable files (keeps node_modules/, scripts/, src/,
       # and the service account OUT of the published artifact).
       - name: Assemble site
+        env:
+          IOS_APP_STORE_URL: ${{ vars.IOS_APP_STORE_URL }}
+          PLAY_APP_SIGNING_CERT_SHA256: ${{ secrets.PLAY_APP_SIGNING_CERT_SHA256 }}
         run: |
           mkdir -p _site
           cp index.html terms.html privacy.html _site/
           cp -r dist logo images _site/
           cp CNAME _site/
+          mkdir -p _site/manager-invite _site/.well-known
+          cp manager-invite/index.html manager-invite/redirect.js _site/manager-invite/
+          node -e 'const url = process.env.IOS_APP_STORE_URL || ""; if (!/^https:\/\/apps\.apple\.com\//.test(url)) throw new Error("IOS_APP_STORE_URL must be a public apps.apple.com URL."); process.stdout.write(`window.YELLOW_GRAPES_IOS_APP_STORE_URL = ${JSON.stringify(url)};\n`);' > _site/manager-invite/store-config.js
+          node scripts/build-association-files.js _site/.well-known
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
