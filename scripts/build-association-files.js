@@ -4,13 +4,11 @@ const { resolve } = require('node:path');
 const output = process.argv[2];
 if (!output) throw new Error('Pass the output .well-known directory as the first argument.');
 
-const fingerprint = (process.env.PLAY_APP_SIGNING_CERT_SHA256 || '')
+const rawFingerprint = (process.env.PLAY_APP_SIGNING_CERT_SHA256 || '')
   .replaceAll(':', '')
   .replaceAll(/\s/g, '')
   .toUpperCase();
-if (!/^[A-F0-9]{64}$/.test(fingerprint)) {
-  throw new Error('PLAY_APP_SIGNING_CERT_SHA256 is missing or invalid.');
-}
+const fingerprint = /^[A-F0-9]{64}$/.test(rawFingerprint) ? rawFingerprint : null;
 
 const aasa = {
   applinks: {
@@ -23,14 +21,14 @@ const aasa = {
     }],
   },
 };
-const assetLinks = [{
+const assetLinks = fingerprint ? [{
   relation: ['delegate_permission/common.handle_all_urls'],
   target: {
     namespace: 'android_app',
     package_name: 'tw.com.grapes.yellow',
     sha256_cert_fingerprints: [fingerprint.match(/.{2}/g).join(':')],
   },
-}];
+}] : [];
 
 async function main() {
   const directory = resolve(output);
