@@ -227,7 +227,6 @@
     /* ═══════════  Logo  ═══════════ */
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
     .yg-wordmark { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.42em; }
-    .footer-logo { display: block; height: 34px; width: auto; }
 
     /* ═══════════  Hero  ═══════════ */
     .hero-dark {
@@ -436,6 +435,7 @@
       gap: 1.1rem;
       white-space: nowrap;
     }
+    .hero-countdown-band--hidden { display: none; }
     .hero-countdown-band .hero-label,
     .hero-countdown-band .display-numeral { color: rgb(var(--fg-rgb) / 0.6); }
 
@@ -479,16 +479,13 @@
       padding-bottom: 0.02em;
     }
 
-    /* ═══════════  Header section nav (desktop only, above the rule)  ═══════════ */
-    /* Hidden on mobile via inline CSS (not Tailwind's .hidden) because this
-       <style> loads after dist/output.css and would otherwise win the cascade. */
+    /* ═══════════  Header section nav (above the rule)  ═══════════════════ */
     .header-nav {
-      display: none; align-items: center; gap: 0.55rem;
+      display: flex; align-items: center; gap: 0.55rem;
       font-family: 'Urbanist', system-ui, sans-serif;
       font-weight: 700; font-size: 0.65rem; letter-spacing: 0.2em;
       text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.6); line-height: 1;
     }
-    @media (min-width: 768px) { .header-nav { display: flex; } }
     .header-nav a { color: inherit; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
     .header-nav a:hover { color: rgb(var(--fg-rgb)); }
     .header-nav .sep { color: rgb(var(--fg-rgb) / 0.3); }
@@ -542,6 +539,7 @@ serif;
       letter-spacing: -0.01em;
       color: rgb(var(--fg-rgb));
     }
+    .waitlist-title { font-size: clamp(2rem, 3.6vw, 3.2rem); }
     .section-desc {
       margin: 0;
       font-size: clamp(0.95rem, 1.1vw, 1.05rem);
@@ -708,12 +706,14 @@ serif;
     @media (max-width: 767px) {
       .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
       .hero-content { padding-top: calc(var(--header-h-desktop) + 1.5rem); }
+      .hero-background-image { object-position: right center; }
+      .header-nav { gap: 0.35rem; font-size: 0.55rem; letter-spacing: 0.14em; }
+      .header-actions { margin-top: 0.75rem; }
       .hero-tagline { white-space: normal; }
       .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
       .hero-eyebrow { margin-top: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
       .hero-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
       .hero-intro { max-width: 100%; }
-      .footer-logo { height: 30px; }
 
       /* The hero is short on mobile — there's no room to pin the bottom bar over
          the stack, so let it flow after the hero content instead. Stacked and
@@ -755,10 +755,10 @@ serif;
         <p class="header-brand-sub">EDITION 01 taïwan</p>
       </div>
 
-      <!-- Right: section nav (above the line, aligns with "Crafted in 2026") + buttons (below the line) -->
-      <div class="header-right">
-        <nav class="header-nav" aria-label="Sections">
-          <a href="#the-map" data-i18n="nav.map">The Map</a>
+        <!-- Right: section nav (above the line, aligns with "Crafted in 2026") + language toggle (below the line) -->
+        <div class="header-right">
+          <nav class="header-nav" aria-label="Sections">
+          <a href="#top" data-i18n="nav.map">The Map</a>
           <!-- Field Notes link removed while section 02 is hidden. TO REOPEN, restore:
                <span class="sep" aria-hidden="true">·</span>
                <a href="#field-notes" data-i18n="nav.fieldnotes">Field Notes</a> -->
@@ -789,7 +789,7 @@ serif;
       <div class="absolute inset-0 block" aria-hidden="true">
         <img
           src="images/app-map-wide-extended-withoutfrost.png" alt=""
-          class="h-full w-full object-cover object-center"
+          class="hero-background-image h-full w-full object-cover"
           onerror="this.style.display='none'"
         />
         <!-- optional charcoal veil for legibility (default 0, tune via #tune) -->
@@ -832,8 +832,8 @@ serif;
               </span>
             </div>
 
-            <!-- Launch countdown — below the download buttons, left-aligned -->
-            <div class="hero-countdown-band">
+            <!-- Launch countdown — temporarily hidden until the launch date is announced. -->
+            <div class="hero-countdown-band hero-countdown-band--hidden">
               <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
               <div class="js-countdown">
                 <p class="hero-countdown">
@@ -890,8 +890,8 @@ serif;
           <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
         </div>
 
-        <!-- Countdown band — mobile only (desktop shows it under the store buttons) -->
-        <div class="hero-countdown-band hero-countdown-band--bottom">
+        <!-- Countdown band — temporarily hidden until the launch date is announced. -->
+        <div class="hero-countdown-band hero-countdown-band--bottom hero-countdown-band--hidden">
           <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
           <div class="js-countdown">
             <p class="hero-countdown">
@@ -904,6 +904,11 @@ serif;
         </div>
       </div>
     </section>
+
+    <!-- ══ 01 · THE MAP — TEMPORARILY HIDDEN ══════════════════════════════
+         Wrapped in <template> so it does not render and the grapes image is not
+         loaded. TO REOPEN: remove this <template> tag and its closing tag below. -->
+    <template id="the-map-disabled">
 
     <!-- ───────────────────────  01 · THE MAP  ───────────────────────
          Warm cream-grey section (#E6E4DD) so the grapes render blends in. A sage
@@ -943,6 +948,9 @@ serif;
         </div>
       </div>
     </section>
+
+    </template>
+    <!-- ══ end of hidden 01 · THE MAP ═════════════════════════════════════ -->
 
     <!-- ══ 02 · FIELD NOTES — TEMPORARILY HIDDEN (2026-08-04) ══════════════
          Wrapped in <template> so nothing renders and the three Unsplash images
@@ -1031,14 +1039,12 @@ serif;
           <div class="col-span-12 md:col-span-6">
             <p class="section-eyebrow">
               <span data-i18n="waitlist.eyebrow">The Invitation</span>
-              <span class="section-num">/ 02</span>
             </p>
-            <h2 class="section-title mt-6" data-i18n="waitlist.heading">
-              Join the waitlist.
+            <h2 class="section-title waitlist-title mt-6" data-i18n="waitlist.heading">
+              Join our tester program.
             </h2>
             <p class="mt-5 max-w-sm text-base leading-relaxed text-fgmuted" data-i18n="waitlist.desc">
-              Drop your email and let us know your platform — we'll tell you the
-              moment early access opens.
+              We're almost ready to launch and expect to open to a small group of testers in mid-September. If you'd like to be among the first to experience what we've built, please leave your details :)
             </p>
 
             <form id="waitlistForm" class="mt-8 space-y-6" novalidate>
@@ -1070,9 +1076,9 @@ serif;
               </fieldset>
 
               <button type="submit"
-                class="w-full bg-accent px-6 py-4 text-sm font-bold uppercase tracking-wide text-onaccent transition-colors hover:bg-accentstrong"
+                class="w-full bg-sage px-6 py-4 text-sm font-bold uppercase tracking-wide text-bg transition-colors hover:bg-[#515e4e]"
                 data-i18n="form.submit">
-                Join the waitlist
+                Become a tester
               </button>
             </form>
 
@@ -1096,11 +1102,8 @@ serif;
   <footer class="border-t border-fg">
     <div class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-14">
       <div class="footer-grid">
-        <!-- Left: logo lockup (logo2.svg) + tagline + edition/place meta -->
+        <!-- Left: tagline + edition/place meta -->
         <div>
-          <a href="#top" class="flex items-center gap-4 text-fg" aria-label="Yellow Grapes — home">
-            <img class="footer-logo" src="logo/logo2.svg" alt="" onerror="this.style.display='none'" />
-          </a>
           <p class="footer-tagline" data-i18n="footer.tagline">A living index of the city's wine culture.</p>
           <p class="meta-line meta-line--sage footer-meta" data-i18n="footer.meta">Yellow Grapes &middot; Edition 01 &middot; Taiwan</p>
         </div>
@@ -1113,7 +1116,7 @@ serif;
             <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.terms">Terms</a>
             <a href="#waitlist" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
           </nav>
-          <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited. All rights reserved.</p>
+          <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited</p>
         </div>
       </div>
     </div>
@@ -1129,7 +1132,6 @@ serif;
       var thanks = document.getElementById('waitlistThanks');
       var errorEl = document.getElementById('waitlistError');
       var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
-      var btnText = submitBtn ? submitBtn.textContent : '';
       if (!form) return;
 
       form.addEventListener('submit', function (e) {
@@ -1137,6 +1139,7 @@ serif;
         if (!form.reportValidity()) return;
 
         // Hide previous error, show loading state
+        var btnText = submitBtn.textContent;
         errorEl.classList.add('hidden');
         submitBtn.disabled = true;
         submitBtn.textContent = '...';
@@ -1198,11 +1201,11 @@ serif;
         'countdown.seconds': 'Seconds',
         'countdown.done': "We're live! 🍇",
         'waitlist.eyebrow': 'The Invitation',
-        'waitlist.heading': 'Join the waitlist.',
-        'waitlist.desc': "Drop your email and let us know your platform — we'll tell you the moment early access opens.",
+        'waitlist.heading': 'Join our tester program.',
+        'waitlist.desc': "We're almost ready to launch and expect to open to a small group of testers in mid-September. If you'd like to be among the first to experience what we've built, please leave your details :)",
         'form.email': 'Email address',
         'form.platform': 'Which platform do you use?',
-        'form.submit': 'Join the waitlist',
+        'form.submit': 'Become a tester',
         'thanks.title': "You're on the list. 🍇",
         'thanks.body': "Thanks for joining — we'll be in touch when early access opens.",
         'error.submit': 'Something went wrong. Please try again.',
@@ -1232,7 +1235,7 @@ serif;
         'fn.c3body': 'Seasonal plates, a quietly adventurous cellar, and pairings that never feel prescribed.',
         'footer.tagline': "A living index of the city's wine culture.",
         'footer.meta': 'Yellow Grapes · Edition 01 · Taiwan',
-        'footer.copyright': 'Copyright © 2026 Torsade Technologies Company Limited. All rights reserved.',
+        'footer.copyright': 'Copyright © 2026 Torsade Technologies Company Limited',
         'footer.home': 'Home',
         'footer.privacy': 'Privacy',
         'footer.terms': 'Terms',
@@ -1249,7 +1252,7 @@ serif;
         'hero.lede2': '同樣一道雞肉飯，大家總是知道去哪個街角找到他最美味的模樣；放眼望去滿街的手搖飲店，也總能嚐出多多綠要買哪間、哪間的牛奶最好，或是哪間用了刺鼻的水果香精。',
         'hero.lede3': '葡萄酒的美好藏在非常細緻的味覺與嗅覺之中，就是需要如此敏銳的感官方能感受與享受口中味道、香氣的交錯與變化。',
         'hero.lede4': '我們為台灣喜愛葡萄酒的大家建立了這款葡萄酒地圖，一起尋找更細緻的味蕾享受之旅。',
-        'hero.guidePre': '一份指南',
+        'hero.guidePre': '一份地圖',
         'hero.guidePost': '探索地方、職人與葡萄酒。',
         'hero.colophonVol': 'Yellow Grapes · 第一版',
         'hero.colophonBy': '由 Torsade Tech 出品',
@@ -1264,11 +1267,11 @@ serif;
         'countdown.seconds': '秒',
         'countdown.done': '正式上線！🍇',
         'waitlist.eyebrow': '邀請函',
-        'waitlist.heading': '加入等候名單。',
-        'waitlist.desc': '留下你的電子郵件並選擇使用平台 — 開放搶先體驗時，我們會立刻通知你。',
+        'waitlist.heading': '加入測試員行列',
+        'waitlist.desc': '我們快要上線了，預計於9月中開放給少量使用者作測試。若您願意成為我們的測試員，優先體驗我們的作品，歡迎留下您的資料：）',
         'form.email': '電子郵件',
         'form.platform': '你使用哪個平台？',
-        'form.submit': '加入等候名單',
+        'form.submit': '成為測試員',
         'thanks.title': '你已加入等候名單。🍇',
         'thanks.body': '感謝加入 — 開放搶先體驗時我們會與你聯繫。',
         'error.submit': '發生錯誤，請再試一次。',
@@ -1298,7 +1301,7 @@ serif;
         'fn.c3body': '當季料理、低調而大膽的酒藏，還有從不流於公式的餐酒搭配。',
         'footer.tagline': '',
         'footer.meta': 'Yellow Grapes · 第一版 · 台灣',
-        'footer.copyright': '版權所有 © 2026 Torsade Technologies Company Limited。保留一切權利。',
+        'footer.copyright': '版權所有 © 2026 Torsade Technologies Company Limited',
         'footer.home': '首頁',
         'footer.privacy': '隱私權',
         'footer.terms': '服務條款',
