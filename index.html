@@ -40,8 +40,9 @@
   />
   <meta name="twitter:image" content="images/app-map.png" />
 
-  <!-- Favicon: Yellow Grapes logo (SVG). TODO: add a PNG fallback for older browsers. -->
-  <link rel="icon" type="image/svg+xml" href="logo/dark-y.svg" />
+  <!-- App-matched Yellow Grapes icon. -->
+  <link rel="icon" type="image/png" sizes="1024x1024" href="logo/app-icon.png" />
+  <link rel="apple-touch-icon" href="logo/app-icon.png" />
 
   <!-- Fonts: Urbanist (headings/labels), Cormorant Garamond (serif wordmark),
        Fraunces (countdown numeral). -->
@@ -232,6 +233,14 @@
     .hero-dark {
       background-color: rgb(var(--fg-rgb) / var(--hero-dark-fade));
       pointer-events: none;
+    }
+    /* Mobile cream overlay — fades the busy map so text is readable */
+    .hero-mobile-overlay {
+      background-color: rgb(var(--bg-rgb) / 0.82);
+      pointer-events: none;
+    }
+    @media (min-width: 768px) {
+      .hero-mobile-overlay { display: none; }
     }
 
     /* Two-column hero composition — branding (left) + narrative box (right) */
@@ -794,6 +803,8 @@ serif;
         />
         <!-- optional charcoal veil for legibility (default 0, tune via #tune) -->
         <div class="hero-dark absolute inset-0"></div>
+        <!-- Mobile cream veil — softens the map so text is readable on small screens -->
+        <div class="hero-mobile-overlay absolute inset-0"></div>
       </div>
 
       <!-- Content — editorial composition. Keep the grid + min-height (they drive the
