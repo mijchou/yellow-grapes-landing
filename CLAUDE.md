@@ -65,13 +65,14 @@ on cream (fails contrast). Type is **left-aligned** with extreme size contrast
 (massive Urbanist headlines vs. small system-font body); page shapes are
 **sharp** — the one exception is the recreated in-app search bar / filter chips
 in section 02, which stay rounded on purpose to mimic the app. The sibling app
-(`../yellow_grapes_app`) remains the source for the *wordmark* (Urbanist) only.
+(`../yellow_grapes_app`) supplies the canonical logo assets as well as the
+*wordmark* (Urbanist).
 **Constraint: keep the palette to the `:root` tokens — one accent, no extra hues.**
 
 ### Other structural notes
-- The logo (`logo/logo.svg`) is duplicated in header + footer as an `<img>`; its
-  art has a hardcoded charcoal fill kept in sync with `--fg` (`#1A1814`).
-  `logo/dark-y.svg` is also the favicon.
+- App-matched logo assets live in `logo/`: `app-logo.svg` is the app splash
+  wordmark used by generated legal pages, while `app-icon.png` is the app icon
+  used for the landing page and legal-page favicons / Apple touch icons.
 - Map art: the desktop hero lays **`images/app-map-wide.png`** full-bleed behind
   the text (cream→transparent `.hero-fade` gradient, solid ~40% → transparent
   ~66% at `lg`); mobile **section 02** uses the taller **`images/app-map-tall.png`**

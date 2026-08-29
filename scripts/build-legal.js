@@ -180,8 +180,9 @@ function renderPage(pageDef, parsed) {
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="${canonical}" />
 
-  <!-- Favicon: Yellow Grapes logo (SVG). -->
-  <link rel="icon" type="image/svg+xml" href="/logo/dark-y.svg" />
+  <!-- App-matched Yellow Grapes icon. -->
+  <link rel="icon" type="image/png" sizes="1024x1024" href="/logo/app-icon.png" />
+  <link rel="apple-touch-icon" href="/logo/app-icon.png" />
 
   <!-- Brand wordmark font (Urbanist — matches the landing page). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -297,7 +298,7 @@ function renderPage(pageDef, parsed) {
     <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-6 sm:px-8">
       <!-- Left: logo + wordmark -->
       <a href="/" class="flex items-center gap-5 text-fg" aria-label="Yellow Grapes — home">
-        <img class="yg-logo" src="/logo/logo.svg" alt="Yellow Grapes logo" />
+        <img class="yg-logo" src="/logo/app-logo.svg" alt="Yellow Grapes logo" />
         <span class="yg-wordmark font-brand uppercase">
           Yellow&nbsp;Grapes
         </span>
@@ -327,7 +328,7 @@ ${sections}
   <footer class="border-t border-hairline">
     <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-8 sm:px-8 md:flex-row">
       <a href="/" class="flex items-center gap-5 text-fg" aria-label="Yellow Grapes — home">
-        <img class="yg-logo" src="/logo/logo.svg" alt="Yellow Grapes logo" />
+        <img class="yg-logo" src="/logo/app-logo.svg" alt="Yellow Grapes logo" />
         <span class="yg-wordmark font-brand uppercase">Yellow&nbsp;Grapes</span>
       </a>
 
