@@ -153,7 +153,7 @@ function renderPage(pageDef, parsed) {
   const chrome = {
     en: {
       title: `${pageDef.title.en} — Yellow Grapes`,
-      'nav.join': 'Join waitlist',
+      'nav.app': 'Get the app',
       'footer.home': 'Home',
       'footer.privacy': 'Privacy',
       'footer.terms': 'Terms',
@@ -161,7 +161,7 @@ function renderPage(pageDef, parsed) {
     },
     zh: {
       title: `${pageDef.title.zh} — Yellow Grapes`,
-      'nav.join': '加入等候名單',
+      'nav.app': '下載 App',
       'footer.home': '首頁',
       'footer.privacy': '隱私權',
       'footer.terms': '服務條款',
@@ -218,6 +218,13 @@ function renderPage(pageDef, parsed) {
 
       --logo-h: 34px;
       --logo-h-mobile: 28px;
+
+      /* RGB channels behind the Tailwind colour utilities (text-fg, bg-accent,
+         text-onaccent …) — same values as index.html's :root. */
+      --fg-rgb: 26 24 20;
+      --fg-muted-rgb: 92 87 78;
+      --accent-rgb: 242 200 75;
+      --accent-strong-rgb: 224 180 49;
       --wordmark-size: 1rem;
       --wordmark-weight: 1000;
       --wordmark-tracking: 0.5em;
@@ -239,7 +246,11 @@ function renderPage(pageDef, parsed) {
     }
 
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
-    @media (max-width: 640px) { .yg-logo { height: var(--logo-h-mobile); } }
+    @media (max-width: 640px) {
+      .yg-logo { height: var(--logo-h-mobile); }
+      /* Tighter tracking so logo + wordmark fit a 320px phone (footer). */
+      :root { --wordmark-tracking: 0.3em; }
+    }
     .yg-wordmark {
       font-size: var(--wordmark-size);
       font-weight: var(--wordmark-weight);
@@ -296,20 +307,20 @@ function renderPage(pageDef, parsed) {
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
   <header class="site-header sticky top-0 z-50">
     <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-6 sm:px-8">
-      <!-- Left: logo + wordmark -->
+      <!-- Left: logo + wordmark (wordmark hidden on phones so the header fits) -->
       <a href="/" class="flex items-center gap-5 text-fg" aria-label="Yellow Grapes — home">
         <img class="yg-logo" src="/logo/app-logo.svg" alt="Yellow Grapes logo" />
-        <span class="yg-wordmark font-brand uppercase">
+        <span class="yg-wordmark hidden font-brand uppercase sm:inline">
           Yellow&nbsp;Grapes
         </span>
       </a>
 
-      <!-- Right: waitlist CTA + language toggle -->
+      <!-- Right: app CTA (→ store buttons on the landing page) + language toggle -->
       <div class="flex items-center gap-3 sm:gap-4">
-        <a href="/#waitlist"
-           class="rounded-full bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-bg transition-opacity hover:opacity-90 sm:px-5 sm:text-sm"
-           data-i18n="nav.join">
-          Join waitlist
+        <a href="/"
+           class="whitespace-nowrap rounded-full bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-onaccent transition-colors hover:bg-accentstrong sm:px-5 sm:text-sm"
+           data-i18n="nav.app">
+          Get the app
         </a>
         <button id="langToggle" type="button"
                 class="rounded-full border border-hairline px-3 py-2 text-xs font-semibold tracking-wide text-fg transition-colors hover:border-accent hover:text-accent sm:text-sm">
@@ -336,7 +347,7 @@ ${sections}
         <a href="/" class="transition-colors hover:text-fg" data-i18n="footer.home">Home</a>
         <a href="/privacy" class="transition-colors hover:text-fg" data-i18n="footer.privacy">Privacy</a>
         <a href="/terms" class="transition-colors hover:text-fg" data-i18n="footer.terms">Terms</a>
-        <a href="/#waitlist" class="transition-colors hover:text-fg" data-i18n="footer.contact">Contact</a>
+        <a href="/#contact" class="transition-colors hover:text-fg" data-i18n="footer.contact">Contact</a>
       </nav>
     </div>
   </footer>

@@ -25,13 +25,14 @@ There is no lint or test step.
 Actions* (`.github/workflows/deploy.yml`), not directly from the branch. On each
 push (and via the manual **Run workflow** button) the Action: renders the legal
 pages from Firestore → builds the CSS → publishes `index.html`, the generated
-`terms.html` / `privacy.html`, `dist/`, `logo/`, `images/`, `CNAME` to Pages.
+`terms.html` / `privacy.html`, `dist/`, `logo/`, `images/`, `CNAME` to Pages,
+plus a generated `store-config.js` (see **Store links** below).
 The committed `dist/output.css` is what local preview uses; CI rebuilds it on
 deploy. See **Legal pages** below for the Firestore secret the Action needs.
 
 ## Architecture
 
-The whole page lives in **`index.html`** — header, hero, waitlist form, and
+The whole page lives in **`index.html`** — header, hero, contact form, and
 footer in one file. Tailwind is a build input, not a runtime dependency:
 `src/input.css` (the three `@tailwind` layers only) compiles to the committed
 `dist/output.css`, which `index.html` links.
@@ -73,18 +74,49 @@ in section 02, which stay rounded on purpose to mimic the app. The sibling app
 - App-matched logo assets live in `logo/`: `app-logo.svg` is the app splash
   wordmark used by generated legal pages, while `app-icon.png` is the app icon
   used for the landing page and legal-page favicons / Apple touch icons.
-- Map art: the desktop hero lays **`images/app-map-wide.png`** full-bleed behind
-  the text (cream→transparent `.hero-fade` gradient, solid ~40% → transparent
-  ~66% at `lg`); mobile **section 02** uses the taller **`images/app-map-tall.png`**
-  with the app's search bar + filter chips recreated in HTML pinned on top. Each
-  map `<img>` `onerror`-hides if missing. The old portrait `images/app-map.png`
-  now only serves as the OG/Twitter preview image.
-- The waitlist form submits to **Google Sheets via Apps Script**. The endpoint URL
-  is stored in `WAITLIST_ENDPOINT` near the top of the `<script>` block. Submissions
-  are POSTed as JSON (`{email, platform}`) and appended as rows in the linked Sheet.
-- Tailwind only generates classes it finds **literally in the HTML** it scans
-  (`content: ['./*.html']` — `index.html` plus the generated `terms.html` /
-  `privacy.html`). Always run `build:legal` **before** the Tailwind build so the
+- Map art: the hero lays **`images/app-map-wide-extended-withoutfrost.png`**
+  full-bleed behind the text at every width; on phones (≤767px) a cream veil
+  (`.hero-mobile-overlay`) softens it. The `<img>` `onerror`-hides if missing.
+  The portrait `images/app-map.png` only serves as the OG/Twitter preview image.
+- Hero type sizes are tunable tokens in `:root` (`--hero-slogan-size`,
+  `--hero-taiwan-size`, and `-mobile` variants for ≤767px). 「第一版 · 臺灣」 uses
+  **Noto Serif TC 600** loaded from Google Fonts as a glyph subset (`text=` in
+  the `<head>` link) — if that wording changes, update the `text=` value too.
+- The sticky header is transparent over the hero map and turns cream + blurred
+  once the page scrolls (`.site-header.is-scrolled`, toggled by a small script).
+  `--header-h-mobile` (80px) must stay tall enough to contain the 中/EN toggle.
+
+### Contact form → email (Google Apps Script)
+- The `#contact` form POSTs JSON `{name, email, topic, message, lang, website}`
+  (`website` = hidden honeypot) as `text/plain` (no CORS preflight) to
+  `CONTACT_ENDPOINT` in index.html's `<script>`, and expects
+  `{success: true}` / `{success: false, error}` back. Validation, sending /
+  success / error states and a 20s timeout are handled client-side.
+- The receiving web app's source is **`scripts/apps-script/contact-form.gs`**
+  (not deployed by CI). It emails each message to **mchou@torsade.com.tw** with
+  Reply-To = the sender, logs it to a `Contact` tab in the linked Sheet, and
+  rate-limits. **To change it:** paste the file into the Apps Script project →
+  run `authorize` once after scope changes → Deploy → Manage deployments → Edit
+  the existing web app → *New version*. Editing the existing deployment keeps
+  the `/exec` URL, so `CONTACT_ENDPOINT` doesn't change.
+- Public fallback address on the page: **support@yellow.grapes.com.tw** (same
+  as the app). Threads / Instagram: `@yellowgrapes.app` (icons inlined from the
+  app's `assets/images/social/`).
+
+### Store links
+- **Android** is a fixed link in the markup:
+  `https://play.google.com/store/apps/details?id=tw.com.grapes.yellow`.
+- **iOS** comes from the **`IOS_APP_STORE_URL` repo variable** (Settings →
+  Secrets and variables → Actions → Variables). On deploy,
+  `scripts/build-store-config.js` writes it into `_site/store-config.js` (landing
+  badge) and `_site/manager-invite/store-config.js` (invite redirect), and swaps
+  the `<!-- @ios-smart-app-banner -->` marker in index.html for Safari's Smart
+  App Banner meta tag. Until it's set, the iOS badge reads "Coming soon / 即將上架"
+  and isn't clickable. The committed root `store-config.js` is only the local
+  preview default (empty).
+- Tailwind only generates classes it finds **literally in the files** it scans
+  (`content: ['./*.html', './scripts/build-legal.js']` — `index.html`, the
+  generated `terms.html` / `privacy.html`, and the legal-page template). Always run `build:legal` **before** the Tailwind build so the
   generated pages exist when Tailwind scans. Classes toggled from JS (e.g.
   `hidden`) must also appear in the static markup, and arbitrary values
   (`tracking-[0.3em]`, etc.) only exist if written out in the HTML.
@@ -142,9 +174,8 @@ No Firestore rule changes are required — the Admin SDK bypasses rules.
 - `tailwindcss --watch` exits instantly when stdin is closed (non-interactive /
   background shells). Run `npm run watch` in a real terminal/TTY.
 
-## Outstanding TODOs (in `index.html`)
-- `og:url` / `canonical` still use placeholder `yellowgrapes.app`; the real
-  domain is `yellow.grapes.com.tw`. (The generated `/terms` & `/privacy` pages
-  already use the correct canonical.)
+## Outstanding TODOs
 - OG/Twitter preview uses the portrait `app-map.png` (crops in wide cards); a
   dedicated 1200×630 `images/og.png` would preview better.
+- Set the `IOS_APP_STORE_URL` repo variable once the app is live on the App
+  Store, then re-run the deploy (see **Store links**).

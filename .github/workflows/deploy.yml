@@ -57,6 +57,10 @@ jobs:
 
       # Assemble only the deployable files (keeps node_modules/, scripts/, src/,
       # and the service account OUT of the published artifact).
+      #
+      # IOS_APP_STORE_URL (repo variable, apps.apple.com link) drives the
+      # landing page's iOS badge + Smart App Banner AND the manager-invite
+      # iPhone redirect — set it once the app is live, then re-run this workflow.
       - name: Assemble site
         env:
           IOS_APP_STORE_URL: ${{ vars.IOS_APP_STORE_URL }}
@@ -68,7 +72,7 @@ jobs:
           cp CNAME _site/
           mkdir -p _site/manager-invite _site/.well-known
           cp manager-invite/index.html manager-invite/redirect.js _site/manager-invite/
-          node -e 'const url = process.env.IOS_APP_STORE_URL || ""; if (url && !/^https:\/\/apps\.apple\.com\//.test(url)) throw new Error("IOS_APP_STORE_URL must be a public apps.apple.com URL."); process.stdout.write(`window.YELLOW_GRAPES_IOS_APP_STORE_URL = ${JSON.stringify(url)};\n`);' > _site/manager-invite/store-config.js
+          node scripts/build-store-config.js _site
           node scripts/build-association-files.js _site/.well-known
 
       - name: Upload Pages artifact

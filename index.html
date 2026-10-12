@@ -8,48 +8,58 @@
   <title>Yellow Grapes — Discover Taiwan's wine world on one map</title>
   <meta
     name="description"
-    content="Yellow Grapes is a wine-discovery map for Taiwan — find wine bars, cellars, tastings and 12,000+ appellations in one place. Join the waitlist for early access."
+    content="Yellow Grapes is a wine-discovery map for Taiwan — find wine bars, cellars, tastings and 12,000+ appellations in one place. Available now on iOS and Android."
   />
 
-  <!-- Canonical (TODO: set real domain before launch) -->
-  <link rel="canonical" href="https://yellowgrapes.app/" />
+  <link rel="canonical" href="https://yellow.grapes.com.tw/" />
 
-  <!-- Open Graph (Threads / Instagram / Facebook link previews) -->
+  <!-- iOS Smart App Banner. CI (scripts/build-store-config.js) swaps this
+       marker for <meta name="apple-itunes-app"> once the IOS_APP_STORE_URL
+       repo variable is set. Leave the marker exactly as written. -->
+  <!-- @ios-smart-app-banner -->
+
+  <!-- Open Graph (Threads / Instagram / Facebook / LINE link previews) -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Yellow Grapes" />
   <meta property="og:title" content="Yellow Grapes — Discover Taiwan's wine world on one map" />
   <meta
     property="og:description"
-    content="A wine-discovery map for Taiwan — wine bars, cellars, tastings and 12,000+ appellations. Join the waitlist for early access."
+    content="A wine-discovery map for Taiwan — wine bars, cellars, tastings and 12,000+ appellations. Available now on iOS and Android."
   />
   <!-- Preview image = the app screenshot. NOTE: it's portrait (472×982), so it
        will be cropped in wide link cards. TODO: for ideal previews add a
-       dedicated 1200×630 images/og.png and point these three tags at it. -->
-  <meta property="og:image" content="images/app-map.png" />
+       dedicated 1200×630 images/og.png and point these tags at it. -->
+  <meta property="og:image" content="https://yellow.grapes.com.tw/images/app-map.png" />
   <meta property="og:image:width" content="472" />
   <meta property="og:image:height" content="982" />
   <meta property="og:image:alt" content="Yellow Grapes app showing a map of wine merchants across Taipei, Taiwan" />
-  <meta property="og:url" content="https://yellowgrapes.app/" />
+  <meta property="og:url" content="https://yellow.grapes.com.tw/" />
 
   <!-- Twitter card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Yellow Grapes — Discover Taiwan's wine world on one map" />
   <meta
     name="twitter:description"
-    content="A wine-discovery map for Taiwan — wine bars, cellars, tastings and 12,000+ appellations. Join the waitlist for early access."
+    content="A wine-discovery map for Taiwan — wine bars, cellars, tastings and 12,000+ appellations. Available now on iOS and Android."
   />
-  <meta name="twitter:image" content="images/app-map.png" />
+  <meta name="twitter:image" content="https://yellow.grapes.com.tw/images/app-map.png" />
 
   <!-- App-matched Yellow Grapes icon. -->
   <link rel="icon" type="image/png" sizes="1024x1024" href="logo/app-icon.png" />
   <link rel="apple-touch-icon" href="logo/app-icon.png" />
 
-  <!-- Fonts: Urbanist (headings/labels), Cormorant Garamond (serif wordmark),
-       Fraunces (countdown numeral). -->
+  <!-- Fonts: Urbanist (headings/labels), Cormorant Garamond (section titles),
+       Noto Serif TC — subset to exactly the glyphs of 「第一版 · 臺灣」 via
+       `text=` (a few KB), so that line renders identically on every device.
+       If you change that line's wording, update the `text=` value too. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=DM+Sans:ital,wght@0,400;0,500;1,400&family=Petrona:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600&text=%E7%AC%AC%E4%B8%80%E7%89%88%20%C2%B7%20%E8%87%BA%E7%81%A3&display=swap"
     rel="stylesheet"
   />
 
@@ -78,14 +88,13 @@
 
       /* Layout */
       --header-h-desktop: 88px;
-      --header-h-mobile: 56px;
+      --header-h-mobile: 80px;       /* tall enough that the scrolled header's cream bar contains the 中/EN toggle */
       --header-opacity: 0;
       --header-blur: 0px;
       --logo-h: 30px;
       --logo-h-mobile: 26px;
 
       /* Typography */
-      --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
       --font-display-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 
       /* Hero wordmark + sub-line font sizes — MANUAL CONTROL, tune freely (no rebuild).
@@ -93,6 +102,10 @@
          single fixed rem (e.g. 2rem) to pin the size. */
       --hero-slogan-size: clamp(0.98rem, 2.24vw, 1.61rem);   /* 探索地方、職人與葡萄酒。 */
       --hero-taiwan-size: clamp(0.66rem, 1.134vw, 0.88rem);  /* 第一版 · 臺灣 */
+      /* Phones (≤767px): sized off the viewport so the slogan stays one line on a
+         320px screen yet keeps the desktop's slogan : 第一版 ratio (~1 : 0.55). */
+      --hero-slogan-size-mobile: clamp(1.25rem, 6.4vw, 1.61rem);
+      --hero-taiwan-size-mobile: clamp(0.7rem, 3.5vw, 0.88rem);
 
       /* Hero composition */
       --hero-text-max: 44rem;
@@ -123,6 +136,13 @@
       -webkit-backdrop-filter: blur(var(--header-blur));
       backdrop-filter: blur(var(--header-blur));
       overflow: visible;
+      transition: background-color 0.2s ease;
+    }
+    /* Toggled from JS once the page leaves the top, so the header text and rule
+       never sit on top of the content scrolling beneath them. */
+    .site-header.is-scrolled {
+      --header-opacity: 0.92;
+      --header-blur: 12px;
     }
     .header-row {
       display: flex; align-items: flex-start; justify-content: space-between;
@@ -178,8 +198,7 @@
       background: rgb(var(--fg-rgb) / 0.25);
     }
     .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; margin-top: 1.5rem; }
-    /* Text-only buttons: no container, underlined, tinted to match the
-       .hero-eyebrow label (fg @ 0.75). */
+    /* Text-only buttons: no container, underlined, tinted fg @ 0.75. */
     .header-btn {
       border: none;
       background: none;
@@ -193,6 +212,12 @@
     .header-btn:hover {
       color: rgb(var(--fg-rgb));
     }
+    /* Invisible hit areas: the header links/toggle are tiny type, so give each a
+       finger-sized (~40px) tap target without changing the layout. */
+    .header-nav a, .header-btn { position: relative; }
+    .header-nav a::after, .header-btn::after { content: ''; position: absolute; }
+    .header-nav a::after { inset: -12px -6px; }
+    .header-btn::after { inset: -6px -12px -14px; }  /* short on top: never overlaps the nav's area */
 
     /* ═══════════  Hero Wordmark Block  ═══════════ */
     .hero-wordmark-block {
@@ -223,7 +248,7 @@
       margin: 0;
     }
 
-    #the-map, #field-notes, #waitlist { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
+    #the-map, #field-notes, #contact { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
 
     /* ═══════════  Logo  ═══════════ */
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
@@ -257,7 +282,6 @@
       align-items: flex-start;
       gap: 1.25rem;
     }
-    .hero-left-col .hero-eyebrow { margin: 0 0 0.5rem; }
     .hero-brand-name-img {
       height: clamp(0.8rem, 1.5vw, 1.2rem);
       width: auto;
@@ -322,18 +346,6 @@
       object-position: bottom right;
     }
     .hero-stack { max-width: var(--hero-text-max); }
-
-    .hero-eyebrow {
-      display: flex; align-items: center; gap: 0.9rem;
-      margin: 0;
-      font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 700;
-      font-size: 0.72rem;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: rgb(var(--fg-rgb) / 0.75);
-    }
-    .hero-eyebrow-line { flex: 0 0 3.5rem; height: 1px; background: rgb(var(--fg-rgb) / 0.4); }
 
     .hero-wordmark-row { display: flex; align-items: center; gap: 8rem; flex-wrap: wrap; }
     .hero-logo { margin: 0; line-height: 0; margin-top: 1rem; margin-bottom: 1.5rem; margin-left: 2rem; }
@@ -418,15 +430,19 @@
       border-radius: 0.5rem;
       padding: 0.6rem 1.5rem;
       min-width: 11rem;
+      text-decoration: none;
+      transition: background-color 0.15s, border-color 0.15s;
     }
+    a.store-badge[href]:hover { background: rgb(var(--bg-rgb) / 0.8); border-color: rgb(var(--fg-rgb) / 0.5); }
+    a.store-badge[href]:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+    /* iOS badge before the App Store URL is configured (see store-config.js):
+       an <a> with no href — not clickable or focusable — reading "Coming soon". */
+    a.store-badge:not([href]) { cursor: default; }
     .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--fg-rgb) / 0.6); }
     .store-badge--android svg { height: 1.28rem; width: 1.28rem; }
     .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
     .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
     .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
-
-    .hero-rule { border: 0; height: 1px; background: rgb(var(--fg-rgb) / 0.7); }
-    .hero-rule--countdown { width: 100%; background: rgb(var(--fg-rgb) / 0.3); }
 
     .hero-label {
       font-family: 'Urbanist', system-ui, sans-serif;
@@ -438,16 +454,6 @@
     }
     .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
 
-    .hero-countdown-band {
-      display: flex;
-      align-items: center;
-      gap: 1.1rem;
-      white-space: nowrap;
-    }
-    .hero-countdown-band--hidden { display: none; }
-    .hero-countdown-band .hero-label,
-    .hero-countdown-band .display-numeral { color: rgb(var(--fg-rgb) / 0.6); }
-
     .hero-bottom-bar {
       position: absolute;
       left: 1.5rem; right: 1.5rem; bottom: 2rem;
@@ -457,28 +463,10 @@
       padding: 0;
     }
     .hero-colophon-brand { margin: 0; }
-    /* Match the "Crafted in 2026" header label exactly (size + tracking) */
+    /* Match the "Crafted in 2026" header label exactly (size + tracking, in both
+       languages) */
     .hero-colophon-brand .hero-label { font-size: 0.65rem; letter-spacing: 0.2em; }
     .hero-colophon-brand .hero-label + .hero-label { margin-top: 0.12rem; }
-
-    .hero-countdown {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      white-space: nowrap;
-    }
-    .hero-countdown .hero-label {
-      display: inline;
-    }
-    .display-numeral {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      font-size: clamp(1.3rem, 1.7vw, 1.8rem);
-      line-height: 0.85;
-      letter-spacing: 0.01em;
-      color: rgb(var(--fg-rgb));
-      font-variant-numeric: lining-nums tabular-nums;
-    }
 
     .mark-underline {
       background-image: linear-gradient(rgb(var(--accent-rgb)), rgb(var(--accent-rgb)));
@@ -517,16 +505,17 @@
       line-height: 1.7;
       color: rgb(var(--fg-rgb) / 0.8);
     }
-    /* "第一版 · 臺灣" sub-wordmark (line under the big wordmark) — Petrona (Google) serif */
+    /* "第一版 · 臺灣" sub-wordmark (line under the slogan) — Noto Serif TC 600,
+       loaded as a glyph subset in <head>. word-spacing keeps the airy gap around
+       the "·" that the old system-serif fallback had. */
     .hero-taiwan {
       margin: -0.6rem 0 0;
-      font-family: "Source Han Serif TC",
-"Noto Serif TC",
-serif;
-      font-weight: 900;
+      font-family: "Source Han Serif TC", "Noto Serif TC", serif;
+      font-weight: 600;
       font-size: var(--hero-taiwan-size);
       line-height: 1;
       letter-spacing: 0.02em;
+      word-spacing: 0.25em;
       color: rgb(var(--fg-rgb) / 0.6);
     }
 
@@ -548,7 +537,6 @@ serif;
       letter-spacing: -0.01em;
       color: rgb(var(--fg-rgb));
     }
-    .waitlist-title { font-size: clamp(2rem, 3.6vw, 3.2rem); }
     .section-desc {
       margin: 0;
       font-size: clamp(0.95rem, 1.1vw, 1.05rem);
@@ -638,7 +626,55 @@ serif;
       font-size: 0.95rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.8);
     }
 
+    /* ═══════════  Contact  ═══════════ */
+    .contact-title { font-size: clamp(2rem, 3.6vw, 3.2rem); }
+    .field-label {
+      display: block; margin-bottom: 0.5rem;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; color: rgb(var(--fg-rgb));
+    }
+    .field-error { margin: 0.45rem 0 0; font-size: 0.8125rem; line-height: 1.4; color: rgb(185 28 28); }
+    .contact-form [aria-invalid="true"] { border-color: rgb(185 28 28); }
+    /* Honeypot: off-screen (not display:none, which some bots skip). */
+    .form-hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+    .contact-note { margin: 0; font-size: 0.8125rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.6); }
+    .contact-note a, .contact-alert a { text-decoration: underline; text-underline-offset: 0.2em; }
+    .contact-note a:hover { color: rgb(var(--fg-rgb)); }
+
+    /* Right column: "Elsewhere" list (Threads / Instagram / email) — hairline-ruled rows */
+    .contact-aside-label {
+      margin: 0 0 0.9rem;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.55);
+    }
+    .contact-links { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid rgb(var(--fg-rgb) / 0.16); }
+    .contact-link {
+      display: flex; align-items: center; gap: 0.9rem;
+      min-height: 3.75rem; padding: 0.9rem 0.1rem;
+      border-top: 1px solid rgb(var(--fg-rgb) / 0.16);
+      color: rgb(var(--fg-rgb)); text-decoration: none;
+      transition: color 0.15s;
+    }
+    .contact-link svg { width: 1.25rem; height: 1.25rem; flex: none; color: rgb(var(--fg-rgb) / 0.75); }
+    .contact-link-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+    .contact-link-name { font-family: 'Urbanist', system-ui, sans-serif; font-weight: 700; font-size: 1rem; line-height: 1.25; }
+    .contact-link-handle { font-size: 0.875rem; line-height: 1.35; color: rgb(var(--fg-rgb) / 0.6); overflow-wrap: anywhere; }
+    .contact-link-arrow { flex: none; margin-left: auto; font-size: 0.875rem; color: rgb(var(--fg-rgb) / 0.45); transition: transform 0.15s; }
+    .contact-link:hover .contact-link-name { text-decoration: underline; text-decoration-color: rgb(var(--accent-rgb)); text-decoration-thickness: 2px; text-underline-offset: 0.25em; }
+    .contact-link:hover .contact-link-arrow { transform: translate(2px, -2px); }
+    .contact-link:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+
     /* ═══════════  Footer  ═══════════ */
+    .footer-social { display: flex; gap: 0.25rem; margin-left: -0.6rem; }
+    .footer-social a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.75rem; height: 2.75rem;
+      color: rgb(var(--fg-rgb) / 0.6); transition: color 0.15s;
+    }
+    .footer-social a:hover { color: rgb(var(--fg-rgb)); }
+    .footer-social a:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 0; }
+    .footer-social svg { width: 1.25rem; height: 1.25rem; }
     .footer-grid { display: flex; flex-direction: column; gap: 2.5rem; }
     .footer-tagline { margin: 1.25rem 0 0; font-size: 0.95rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.75); max-width: 22rem; }
     .footer-meta { margin-top: 1.5rem; }
@@ -647,13 +683,10 @@ serif;
     @media (min-width: 768px) {
       .footer-grid { flex-direction: row; justify-content: space-between; align-items: flex-start; gap: 3rem; }
       .footer-right { align-items: flex-end; text-align: right; }
+      .footer-social { margin-left: 0; margin-right: -0.6rem; }
     }
 
     /* ═══════════  CJK Adjustments  ═══════════ */
-    /* iOS badge in 中: label (預訂) reads below the "App Store" name, not above. */
-    html[lang="zh-Hant"] .store-badge:not(.store-badge--android) .badge-text { flex-direction: column-reverse; }
-    html[lang="zh-Hant"] .hero-eyebrow { letter-spacing: 0.12em; }
-    html[lang="zh-Hant"] .hero-label   { letter-spacing: 0.14em; }
     html[lang="zh-Hant"] .hero-tagline { line-height: 1.5; }
     html[lang="zh-Hant"] .hero-lede p,
     html[lang="zh-Hant"] .hero-lede-left p,
@@ -681,15 +714,13 @@ serif;
         justify-content: space-between;
         align-items: flex-start;
         gap: 2rem;
-        margin-top: 2.5rem;
+        /* 2.5rem + the removed eyebrow line (17.28px line + 0.5rem margin + 1.25rem
+           gap) — keeps the slogan exactly where it sat before. */
+        margin-top: 5.33rem;
       }
       .hero-stack { margin-top: var(--hero-stack-top); }
       .hero-headline { width: max-content; max-width: var(--hero-text-max); }
-      .hero-eyebrow > span { white-space: nowrap; }
       .hero-wordmark-row { flex-wrap: nowrap; width: 100%; justify-content: space-between; gap: 1.5rem; }
-      /* Countdown now sits inline under the store buttons (left column) —
-         fixed-width rule so the leading line is always visible. */
-      .hero-rule--countdown { width: 3.5rem; flex: 0 0 3.5rem; }
       .hero-bottom-bar {
         position: absolute;
         left: 1.5rem;
@@ -700,49 +731,64 @@ serif;
       .hero-colophon-brand {
         margin: 0;
       }
-      .hero-countdown-band {
-        margin: 0;
-        width: auto;
-        justify-content: flex-start;
-      }
-      /* The bottom-bar countdown is the mobile-only copy — hide it on desktop
-         (inline style wins the cascade over Tailwind's md:hidden). */
-      .hero-countdown-band--bottom { display: none; }
     }
     @media (min-width: 640px) { .header-actions { gap: 0.25rem; } }
 
     /* ═══════════  Mobile/Tablet (≤767px)  ═══════════ */
     @media (max-width: 767px) {
       .hero { margin-top: calc(-1 * var(--header-h-desktop)); }
-      .hero-content { padding-top: calc(var(--header-h-desktop) + 1.5rem); }
+      /* Same 1.5rem gutter as the header + colophon so every hero line shares
+         one left edge. */
+      .hero-content {
+        padding-top: calc(var(--header-h-desktop) + 1.5rem);
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
       .hero-background-image { object-position: right center; }
-      .header-nav { gap: 0.35rem; font-size: 0.55rem; letter-spacing: 0.14em; }
       .header-actions { margin-top: 0.75rem; }
       .hero-tagline { white-space: normal; }
       .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
-      .hero-eyebrow { margin-top: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
       .hero-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
       .hero-intro { max-width: 100%; }
+      .hero-slogan { font-size: var(--hero-slogan-size-mobile); max-width: none; }
+      .hero-taiwan { font-size: var(--hero-taiwan-size-mobile); }
+
+      /* Store buttons: equal-width, full-width stack (two columns from 480px). */
+      .hero-store {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        margin-top: 2.25rem;
+      }
+      .hero-store .store-badge { min-width: 0; width: 100%; padding: 0.7rem 1rem; }
 
       /* The hero is short on mobile — there's no room to pin the bottom bar over
          the stack, so let it flow after the hero content instead. Stacked and
-         left-aligned at 1.5rem to match "Crafted in 2026". */
+         left-aligned at 1.5rem to match "Crafted in 2026". position: relative
+         (not static) so it paints ABOVE the absolutely-positioned map layer. */
       .hero-bottom-bar {
-        position: static;
+        position: relative;
+        left: 0; right: 0; bottom: auto;
         flex-direction: column;
         align-items: flex-start;
         gap: 1.1rem;
-        padding: 2.75rem 1.5rem 0;
+        padding: 0 1.5rem 2rem;
       }
-      .hero-countdown-band { margin: 0; }
-      .hero-rule--countdown { width: 3rem; flex: 0 0 3rem; }
+    }
+    @media (min-width: 480px) and (max-width: 767px) {
+      .hero-store { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html.scroll-smooth { scroll-behavior: auto; }
+      .site-header, .store-badge { transition: none; }
     }
 
     /* ═══════════  Small Mobile (≤639px)  ═══════════ */
     @media (max-width: 639px) {
       .site-header { height: var(--header-h-mobile); }
       .hero { margin-top: calc(-1 * var(--header-h-mobile)); }
-      .hero-content { padding-top: calc(var(--header-h-mobile) + 1.25rem); }
+      .hero-content { padding-top: calc(var(--header-h-mobile) + 1.5rem); }
       .yg-logo { height: var(--logo-h-mobile); }
     }
   </style>
@@ -772,7 +818,7 @@ serif;
                <span class="sep" aria-hidden="true">·</span>
                <a href="#field-notes" data-i18n="nav.fieldnotes">Field Notes</a> -->
           <span class="sep" aria-hidden="true">·</span>
-          <a href="#waitlist" data-i18n="nav.arrival">The Invitation</a>
+          <a href="#contact" data-i18n="nav.contact">Contact</a>
         </nav>
         <div class="header-actions">
           <button id="langToggle" type="button"
@@ -789,9 +835,9 @@ serif;
 
   <main>
     <!-- ───────────────────────  01 · HERO  ───────────────────────
-         Desktop: wide map full-bleed behind, cream→transparent gradient, text
-         on the left columns. Mobile: map layer is hidden → clean cream text
-         block (the user's "section 1"); the map lives in section 02 below. -->
+         Desktop: wide map full-bleed behind, text on the left column.
+         Mobile: same map under a cream veil (.hero-mobile-overlay) so the text
+         stays readable; the colophon flows after the store buttons. -->
     <section class="hero relative overflow-hidden">
       <!-- Pre-rendered background (frosted map + window baked into the image). Swap the src below
            for your rendered file (desktop / tablet-landscape only). -->
@@ -814,46 +860,30 @@ serif;
 
         <!-- Two-column hero composition (desktop): branding (left) + narrative box (right) -->
         <div class="hero-center-block hidden md:flex">
-          <!-- Left column — eyebrow · wordmark · EDITION 01 taïwan · store buttons (left-aligned) -->
+          <!-- Left column — slogan · 第一版 · 臺灣 · intro · store buttons (left-aligned) -->
           <div class="hero-left-col">
-            <p class="hero-eyebrow">
-              <span data-i18n="hero.guidePre">A Field Guide To</span>
-              <span class="hero-eyebrow-line" aria-hidden="true"></span>
-            </p>
-
             <h1 class="hero-slogan" data-i18n="hero.slogan">The places, the people &amp; the bottle.</h1>
             <p class="hero-taiwan">第一版 · 臺灣</p>
-            <p class="hero-intro" data-i18n="hero.intro">Yellow Pages is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
+            <p class="hero-intro" data-i18n="hero.intro">Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
 
-            <!-- Store buttons — below the EDITION 01 taïwan wordmark, left-aligned -->
+            <!-- Store buttons — below the intro, left-aligned -->
             <div class="hero-store-row">
-              <span class="store-badge">
+              <!-- iOS: no href until store-config.js provides the App Store URL (the
+                   script at the end of the page then adds it and swaps the label). -->
+              <a class="store-badge store-badge--ios" data-store="ios">
                 <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
                 <span class="badge-text">
-                  <span class="badge-top" data-i18n="store.appleTop">Pre-order on the</span>
+                  <span class="badge-top" data-i18n="store.appleSoon">Coming soon to the</span>
                   <span class="badge-name">App Store</span>
                 </span>
-              </span>
-              <span class="store-badge store-badge--android">
+              </a>
+              <a class="store-badge store-badge--android" href="https://play.google.com/store/apps/details?id=tw.com.grapes.yellow">
                 <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/></svg>
                 <span class="badge-text">
-                  <span class="badge-top" data-i18n="store.googleTop">Pre-register on</span>
+                  <span class="badge-top" data-i18n="store.googleTop">Get it on</span>
                   <span class="badge-name">Google Play</span>
                 </span>
-              </span>
-            </div>
-
-            <!-- Launch countdown — temporarily hidden until the launch date is announced. -->
-            <div class="hero-countdown-band hero-countdown-band--hidden">
-              <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
-              <div class="js-countdown">
-                <p class="hero-countdown">
-                  <span class="hero-label" data-i18n="hero.comingSoonPre">Coming Soon In</span>
-                  <span class="cd-days display-numeral">00</span>
-                  <span class="hero-label" data-i18n="hero.comingSoonPost">Days</span>
-                </p>
-              </div>
-              <p class="js-countdown-done hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
+              </a>
             </div>
           </div>
         </div>
@@ -862,56 +892,40 @@ serif;
         <div class="relative flex min-w-0 flex-col md:hidden">
           <div class="hero-stack">
             <div class="hero-headline">
-              <p class="hero-eyebrow">
-                <span data-i18n="hero.guidePre">A Field Guide To</span>
-                <span class="hero-eyebrow-line" aria-hidden="true"></span>
-              </p>
               <h1 class="hero-slogan" data-i18n="hero.slogan">The places, the people &amp; the bottle.</h1>
               <p class="hero-taiwan">第一版 · 臺灣</p>
-              <p class="hero-intro" data-i18n="hero.intro">Yellow Pages is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
+              <p class="hero-intro" data-i18n="hero.intro">Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
             </div>
             <div class="hero-store">
-              <span class="store-badge">
+              <!-- iOS: no href until store-config.js provides the App Store URL (the
+                   script at the end of the page then adds it and swaps the label). -->
+              <a class="store-badge store-badge--ios" data-store="ios">
                 <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
                 <span class="badge-text">
-                  <span class="badge-top" data-i18n="store.appleTop">Pre-order on the</span>
+                  <span class="badge-top" data-i18n="store.appleSoon">Coming soon to the</span>
                   <span class="badge-name">App Store</span>
                 </span>
-              </span>
-              <span class="store-badge store-badge--android">
+              </a>
+              <a class="store-badge store-badge--android" href="https://play.google.com/store/apps/details?id=tw.com.grapes.yellow">
                 <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3 60.1 60.1L104.6 499z"/></svg>
                 <span class="badge-text">
-                  <span class="badge-top" data-i18n="store.googleTop">Pre-register on</span>
+                  <span class="badge-top" data-i18n="store.googleTop">Get it on</span>
                   <span class="badge-name">Google Play</span>
                 </span>
-              </span>
+              </a>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Bottom bar: colophon (left) + countdown (right).
+      <!-- Bottom bar: colophon (bottom-left).
            Lives directly in .hero (not .hero-content) so it spans the full
-           viewport width; its 1.5rem edges line up with the header items
-           (Crafted in 2026 on the left, the buttons on the right). -->
+           viewport width; its 1.5rem edge lines up with "Crafted in 2026". -->
       <div class="hero-bottom-bar flex min-w-0">
         <!-- Brand line — pinned bottom-left -->
         <div class="hero-colophon-brand">
           <p class="hero-label hero-label--muted" data-i18n="hero.colophonVol">Yellow Grapes · Edition 01</p>
           <p class="hero-label hero-label--muted" data-i18n="hero.colophonBy">By Torsade Tech</p>
-        </div>
-
-        <!-- Countdown band — temporarily hidden until the launch date is announced. -->
-        <div class="hero-countdown-band hero-countdown-band--bottom hero-countdown-band--hidden">
-          <span class="hero-rule hero-rule--countdown" aria-hidden="true"></span>
-          <div class="js-countdown">
-            <p class="hero-countdown">
-              <span class="hero-label" data-i18n="hero.comingSoonPre">Coming Soon In</span>
-              <span class="cd-days display-numeral">00</span>
-              <span class="hero-label" data-i18n="hero.comingSoonPost">Days</span>
-            </p>
-          </div>
-          <p class="js-countdown-done hero-label hidden" data-i18n="countdown.done">We're live! 🍇</p>
         </div>
       </div>
     </section>
@@ -968,8 +982,7 @@ serif;
          are never fetched. <template> (not an HTML comment) because the block
          contains comments of its own, and comments can't nest.
          TO REOPEN: delete this <template> tag and its </template> below, then
-         (a) restore the nav anchor in the header (see the note there) and
-         (b) change the Invitation's eyebrow back from "/ 02" to "/ 03". -->
+         restore the nav anchor in the header (see the note there). -->
     <template id="field-notes-disabled">
 
     <!-- ───────────────────────  02 · FIELD NOTES  ───────────────────────
@@ -1039,71 +1052,148 @@ serif;
     </template>
     <!-- ══ end of hidden 02 · FIELD NOTES ═════════════════════════════════ -->
 
-    <!-- ───────────────────────  02 · ARRIVAL (waitlist)  ───────────────────────
-         Numbered 03 originally — renumbered to 02 while FIELD NOTES is hidden,
-         so the page reads 01 → 02 with no gap. Restore to 03 when it reopens. -->
-    <section id="waitlist" class="border-t border-fg">
-      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <div class="grid grid-cols-12 gap-y-10 md:items-start md:gap-x-12">
+    <!-- ───────────────────────  02 · CONTACT  ───────────────────────
+         Numbered 03 originally — renumbered to 02 while THE MAP / FIELD NOTES
+         are hidden. The form POSTs to the Google Apps Script in
+         scripts/apps-script/contact-form.gs, which emails each message (and logs
+         it to the linked Sheet). See CONTACT_ENDPOINT in the script below. -->
+    <section id="contact" class="border-t border-fg">
+      <div class="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-24">
+        <div class="grid grid-cols-12 gap-y-14 lg:items-start lg:gap-x-12">
 
-          <!-- Left: eyebrow + heading + copy + form (the questionnaire) -->
-          <div class="col-span-12 md:col-span-6">
+          <!-- Left: eyebrow + heading + copy + form -->
+          <div class="col-span-12 lg:col-span-7">
             <p class="section-eyebrow">
-              <span data-i18n="waitlist.eyebrow">The Invitation</span>
+              <span data-i18n="contact.eyebrow">Contact</span>
             </p>
-            <h2 class="section-title waitlist-title mt-6" data-i18n="waitlist.heading">
-              Join our tester program.
-            </h2>
-            <p class="mt-5 max-w-sm text-base leading-relaxed text-fgmuted" data-i18n="waitlist.desc">
-              We're almost ready to launch and expect to open to a small group of testers in mid-September. If you'd like to be among the first to experience what we've built, please leave your details :)
+            <h2 class="section-title contact-title mt-6" data-i18n="contact.heading">Get in touch.</h2>
+            <p class="mt-5 max-w-md text-base leading-relaxed text-fgmuted" data-i18n="contact.desc">
+              Partnerships, press, a correction to a listing, or simply an idea — write to us and we'll reply as soon as we can.
             </p>
 
-            <form id="waitlistForm" class="mt-8 space-y-6" novalidate>
-              <div>
-                <label for="email" class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg" data-i18n="form.email">Email address</label>
-                <input
-                  id="email" name="email" type="email" required autocomplete="email"
-                  placeholder="you@example.com"
-                  class="w-full border border-fg/30 bg-bg px-4 py-3.5 text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent"
-                />
+            <form id="contactForm" class="contact-form mt-8 max-w-xl space-y-6" novalidate>
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label for="contactName" class="field-label" data-i18n="form.name">Name</label>
+                  <input
+                    id="contactName" name="name" type="text" required maxlength="100"
+                    autocomplete="name" enterkeyhint="next" aria-describedby="contactNameError"
+                    class="w-full appearance-none rounded-none border border-fg/30 bg-bg px-4 py-3.5 text-base text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                  <p id="contactNameError" class="field-error hidden" data-i18n="form.nameError">Please enter your name.</p>
+                </div>
+                <div>
+                  <label for="contactEmail" class="field-label" data-i18n="form.email">Email address</label>
+                  <input
+                    id="contactEmail" name="email" type="email" required maxlength="254"
+                    autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false"
+                    enterkeyhint="next" placeholder="you@example.com" aria-describedby="contactEmailError"
+                    class="w-full appearance-none rounded-none border border-fg/30 bg-bg px-4 py-3.5 text-base text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                  <p id="contactEmailError" class="field-error hidden" data-i18n="form.emailError">Please enter a valid email address.</p>
+                </div>
               </div>
 
               <fieldset>
-                <legend class="mb-2 block text-xs font-bold uppercase tracking-wider text-fg" data-i18n="form.platform">Which platform do you use?</legend>
-                <div class="grid grid-cols-2 gap-3">
+                <legend class="field-label" data-i18n="form.topic">Topic</legend>
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <label class="cursor-pointer">
-                    <input type="radio" name="platform" value="ios" required class="peer sr-only" />
-                    <span class="block border border-fg/30 px-4 py-3.5 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent">
-                      iOS
-                    </span>
+                    <input type="radio" name="topic" value="general" checked class="peer sr-only" />
+                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.general">General</span>
                   </label>
                   <label class="cursor-pointer">
-                    <input type="radio" name="platform" value="android" required class="peer sr-only" />
-                    <span class="block border border-fg/30 px-4 py-3.5 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent">
-                      Android
-                    </span>
+                    <input type="radio" name="topic" value="business" class="peer sr-only" />
+                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.business">Business</span>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input type="radio" name="topic" value="press" class="peer sr-only" />
+                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.press">Press</span>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input type="radio" name="topic" value="other" class="peer sr-only" />
+                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.other">Other</span>
                   </label>
                 </div>
               </fieldset>
 
-              <button type="submit"
-                class="w-full bg-sage px-6 py-4 text-sm font-bold uppercase tracking-wide text-bg transition-colors hover:bg-[#515e4e]"
-                data-i18n="form.submit">
-                Become a tester
-              </button>
+              <div>
+                <label for="contactMessage" class="field-label" data-i18n="form.message">Message</label>
+                <textarea
+                  id="contactMessage" name="message" rows="6" required maxlength="2000"
+                  aria-describedby="contactMessageError" data-i18n-placeholder="form.messagePlaceholder"
+                  placeholder="What would you like to tell us?"
+                  class="w-full appearance-none rounded-none border border-fg/30 bg-bg px-4 py-3.5 text-base text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+                ></textarea>
+                <p id="contactMessageError" class="field-error hidden" data-i18n="form.messageError">Please write a message.</p>
+              </div>
+
+              <!-- Honeypot — real visitors never see or fill this. -->
+              <div class="form-hp" aria-hidden="true">
+                <label for="contactWebsite">Website</label>
+                <input id="contactWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <div class="space-y-4">
+                <button type="submit"
+                  class="w-full bg-sage px-6 py-4 text-sm font-bold uppercase tracking-wide text-bg transition-colors hover:bg-[#515e4e] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
+                  data-i18n="form.submit">
+                  Send message
+                </button>
+                <p class="contact-note" data-i18n="form.privacy">We'll only use these details to reply to you. See our <a href="/privacy">Privacy Policy</a>.</p>
+              </div>
             </form>
 
-            <!-- Success state (revealed after a valid submit) -->
-            <div id="waitlistThanks" class="mt-6 hidden border border-fg px-6 py-8" tabindex="-1">
-              <p class="font-brand text-lg font-bold text-fg" data-i18n="thanks.title">You're on the list. 🍇</p>
-              <p class="mt-2 text-sm text-fgmuted" data-i18n="thanks.body">Thanks for joining — we'll be in touch when early access opens.</p>
+            <!-- Success state (revealed after a successful submit) -->
+            <div id="contactThanks" class="mt-8 hidden focus:outline-none max-w-xl border border-fg px-6 py-8" tabindex="-1">
+              <p class="font-brand text-lg font-bold text-fg" data-i18n="thanks.title">Message sent. 🍇</p>
+              <p class="mt-2 text-sm text-fgmuted" data-i18n="thanks.body">Thanks for writing — we'll get back to you as soon as we can.</p>
+              <button type="button" id="contactAgain" class="header-btn mt-5 text-sm font-semibold" data-i18n="thanks.again">Send another message</button>
             </div>
 
             <!-- Error state (shown on submission failure) -->
-            <div id="waitlistError" class="mt-6 hidden border border-red-500 bg-red-50 px-6 py-4" tabindex="-1">
-              <p class="text-sm font-medium text-red-700" data-i18n="error.submit">Something went wrong. Please try again.</p>
+            <div id="contactError" class="contact-alert mt-6 hidden focus:outline-none max-w-xl border border-red-500 bg-red-50 px-6 py-4" role="alert" tabindex="-1">
+              <p class="text-sm font-medium text-red-700" data-i18n="error.submit">Your message couldn't be sent. Please try again, or email us at <a href="mailto:support@yellow.grapes.com.tw">support@yellow.grapes.com.tw</a>.</p>
             </div>
           </div>
+
+          <!-- Right: other ways to reach us -->
+          <aside class="col-span-12 lg:col-span-4 lg:col-start-9" aria-labelledby="contactElsewhere">
+            <p id="contactElsewhere" class="contact-aside-label" data-i18n="contact.elsewhere">Elsewhere</p>
+            <ul class="contact-links max-w-xl">
+              <li>
+                <a class="contact-link" href="https://www.threads.com/@yellowgrapes.app" target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg>
+                  <span class="contact-link-text">
+                    <span class="contact-link-name">Threads</span>
+                    <span class="contact-link-handle">@yellowgrapes.app</span>
+                  </span>
+                  <span class="contact-link-arrow" aria-hidden="true">↗</span>
+                  <span class="sr-only" data-i18n="a11y.newTab">(opens in a new tab)</span>
+                </a>
+              </li>
+              <li>
+                <a class="contact-link" href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
+                  <span class="contact-link-text">
+                    <span class="contact-link-name">Instagram</span>
+                    <span class="contact-link-handle">@yellowgrapes.app</span>
+                  </span>
+                  <span class="contact-link-arrow" aria-hidden="true">↗</span>
+                  <span class="sr-only" data-i18n="a11y.newTab">(opens in a new tab)</span>
+                </a>
+              </li>
+              <li>
+                <a class="contact-link" href="mailto:support@yellow.grapes.com.tw">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="1"/><path d="m3 5.5 9 7.5 9-7.5"/></svg>
+                  <span class="contact-link-text">
+                    <span class="contact-link-name" data-i18n="contact.email">Email</span>
+                    <span class="contact-link-handle">support@yellow.grapes.com.tw</span>
+                  </span>
+                  <span class="contact-link-arrow" aria-hidden="true">→</span>
+                </a>
+              </li>
+            </ul>
+          </aside>
         </div>
       </div>
     </section>
@@ -1111,7 +1201,7 @@ serif;
 
   <!-- ─────────────────────────────  FOOTER  ───────────────────────────── -->
   <footer class="border-t border-fg">
-    <div class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-14">
+    <div class="mx-auto max-w-7xl px-6 py-12 sm:px-8 sm:py-14">
       <div class="footer-grid">
         <!-- Left: tagline + edition/place meta -->
         <div>
@@ -1121,11 +1211,15 @@ serif;
 
         <!-- Right: nav + copyright. Privacy / Terms → build-time pages from Firestore (see CLAUDE.md). -->
         <div class="footer-right">
+          <div class="footer-social">
+            <a href="https://www.threads.com/@yellowgrapes.app" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Threads"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a>
+            <a href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+          </div>
           <nav class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-fgmuted">
             <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.home">Home</a>
             <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
             <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.terms">Terms</a>
-            <a href="#waitlist" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
+            <a href="#contact" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
           </nav>
           <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited</p>
         </div>
@@ -1133,54 +1227,23 @@ serif;
     </div>
   </footer>
 
+  <!-- App Store URL for the iOS badge. The committed file is the local default
+       (empty → "Coming soon"); CI regenerates it from the IOS_APP_STORE_URL repo
+       variable (scripts/build-store-config.js). -->
+  <script src="store-config.js"></script>
   <script>
-    // Waitlist form — submits to Google Sheets via Apps Script.
-    // Replace WAITLIST_ENDPOINT with your deployed Apps Script web app URL.
-    var WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzctxnFzJqICOe6sUx94vcrcjSONL4I9IWbDloPYbyDm2nqok7Tl6p8x9bxvwb8xXSGiA/exec';
+    // Contact form — POSTs JSON to the Google Apps Script web app in
+    // scripts/apps-script/contact-form.gs, which emails it to the team and logs
+    // it to the linked Sheet. Keep this URL in sync with that deployment
+    // (redeploying as a *new version* of the same deployment keeps it unchanged).
+    var CONTACT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzctxnFzJqICOe6sUx94vcrcjSONL4I9IWbDloPYbyDm2nqok7Tl6p8x9bxvwb8xXSGiA/exec';
+    var CONTACT_TIMEOUT_MS = 20000;
 
-    (function () {
-      var form = document.getElementById('waitlistForm');
-      var thanks = document.getElementById('waitlistThanks');
-      var errorEl = document.getElementById('waitlistError');
-      var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
-      if (!form) return;
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        if (!form.reportValidity()) return;
-
-        // Hide previous error, show loading state
-        var btnText = submitBtn.textContent;
-        errorEl.classList.add('hidden');
-        submitBtn.disabled = true;
-        submitBtn.textContent = '...';
-
-        var email = form.elements.email.value;
-        var platform = form.elements.platform.value;
-
-        fetch(WAITLIST_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ email: email, platform: platform })
-        })
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (data.success) {
-              form.classList.add('hidden');
-              thanks.classList.remove('hidden');
-              thanks.focus();
-            } else {
-              throw new Error(data.error || 'Submission failed');
-            }
-          })
-          .catch(function () {
-            errorEl.classList.remove('hidden');
-            errorEl.focus();
-            submitBtn.disabled = false;
-            submitBtn.textContent = btnText;
-          });
-      });
-    })();
+    // Store links. Android is fixed; iOS comes from store-config.js (empty until
+    // the app is live on the App Store).
+    var IOS_APP_STORE_URL = (typeof window.YELLOW_GRAPES_IOS_APP_STORE_URL === 'string' &&
+      /^https:\/\/apps\.apple\.com\//.test(window.YELLOW_GRAPES_IOS_APP_STORE_URL))
+      ? window.YELLOW_GRAPES_IOS_APP_STORE_URL : '';
 
     // ─────────────  i18n (English / 繁體中文)  ─────────────
     // Static dictionary; values may contain markup (applied via innerHTML).
@@ -1190,36 +1253,43 @@ serif;
         'header.crafted': 'Crafted in 2026',
         'nav.map': 'The Map',
         'nav.fieldnotes': 'Field Notes',
-        'nav.arrival': 'The Invitation',
+        'nav.contact': 'Contact',
         'hero.slogan': 'The places, the people &amp; the bottle.',
-        'hero.intro': 'Yellow Pages is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.',
+        'hero.intro': 'Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.',
         'hero.lede1': 'Taiwanese palates are remarkably discerning.',
         'hero.lede2': 'Give us the same plate of chicken rice and everyone knows exactly which street corner serves it at its most delicious. Faced with a street full of bubble-tea stands, we can still taste which one to buy our green tea from, whose milk is the best, and which one slipped in a harsh, artificial fruit syrup.',
         'hero.lede3': 'The beauty of wine hides in the most delicate registers of taste and smell — and it takes exactly this kind of keen sense to feel and savour the interplay and shifting of flavour and aroma on the palate.',
         'hero.lede4': 'We built this wine map for everyone in Taiwan who loves wine — so that together we can set out on a more refined journey for the palate.',
-        'hero.guidePre': 'A Field Guide To',
-        'hero.guidePost': 'the places, the people &amp; the Bottle',
         'hero.colophonVol': 'Yellow Grapes · Edition 01',
         'hero.colophonBy': 'By Torsade Tech',
-        'hero.comingSoonPre': 'Coming Soon In',
-        'hero.comingSoonPost': 'Days',
-        'hero.cta': 'Join the Waitlist',
-        'store.appleTop': 'Pre-order on the',
-        'store.googleTop': 'Pre-register on',
-        'countdown.days': 'Days',
-        'countdown.hours': 'Hours',
-        'countdown.minutes': 'Minutes',
-        'countdown.seconds': 'Seconds',
-        'countdown.done': "We're live! 🍇",
-        'waitlist.eyebrow': 'The Invitation',
-        'waitlist.heading': 'Join our tester program.',
-        'waitlist.desc': "We're almost ready to launch and expect to open to a small group of testers in mid-September. If you'd like to be among the first to experience what we've built, please leave your details :)",
+        'store.appleTop': 'Download on the',
+        'store.appleSoon': 'Coming soon to the',
+        'store.googleTop': 'Get it on',
+        'contact.eyebrow': 'Contact',
+        'contact.heading': 'Get in touch.',
+        'contact.desc': "Partnerships, press, a correction to a listing, or simply an idea — write to us and we'll reply as soon as we can.",
+        'contact.elsewhere': 'Elsewhere',
+        'contact.email': 'Email',
+        'form.name': 'Name',
+        'form.nameError': 'Please enter your name.',
         'form.email': 'Email address',
-        'form.platform': 'Which platform do you use?',
-        'form.submit': 'Become a tester',
-        'thanks.title': "You're on the list. 🍇",
-        'thanks.body': "Thanks for joining — we'll be in touch when early access opens.",
-        'error.submit': 'Something went wrong. Please try again.',
+        'form.emailError': 'Please enter a valid email address.',
+        'form.topic': 'Topic',
+        'topic.general': 'General',
+        'topic.business': 'Business',
+        'topic.press': 'Press',
+        'topic.other': 'Other',
+        'form.message': 'Message',
+        'form.messagePlaceholder': 'What would you like to tell us?',
+        'form.messageError': 'Please write a message.',
+        'form.submit': 'Send message',
+        'form.sending': 'Sending…',
+        'form.privacy': 'We\'ll only use these details to reply to you. See our <a href="/privacy">Privacy Policy</a>.',
+        'thanks.title': 'Message sent. 🍇',
+        'thanks.body': "Thanks for writing — we'll get back to you as soon as we can.",
+        'thanks.again': 'Send another message',
+        'error.submit': 'Your message couldn\'t be sent. Please try again, or email us at <a href="mailto:support@yellow.grapes.com.tw">support@yellow.grapes.com.tw</a>.',
+        'a11y.newTab': '(opens in a new tab)',
         'map.eyebrow': 'The Map',
         'map.heading': 'A city indexed by taste.',
         'map.desc': 'Browse by district, mood, and the kind of bottle you hope to find. Each place is selected for character—not visibility, hype, or ranking.',
@@ -1256,36 +1326,43 @@ serif;
         'header.crafted': '製作於 2026 年',
         'nav.map': '地圖',
         'nav.fieldnotes': '筆記',
-        'nav.arrival': '邀請函',
+        'nav.contact': '聯絡我們',
         'hero.slogan': '探索地方、職人與葡萄酒。',
         'hero.intro': 'Yellow Grapes 是一張精心編輯的地圖，收錄了在地的葡萄酒場域、品牌，和默默以葡萄酒形塑這座城市風味的人們。',
         'hero.lede1': '台灣人的味蕾是非常敏銳的。',
         'hero.lede2': '同樣一道雞肉飯，大家總是知道去哪個街角找到他最美味的模樣；放眼望去滿街的手搖飲店，也總能嚐出多多綠要買哪間、哪間的牛奶最好，或是哪間用了刺鼻的水果香精。',
         'hero.lede3': '葡萄酒的美好藏在非常細緻的味覺與嗅覺之中，就是需要如此敏銳的感官方能感受與享受口中味道、香氣的交錯與變化。',
         'hero.lede4': '我們為台灣喜愛葡萄酒的大家建立了這款葡萄酒地圖，一起尋找更細緻的味蕾享受之旅。',
-        'hero.guidePre': '一份地圖',
-        'hero.guidePost': '探索地方、職人與葡萄酒。',
         'hero.colophonVol': 'Yellow Grapes · 第一版',
         'hero.colophonBy': '由 Torsade Tech 出品',
-        'hero.comingSoonPre': '距上線還有',
-        'hero.comingSoonPost': '天',
-        'hero.cta': '加入等候名單',
-        'store.appleTop': '預訂',
-        'store.googleTop': '立即預先登記',
-        'countdown.days': '天',
-        'countdown.hours': '小時',
-        'countdown.minutes': '分鐘',
-        'countdown.seconds': '秒',
-        'countdown.done': '正式上線！🍇',
-        'waitlist.eyebrow': '邀請函',
-        'waitlist.heading': '加入測試員行列',
-        'waitlist.desc': '我們快要上線了，預計於9月中開放給少量使用者作測試。若您願意成為我們的測試員，優先體驗我們的作品，歡迎留下您的資料：）',
+        'store.appleTop': '立即下載',
+        'store.appleSoon': '即將上架',
+        'store.googleTop': '立即下載',
+        'contact.eyebrow': '聯絡我們',
+        'contact.heading': '與我們聯繫',
+        'contact.desc': '合作提案、媒體採訪、店家資訊更正，或任何想法，都歡迎寫信給我們，我們會盡快回覆。',
+        'contact.elsewhere': '其他聯絡方式',
+        'contact.email': '電子郵件',
+        'form.name': '姓名',
+        'form.nameError': '請填寫你的姓名。',
         'form.email': '電子郵件',
-        'form.platform': '你使用哪個平台？',
-        'form.submit': '成為測試員',
-        'thanks.title': '你已加入等候名單。🍇',
-        'thanks.body': '感謝加入 — 開放搶先體驗時我們會與你聯繫。',
-        'error.submit': '發生錯誤，請再試一次。',
+        'form.emailError': '請輸入有效的電子郵件地址。',
+        'form.topic': '主題',
+        'topic.general': '一般詢問',
+        'topic.business': '商家合作',
+        'topic.press': '媒體',
+        'topic.other': '其他',
+        'form.message': '訊息',
+        'form.messagePlaceholder': '想告訴我們什麼呢？',
+        'form.messageError': '請寫下你的訊息。',
+        'form.submit': '送出訊息',
+        'form.sending': '傳送中…',
+        'form.privacy': '我們只會用這些資料回覆你的訊息，詳見<a href="/privacy">隱私權政策</a>。',
+        'thanks.title': '訊息已送出 🍇',
+        'thanks.body': '謝謝你的來信，我們會盡快回覆。',
+        'thanks.again': '再寫一則',
+        'error.submit': '訊息未能送出，請稍後再試，或直接寫信至 <a href="mailto:support@yellow.grapes.com.tw">support@yellow.grapes.com.tw</a>。',
+        'a11y.newTab': '（在新分頁開啟）',
         'map.eyebrow': '地圖',
         'map.heading': '以味蕾索引的城市。',
         'map.desc': '依區域、氛圍，以及你想尋找的那支酒瀏覽。每一處都因其個性而入選 — 無關名氣、話題或排名。',
@@ -1320,6 +1397,23 @@ serif;
       }
     };
 
+    function t(key) {
+      var dict = I18N[window.__ygLang] || I18N.en;
+      return dict[key] != null ? dict[key] : (I18N.en[key] || '');
+    }
+
+    // iOS badge: once the App Store URL exists, make it a real link reading
+    // "Download on the App Store". Runs before applyLang so the label is right
+    // on first paint of the translated text.
+    (function () {
+      if (!IOS_APP_STORE_URL) return;
+      document.querySelectorAll('[data-store="ios"]').forEach(function (a) {
+        a.setAttribute('href', IOS_APP_STORE_URL);
+        var top = a.querySelector('.badge-top');
+        if (top) top.setAttribute('data-i18n', 'store.appleTop');
+      });
+    })();
+
     var langToggle = document.getElementById('langToggle');
 
     function applyLang(lang) {
@@ -1328,6 +1422,10 @@ serif;
       document.querySelectorAll('[data-i18n]').forEach(function (el) {
         var val = dict[el.getAttribute('data-i18n')];
         if (val != null) el.innerHTML = val;
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        var val = dict[el.getAttribute('data-i18n-placeholder')];
+        if (val != null) el.setAttribute('placeholder', val);
       });
       document.documentElement.lang = (lang === 'zh') ? 'zh-Hant' : 'en';
       if (langToggle) {
@@ -1351,30 +1449,127 @@ serif;
       }
     })();
 
-    // ─────────────  Launch countdown → 2026-09-25 00:00 Asia/Taipei  ─────────────
+    // ─────────────  Contact form  ─────────────
     (function () {
-      var target = new Date('2026-09-25T00:00:00+08:00').getTime();
-      // Two instances share the same classes (desktop: under the store buttons;
-      // mobile: in the bottom bar) — update them all.
-      var grids = document.querySelectorAll('.js-countdown');
-      var dones = document.querySelectorAll('.js-countdown-done');
-      var elsD = document.querySelectorAll('.cd-days');
-      if (!elsD.length) return;
-      var setAll = function (nodes, fn) { Array.prototype.forEach.call(nodes, fn); };
+      var form = document.getElementById('contactForm');
+      if (!form) return;
+      var thanks = document.getElementById('contactThanks');
+      var errorEl = document.getElementById('contactError');
+      var again = document.getElementById('contactAgain');
+      var submitBtn = form.querySelector('button[type="submit"]');
+      var nameEl = document.getElementById('contactName');
+      var emailEl = document.getElementById('contactEmail');
+      var messageEl = document.getElementById('contactMessage');
+      var honeypotEl = document.getElementById('contactWebsite');
+      var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      function tick() {
-        var diff = target - Date.now();
-        if (diff <= 0) {
-          setAll(grids, function (g) { g.classList.add('hidden'); });
-          setAll(dones, function (d) { d.classList.remove('hidden'); });
-          clearInterval(timer);
-          return;
-        }
-        var days = String(Math.floor(diff / 1000 / 86400));
-        setAll(elsD, function (el) { el.textContent = days; });
+      var fields = [
+        { el: nameEl, err: document.getElementById('contactNameError'), ok: function (v) { return v.length > 0; } },
+        { el: emailEl, err: document.getElementById('contactEmailError'), ok: function (v) { return EMAIL_RE.test(v); } },
+        { el: messageEl, err: document.getElementById('contactMessageError'), ok: function (v) { return v.length > 0; } }
+      ];
+
+      function setInvalid(f, bad) {
+        f.err.classList.toggle('hidden', !bad);
+        if (bad) f.el.setAttribute('aria-invalid', 'true');
+        else f.el.removeAttribute('aria-invalid');
       }
-      tick();
-      var timer = setInterval(tick, 1000);
+
+      // Clear a field's error as soon as it becomes valid.
+      fields.forEach(function (f) {
+        f.el.addEventListener('input', function () {
+          if (f.el.getAttribute('aria-invalid') === 'true' && f.ok(f.el.value.trim())) setInvalid(f, false);
+        });
+      });
+
+      // Swap the button label through i18n so a language toggle mid-send stays correct.
+      function setButton(key) {
+        submitBtn.setAttribute('data-i18n', key);
+        submitBtn.innerHTML = t(key);
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (submitBtn.disabled) return;
+
+        var firstBad = null;
+        fields.forEach(function (f) {
+          var bad = !f.ok(f.el.value.trim());
+          setInvalid(f, bad);
+          if (bad && !firstBad) firstBad = f.el;
+        });
+        if (firstBad) { firstBad.focus(); return; }
+
+        errorEl.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        setButton('form.sending');
+
+        var topicEl = form.querySelector('input[name="topic"]:checked');
+        var payload = {
+          name: nameEl.value.trim(),
+          email: emailEl.value.trim(),
+          topic: topicEl ? topicEl.value : 'general',
+          message: messageEl.value.trim(),
+          lang: window.__ygLang === 'zh' ? 'zh' : 'en',
+          website: honeypotEl ? honeypotEl.value : ''
+        };
+
+        var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, CONTACT_TIMEOUT_MS);
+
+        // text/plain keeps this a "simple" request — no CORS preflight, which
+        // Apps Script web apps can't answer.
+        fetch(CONTACT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload),
+          signal: ctrl ? ctrl.signal : undefined
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (!data || data.success !== true) throw new Error((data && data.error) || 'Submission failed');
+            form.classList.add('hidden');
+            thanks.classList.remove('hidden');
+            thanks.focus();
+          })
+          .catch(function () {
+            errorEl.classList.remove('hidden');
+            errorEl.focus();
+          })
+          .then(function () {
+            clearTimeout(timer);
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-busy');
+            setButton('form.submit');
+          });
+      });
+
+      // "Send another": keep name + email, clear the message, back to General.
+      again.addEventListener('click', function () {
+        messageEl.value = '';
+        var general = form.querySelector('input[name="topic"][value="general"]');
+        if (general) general.checked = true;
+        fields.forEach(function (f) { setInvalid(f, false); });
+        thanks.classList.add('hidden');
+        form.classList.remove('hidden');
+        messageEl.focus();
+      });
+    })();
+
+    // ─────────────  Header: cream background once the page scrolls  ─────────────
+    (function () {
+      var header = document.querySelector('.site-header');
+      if (!header) return;
+      var ticking = false;
+      function update() {
+        ticking = false;
+        header.classList.toggle('is-scrolled', (window.scrollY || window.pageYOffset) > 4);
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+      }, { passive: true });
+      update();
     })();
   </script>
 

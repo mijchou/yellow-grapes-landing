@@ -4,7 +4,9 @@ module.exports = {
   // including arbitrary values (e.g. tracking-[0.3em]) and peer-* variants.
   // The glob also picks up the build-generated terms.html / privacy.html — so
   // always run `build:legal` (which writes them) BEFORE the Tailwind build.
-  content: ['./*.html'],
+  // The legal-page template itself is scanned too, so its chrome classes are
+  // generated even when the local terms.html / privacy.html are stale.
+  content: ['./*.html', './scripts/build-legal.js'],
   theme: {
     extend: {
       // Brand palette — mirrors the :root design tokens in index.html.
