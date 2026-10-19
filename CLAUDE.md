@@ -54,36 +54,63 @@ So adding a brand color means editing **both**: define the `--var` in
 `<style>` also holds bespoke component CSS that has no Tailwind equivalent
 (`.site-header` translucency/blur, `.yg-logo` fill, scroll offsets).
 
-### Brand palette — Swiss / International Typographic (independent of the app)
-The landing was redesigned to a **Swiss / International Typographic** look and
-**no longer mirrors the Flutter app's warm-brown theme**. The palette is
-intentionally restricted: warm **cream** page (`--bg-rgb`), warm **charcoal** ink
-(`--fg-rgb`, also the logo + rules), and exactly **one** vibrant accent —
-**lemon-curd yellow** (`--accent-rgb`). Yellow is a *fill/mark* colour only (CTA
-fills, the active filter chip, eyebrow ticks, the headline underline); **text on
-yellow is charcoal (`onaccent`), never white**, and yellow is never used as text
-on cream (fails contrast). Type is **left-aligned** with extreme size contrast
-(massive Urbanist headlines vs. small system-font body); page shapes are
-**sharp** — the one exception is the recreated in-app search bar / filter chips
-in section 02, which stay rounded on purpose to mimic the app. The sibling app
-(`../yellow_grapes_app`) supplies the canonical logo assets as well as the
-*wordmark* (Urbanist).
-**Constraint: keep the palette to the `:root` tokens — one accent, no extra hues.**
+### Brand palette — editorial, aligned with the app and owner portal
+Warm **cream** page (`--bg-rgb`), warm **charcoal** ink (`--fg-rgb`, also the
+logo + rules), and exactly **one** yellow — **butter** (`--accent-rgb`, #F5E6BE,
+the app's `AppColors.butter`) with its hairline edge (`--accent-strong-rgb`,
+#AA8D40, `actionPrimaryBorder`), which is also the focus-ring colour. Since
+2026-10-20 this replaces the old lemon-curd so the site, the Golden Grapes owner
+portal and the app share one primary yellow. Butter is a *fill/mark* colour only
+(the 送出訊息 button, the "Get the app" pill on the legal pages, the hero's short
+rule); **text on butter is charcoal (`onaccent`)**, and butter is never text or
+a thin line on cream (it vanishes there — use the edge colour, as the contact
+title's rule does). Type is **left-aligned** (Urbanist headlines, system-font
+body, Cormorant / Noto Serif TC section titles). The hero and contact sections
+sit on dark photographs, with light text in `--on-dark-rgb` (warmGrey50, the
+app's dark-theme ink) and `--scrim-rgb` (photoScrim) for the dark header bar;
+the contact form uses the owner portal's vocabulary
+(`--paper-rgb`, `--hairline-rgb`, `--selected-rgb`, `--sage-ink-rgb`, radii 8/12/16px —
+mirrors `owner_portal/src/styles.css`). The sibling app (`../yellow_grapes_app`)
+supplies the canonical logo assets and the *wordmark* (Urbanist).
+**Constraint: keep the palette to the `:root` tokens — one yellow, no extra hues.**
 
 ### Other structural notes
 - App-matched logo assets live in `logo/`: `app-logo.svg` is the app splash
   wordmark used by generated legal pages, while `app-icon.png` is the app icon
   used for the landing page and legal-page favicons / Apple touch icons.
-- Map art: the hero lays **`images/app-map-wide-extended-withoutfrost.png`**
-  full-bleed behind the text at every width; on phones (≤767px) a cream veil
-  (`.hero-mobile-overlay`) softens it. The `<img>` `onerror`-hides if missing.
-  The portrait `images/app-map.png` only serves as the OG/Twitter preview image.
+- Background art is **toned by hand in the source images — the page adds no
+  veil, tint or filter over it** (the owner's explicit choice, 2026-10-20). The
+  sources are `images/bg.png` (hero map, 4096×2567) and `images/bg2.png`
+  (contact linen + glass, 1536×1024); the page serves web renditions of them:
+  - Hero: `images/hero-bg-{1920,2880,3840}.webp` (desktop `srcset`),
+    `images/hero-bg-mobile.webp` (≤767px, a crop of the map's right ~58%, the
+    only part phones show) and `images/hero-bg.jpg` (fallback `src`).
+  - Contact: `images/contact-bg.webp` + `images/contact-bg.jpg` fallback.
+  - If an image changes, regenerate its renditions, e.g.
+    `cwebp -q 86 -m 6 -sharp_yuv -resize 1920 0 images/bg.png -o images/hero-bg-1920.webp`,
+    `cwebp … -crop 1720 0 2376 2567 -resize 0 2160 images/bg.png -o images/hero-bg-mobile.webp`
+    and `cwebp … -noalpha images/bg2.png -o images/contact-bg.webp`. Light
+    text needs the art to stay dark under it (it measured ≥ 8:1 with these).
+  The `<img>`s `onerror`-hide if missing. The portrait `images/app-map.png` only
+  serves as the OG/Twitter preview image.
+- Contact section: ≥1100px the photo is full-bleed, drawn slightly over-wide
+  (`--contact-photo-bleed`) so the wine glass sits in the open gap between the
+  links (left) and the paper form card (right); below that it is a plate at the
+  top fading into the section's dark ground (`--contact-ground-rgb`, the app's
+  darkBackground). If the photo changes, retune those tokens by screenshot at
+  1280–1920px.
 - Hero type sizes are tunable tokens in `:root` (`--hero-slogan-size`,
-  `--hero-taiwan-size`, and `-mobile` variants for ≤767px). 「第一版 · 臺灣」 uses
-  **Noto Serif TC 600** loaded from Google Fonts as a glyph subset (`text=` in
-  the `<head>` link) — if that wording changes, update the `text=` value too.
-- The sticky header is transparent over the hero map and turns cream + blurred
-  once the page scrolls (`.site-header.is-scrolled`, toggled by a small script).
+  `--hero-taiwan-size`, and `-mobile` variants for ≤767px). 「第一版 · 臺灣」 (600)
+  and the contact title 「與我們聯繫」 (500) use **Noto Serif TC** loaded from
+  Google Fonts as a glyph subset (`text=` in the `<head>` link) — if either
+  wording changes, update the `text=` value too.
+- The sticky header has light ink while a dark section (`[data-dark-ground]`:
+  the hero and the contact section) is under it (`.is-on-dark`, shipped in the
+  markup for the first paint): transparent at the very top, a dark glass bar
+  once scrolled. Over anything else (the footer) it is the cream bar with
+  charcoal ink. Both classes are toggled by the small scroll script at the end
+  of the page; header colours go through `--hdr-ink` / `--hdr-text-alpha`. A
+  new dark section must carry `data-dark-ground`.
   `--header-h-mobile` (80px) must stay tall enough to contain the 中/EN toggle.
 
 ### Contact form → email (Google Apps Script)

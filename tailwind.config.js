@@ -19,8 +19,8 @@ module.exports = {
         bg: 'rgb(var(--bg-rgb) / <alpha-value>)',
         fg: 'rgb(var(--fg-rgb) / <alpha-value>)',
         fgmuted: 'rgb(var(--fg-muted-rgb) / <alpha-value>)',
-        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',          // lemon-curd yellow (fills/marks only)
-        accentstrong: 'rgb(var(--accent-strong-rgb) / <alpha-value>)', // hover / focus / yellow borders
+        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',          // butter, the app's one primary yellow (fills/marks only)
+        accentstrong: 'rgb(var(--accent-strong-rgb) / <alpha-value>)', // butter's hairline edge: focus rings, yellow borders
         onaccent: 'rgb(var(--fg-rgb) / <alpha-value>)',            // text on yellow = charcoal (never white)
         sage: 'rgb(var(--green-rgb) / <alpha-value>)',             // #606D5D — directory panel, section eyebrows, footer meta
       },

@@ -223,8 +223,8 @@ function renderPage(pageDef, parsed) {
          text-onaccent …) — same values as index.html's :root. */
       --fg-rgb: 26 24 20;
       --fg-muted-rgb: 92 87 78;
-      --accent-rgb: 242 200 75;
-      --accent-strong-rgb: 224 180 49;
+      --accent-rgb: 245 230 190;        /* butter — the one primary yellow */
+      --accent-strong-rgb: 170 141 64;  /* butter's hairline edge */
       --wordmark-size: 1rem;
       --wordmark-weight: 1000;
       --wordmark-tracking: 0.5em;
@@ -318,12 +318,12 @@ function renderPage(pageDef, parsed) {
       <!-- Right: app CTA (→ store buttons on the landing page) + language toggle -->
       <div class="flex items-center gap-3 sm:gap-4">
         <a href="/"
-           class="whitespace-nowrap rounded-full bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-onaccent transition-colors hover:bg-accentstrong sm:px-5 sm:text-sm"
+           class="whitespace-nowrap rounded-full border border-accentstrong bg-accent px-4 py-2 text-xs font-semibold tracking-wide text-onaccent transition hover:brightness-[.97] sm:px-5 sm:text-sm"
            data-i18n="nav.app">
           Get the app
         </a>
         <button id="langToggle" type="button"
-                class="rounded-full border border-hairline px-3 py-2 text-xs font-semibold tracking-wide text-fg transition-colors hover:border-accent hover:text-accent sm:text-sm">
+                class="rounded-full border border-fg/20 px-3 py-2 text-xs font-semibold tracking-wide text-fg transition-colors hover:border-accentstrong sm:text-sm">
           中
         </button>
       </div>

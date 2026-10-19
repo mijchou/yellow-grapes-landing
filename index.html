@@ -49,9 +49,10 @@
   <link rel="apple-touch-icon" href="logo/app-icon.png" />
 
   <!-- Fonts: Urbanist (headings/labels), Cormorant Garamond (section titles),
-       Noto Serif TC — subset to exactly the glyphs of 「第一版 · 臺灣」 via
-       `text=` (a few KB), so that line renders identically on every device.
-       If you change that line's wording, update the `text=` value too. -->
+       Noto Serif TC — subset to exactly the glyphs of 「第一版 · 臺灣」 (600) and
+       the contact title 「與我們聯繫」 (500) via `text=` (a few KB), so those lines
+       render identically on every device. If either wording changes, update the
+       `text=` value too. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -59,7 +60,7 @@
     rel="stylesheet"
   />
   <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600&text=%E7%AC%AC%E4%B8%80%E7%89%88%20%C2%B7%20%E8%87%BA%E7%81%A3&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600&text=%E7%AC%AC%E4%B8%80%E7%89%88%20%C2%B7%20%E8%87%BA%E7%81%A3%E8%88%87%E6%88%91%E5%80%91%E8%81%AF%E7%B9%AB&display=swap"
     rel="stylesheet"
   />
 
@@ -80,11 +81,31 @@
       --bg-rgb: 250 249 245;
       --fg-rgb: 26 24 20;
       --fg-muted-rgb: 92 87 78;
-      --accent-rgb: 242 200 75;
-      --accent-strong-rgb: 224 180 49;
+      --accent-rgb: 245 230 190;        /* #F5E6BE — butter, the app's one primary yellow (AppColors.butter) */
+      --accent-strong-rgb: 170 141 64;  /* #AA8D40 — butter's hairline edge (actionPrimaryBorder); focus rings */
       --green-rgb: 96 109 93;        /* #606D5D — soft sage: directory panel, section eyebrows, footer meta */
       --map-bg-rgb: 230 228 221;     /* #E6E4DD — THE MAP section bg (blends with the grapes render) */
       --line: rgb(26 24 20 / 0.16);
+
+      /* On-photo ground — the app's 貴賓禮遇計畫 backdrop */
+      --scrim-rgb: 28 23 19;         /* #1C1713 — AppColors.photoScrim */
+      --on-dark-rgb: 254 253 251;    /* #FEFDFB — warmGrey50, text on the scrim */
+
+      /* Owner-portal form vocabulary (owner_portal/src/styles.css ← AppColors) */
+      --paper-rgb: 254 253 251;      /* warmGrey50 — the contact card, link rows */
+      --card-rgb: 255 255 255;       /* surfaceCard — field fill */
+      --ink-secondary-rgb: 108 98 77;/* warmGrey600 — field labels, captions */
+      --hairline-rgb: 211 206 196;   /* outlineVariant — field + card edges */
+      --outline-rgb: 181 172 159;    /* warmGrey300 — hovered field edge */
+      --placeholder-rgb: 142 134 122;/* warmGrey500 */
+      --selected-rgb: 242 232 212;   /* filterSelectedFill — chosen topic */
+      --sage-ink-rgb: 62 76 62;      /* themeText5Light — chosen topic, text buttons */
+      --danger-rgb: 186 37 37;       /* negative — error text */
+      --danger-container-rgb: 250 205 205;
+      --error-rgb: 230 106 106;      /* colorScheme.error — invalid field edge */
+      --radius-control: 8px;
+      --radius-row: 12px;
+      --radius-panel: 16px;
 
       /* Layout */
       --header-h-desktop: 88px;
@@ -112,7 +133,16 @@
       --hero-rail-width: 40rem;
       --hero-stack-top: 6vh;
       --hero-peek: 6vh;
-      --hero-dark-fade: 0;
+
+      /* Contact photo (images/contact-bg.*). Wide screens: the photo is drawn
+         a little wider than the section and shifted left so the glass sits in
+         the open gap between the links and the form card. */
+      --contact-photo-bleed: 12%;
+      --contact-photo-y: 45%;
+      /* Narrow screens: the photo is a plate at the top that fades into the
+         section's own dark ground (the photo's tone). */
+      --contact-plate-h: min(118vw, 36rem);
+      --contact-ground-rgb: 31 29 25;  /* #1F1D19 — AppColors.darkBackground */
 
       /* Right-side lede box positioning (tune these to adjust) */
       --lede-right: 38%;
@@ -131,12 +161,18 @@
 
     /* ═══════════  Header  ═══════════ */
     .site-header {
+      /* Ink + ground as channels: charcoal on cream by default, light on the
+         scrim while the header sits over the darkened hero (.is-on-dark). */
+      --hdr-ink: var(--fg-rgb);
+      --hdr-ground: var(--bg-rgb);
+      --hdr-line-alpha: 0.25;
+      --hdr-text-alpha: 0.6;
       height: var(--header-h-desktop);
-      background-color: rgb(var(--bg-rgb) / var(--header-opacity));
+      background-color: rgb(var(--hdr-ground) / var(--header-opacity));
       -webkit-backdrop-filter: blur(var(--header-blur));
       backdrop-filter: blur(var(--header-blur));
       overflow: visible;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.25s ease;
     }
     /* Toggled from JS once the page leaves the top, so the header text and rule
        never sit on top of the content scrolling beneath them. */
@@ -144,6 +180,17 @@
       --header-opacity: 0.92;
       --header-blur: 12px;
     }
+    /* Toggled from JS while a dark section ([data-dark-ground]: the hero, the
+       contact section) is under the header: light ink, and once scrolled a dark
+       glass bar instead of the cream one. The markup ships with this class so
+       the first paint (over the hero) is already right. */
+    .site-header.is-on-dark {
+      --hdr-ink: var(--on-dark-rgb);
+      --hdr-ground: var(--scrim-rgb);
+      --hdr-line-alpha: 0.3;
+      --hdr-text-alpha: 0.8;
+    }
+    .site-header.is-on-dark.is-scrolled { --header-opacity: 0.55; }
     .header-row {
       display: flex; align-items: flex-start; justify-content: space-between;
       height: 100%; padding: 1.5rem 1.5rem 0;
@@ -158,8 +205,9 @@
       font-size: 0.65rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgb(var(--fg-rgb) / 0.6);
+      color: rgb(var(--hdr-ink) / var(--hdr-text-alpha));
       line-height: 1;
+      transition: color 0.25s ease;
     }
     .header-center {
       position: absolute;
@@ -195,7 +243,8 @@
       top: calc(1.5rem + 0.9rem);
       left: 1.5rem; right: 1.5rem;
       height: 1px;
-      background: rgb(var(--fg-rgb) / 0.25);
+      background: rgb(var(--hdr-ink) / var(--hdr-line-alpha));
+      transition: background-color 0.25s ease;
     }
     .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; margin-top: 1.5rem; }
     /* Text-only buttons: no container, underlined, tinted fg @ 0.75. */
@@ -203,14 +252,15 @@
       border: none;
       background: none;
       padding: 0;
-      color: rgb(var(--fg-rgb) / 0.75);
+      color: rgb(var(--hdr-ink, var(--fg-rgb)) / 0.75);
       text-decoration: underline;
       text-decoration-thickness: 1px;
       text-underline-offset: 0.28em;
       cursor: pointer;
+      transition: color 0.25s ease;
     }
     .header-btn:hover {
-      color: rgb(var(--fg-rgb));
+      color: rgb(var(--hdr-ink, var(--fg-rgb)));
     }
     /* Invisible hit areas: the header links/toggle are tiny type, so give each a
        finger-sized (~40px) tap target without changing the layout. */
@@ -248,24 +298,23 @@
       margin: 0;
     }
 
-    #the-map, #field-notes, #contact { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
+    #the-map, #field-notes { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
+    /* Contact lands flush at the top: its photo runs under the header (dark
+       glass over it), and its own padding clears the text. */
+    #contact { scroll-margin-top: 0; }
 
     /* ═══════════  Logo  ═══════════ */
     .yg-logo { display: block; height: var(--logo-h); width: auto; }
     .yg-wordmark { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.42em; }
 
     /* ═══════════  Hero  ═══════════ */
-    .hero-dark {
-      background-color: rgb(var(--fg-rgb) / var(--hero-dark-fade));
-      pointer-events: none;
-    }
-    /* Mobile cream overlay — fades the busy map so text is readable */
-    .hero-mobile-overlay {
-      background-color: rgb(var(--bg-rgb) / 0.82);
-      pointer-events: none;
-    }
-    @media (min-width: 768px) {
-      .hero-mobile-overlay { display: none; }
+    /* A short butter rule under 第一版 · 臺灣 — the 貴賓禮遇計畫 header mark. */
+    .hero-rule {
+      display: block;
+      width: 2rem; height: 1.5px;
+      margin: -0.25rem 0 -0.15rem;
+      background: rgb(var(--accent-rgb));
+      flex: none;
     }
 
     /* Two-column hero composition — branding (left) + narrative box (right) */
@@ -422,26 +471,29 @@
     }
 
     .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 6rem; }
+    /* Glass on the darkened hero, like the 貴賓禮遇計畫 page actions. */
     .store-badge {
       display: inline-flex; align-items: center; justify-content: center; gap: 1rem;
-      background: rgb(var(--bg-rgb) / 0.45);
-      color: rgb(var(--fg-rgb));
-      border: 1px solid rgb(var(--fg-rgb) / 0.22);
-      border-radius: 0.5rem;
+      background: rgb(var(--on-dark-rgb) / 0.08);
+      color: rgb(var(--on-dark-rgb));
+      border: 1px solid rgb(var(--on-dark-rgb) / 0.34);
+      border-radius: var(--radius-row);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
       padding: 0.6rem 1.5rem;
       min-width: 11rem;
       text-decoration: none;
       transition: background-color 0.15s, border-color 0.15s;
     }
-    a.store-badge[href]:hover { background: rgb(var(--bg-rgb) / 0.8); border-color: rgb(var(--fg-rgb) / 0.5); }
-    a.store-badge[href]:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+    a.store-badge[href]:hover { background: rgb(var(--on-dark-rgb) / 0.16); border-color: rgb(var(--on-dark-rgb) / 0.6); }
+    a.store-badge[href]:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 3px; }
     /* iOS badge before the App Store URL is configured (see store-config.js):
        an <a> with no href — not clickable or focusable — reading "Coming soon". */
     a.store-badge:not([href]) { cursor: default; }
-    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--fg-rgb) / 0.6); }
+    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--on-dark-rgb) / 0.78); }
     .store-badge--android svg { height: 1.28rem; width: 1.28rem; }
     .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
-    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
+    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--on-dark-rgb) / 0.7); }
     .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
 
     .hero-label {
@@ -450,9 +502,9 @@
       font-size: 0.6875rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgb(var(--fg-rgb));
+      color: rgb(var(--on-dark-rgb));
     }
-    .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
+    .hero-label--muted { color: rgb(var(--on-dark-rgb) / 0.72); }
 
     .hero-bottom-bar {
       position: absolute;
@@ -481,11 +533,12 @@
       display: flex; align-items: center; gap: 0.55rem;
       font-family: 'Urbanist', system-ui, sans-serif;
       font-weight: 700; font-size: 0.65rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.6); line-height: 1;
+      text-transform: uppercase; color: rgb(var(--hdr-ink) / var(--hdr-text-alpha)); line-height: 1;
+      transition: color 0.25s ease;
     }
     .header-nav a { color: inherit; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
-    .header-nav a:hover { color: rgb(var(--fg-rgb)); }
-    .header-nav .sep { color: rgb(var(--fg-rgb) / 0.3); }
+    .header-nav a:hover { color: rgb(var(--hdr-ink)); }
+    .header-nav .sep { color: rgb(var(--hdr-ink) / 0.3); }
 
     /* ═══════════  Hero slogan + intro (replaces the wordmark)  ═══════════ */
     .hero-slogan {
@@ -495,7 +548,7 @@
       font-size: var(--hero-slogan-size);
       line-height: 1.15;
       letter-spacing: 0.02em;
-      color: rgb(var(--fg-rgb));
+      color: rgb(var(--on-dark-rgb));
       max-width: 14em;
     }
     .hero-intro {
@@ -503,7 +556,7 @@
       max-width: 30rem;
       font-size: clamp(0.9rem, 1vw, 1rem);
       line-height: 1.7;
-      color: rgb(var(--fg-rgb) / 0.8);
+      color: rgb(var(--on-dark-rgb) / 0.9);
     }
     /* "第一版 · 臺灣" sub-wordmark (line under the slogan) — Noto Serif TC 600,
        loaded as a glyph subset in <head>. word-spacing keeps the airy gap around
@@ -516,7 +569,7 @@
       line-height: 1;
       letter-spacing: 0.02em;
       word-spacing: 0.25em;
-      color: rgb(var(--fg-rgb) / 0.6);
+      color: rgb(var(--on-dark-rgb) / 0.84);
     }
 
     /* ═══════════  Shared editorial section chrome  ═══════════ */
@@ -626,44 +679,252 @@
       font-size: 0.95rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.8);
     }
 
-    /* ═══════════  Contact  ═══════════ */
-    .contact-title { font-size: clamp(2rem, 3.6vw, 3.2rem); }
-    .field-label {
-      display: block; margin-bottom: 0.5rem;
-      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
-      text-transform: uppercase; color: rgb(var(--fg-rgb));
+    /* ═══════════  Contact  ═══════════
+       The owner portal's form vocabulary on the darkened linen photograph
+       (already toned in the art itself — no veil here). Text set on the photo
+       reads light; the form sits on a paper card, like PartnerSurface.
+       Narrow (<1100px): the photo is a plate at the top that fades into the
+       section's dark ground; title, links, then the form card follow (side by
+       side from 900px). Wide: full-bleed photo — links (left), the glass in
+       the open gap, the form card (right). DOM order = reading order. */
+    .contact-section {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      background: rgb(var(--contact-ground-rgb));
+      color: rgb(var(--on-dark-rgb));
     }
-    .field-error { margin: 0.45rem 0 0; font-size: 0.8125rem; line-height: 1.4; color: rgb(185 28 28); }
-    .contact-form [aria-invalid="true"] { border-color: rgb(185 28 28); }
-    /* Honeypot: off-screen (not display:none, which some bots skip). */
-    .form-hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
-    .contact-note { margin: 0; font-size: 0.8125rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.6); }
-    .contact-note a, .contact-alert a { text-decoration: underline; text-underline-offset: 0.2em; }
-    .contact-note a:hover { color: rgb(var(--fg-rgb)); }
+    .contact-photo {
+      position: absolute; z-index: -2;
+      top: 0; left: 0; right: 0;
+      height: var(--contact-plate-h);
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 90%);
+      mask-image: linear-gradient(180deg, #000 60%, transparent 90%);
+    }
+    .contact-photo img {
+      display: block; width: 100%; height: 100%;
+      object-fit: cover; object-position: 50% var(--contact-photo-y);
+    }
+    .contact-inner {
+      max-width: 92rem; margin: 0 auto;
+      padding: calc(var(--contact-plate-h) * 0.76) 1.5rem 4.5rem;
+    }
+    .contact-layout { display: grid; gap: 3rem; }
+    @media (min-width: 640px) {
+      .contact-inner { padding-left: 2rem; padding-right: 2rem; }  /* the footer's gutters */
+    }
+    /* Tablet landscape: the photo stays a plate; links and form side by side. */
+    @media (min-width: 900px) and (max-width: 1099px) {
+      .contact-layout { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 3rem; align-items: start; }
+    }
+    .contact-intro { min-width: 0; max-width: 34rem; }
+    .contact-intro .section-eyebrow { color: rgb(var(--on-dark-rgb) / 0.72); }
+    .contact-title {
+      margin-top: 1.4rem;
+      color: rgb(var(--on-dark-rgb));
+      /* Noto Serif TC is the 與我們聯繫 glyph subset loaded in <head>. */
+      font-family: 'Cormorant Garamond', 'Noto Serif TC', Georgia, serif;
+      font-size: clamp(2.2rem, 3.6vw, 3.2rem);
+      line-height: 1.12;
+    }
+    /* Short rule under a title — butter on the dark photo (as in the hero);
+       butter's edge on the paper card, where pale butter would vanish. */
+    .contact-rule {
+      display: block;
+      width: 2rem; height: 1.5px;
+      margin-top: 1.4rem;
+      background: rgb(var(--accent-rgb));
+    }
+    .contact-card .contact-rule { background: rgb(var(--accent-strong-rgb)); }
+    .contact-desc {
+      margin: 1.4rem 0 0;
+      max-width: 28rem;
+      font-size: 1rem; line-height: 1.75;
+      color: rgb(var(--on-dark-rgb) / 0.8);
+    }
 
-    /* Right column: "Elsewhere" list (Threads / Instagram / email) — hairline-ruled rows */
+    /* Other ways to reach us — the portal's grouped edit rows, as glass on
+       the dark photo (the same treatment as the hero's store buttons). */
+    .contact-elsewhere { margin-top: 2.75rem; max-width: 26rem; }
     .contact-aside-label {
-      margin: 0 0 0.9rem;
+      margin: 0 0 0.85rem;
       font-family: 'Urbanist', system-ui, sans-serif;
       font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: rgb(var(--fg-rgb) / 0.55);
+      text-transform: uppercase; color: rgb(var(--on-dark-rgb) / 0.6);
     }
-    .contact-links { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid rgb(var(--fg-rgb) / 0.16); }
+    .contact-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
     .contact-link {
-      display: flex; align-items: center; gap: 0.9rem;
-      min-height: 3.75rem; padding: 0.9rem 0.1rem;
-      border-top: 1px solid rgb(var(--fg-rgb) / 0.16);
-      color: rgb(var(--fg-rgb)); text-decoration: none;
-      transition: color 0.15s;
+      display: flex; align-items: center; gap: 0.95rem;
+      min-height: 4rem; padding: 0.75rem 1rem 0.75rem 1.1rem;
+      border: 1px solid rgb(var(--on-dark-rgb) / 0.2);
+      border-radius: var(--radius-row);
+      background: rgb(var(--on-dark-rgb) / 0.06);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      color: rgb(var(--on-dark-rgb)); text-decoration: none;
+      transition: background-color 0.15s, border-color 0.15s;
     }
-    .contact-link svg { width: 1.25rem; height: 1.25rem; flex: none; color: rgb(var(--fg-rgb) / 0.75); }
-    .contact-link-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
-    .contact-link-name { font-family: 'Urbanist', system-ui, sans-serif; font-weight: 700; font-size: 1rem; line-height: 1.25; }
-    .contact-link-handle { font-size: 0.875rem; line-height: 1.35; color: rgb(var(--fg-rgb) / 0.6); overflow-wrap: anywhere; }
-    .contact-link-arrow { flex: none; margin-left: auto; font-size: 0.875rem; color: rgb(var(--fg-rgb) / 0.45); transition: transform 0.15s; }
-    .contact-link:hover .contact-link-name { text-decoration: underline; text-decoration-color: rgb(var(--accent-rgb)); text-decoration-thickness: 2px; text-underline-offset: 0.25em; }
+    .contact-link:hover { background: rgb(var(--on-dark-rgb) / 0.12); border-color: rgb(var(--on-dark-rgb) / 0.4); }
+    .contact-link:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 2px; }
+    .contact-link svg { width: 1.25rem; height: 1.25rem; flex: none; color: rgb(var(--on-dark-rgb) / 0.8); }
+    .contact-link-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+    .contact-link-name { font-family: 'Urbanist', system-ui, sans-serif; font-size: 0.95rem; font-weight: 600; line-height: 1.3; }
+    .contact-link-handle { font-size: 0.8125rem; line-height: 1.35; color: rgb(var(--on-dark-rgb) / 0.65); overflow-wrap: anywhere; }
+    .contact-link-arrow { flex: none; margin-left: auto; font-size: 0.875rem; color: rgb(var(--on-dark-rgb) / 0.55); transition: transform 0.15s; }
     .contact-link:hover .contact-link-arrow { transform: translate(2px, -2px); }
-    .contact-link:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+    .contact-link[href^="mailto:"]:hover .contact-link-arrow { transform: translateX(2px); }
+
+    /* The form card — PartnerSurface / the portal's panel: paper, hairline,
+       16px corners, a soft lift. */
+    .contact-card {
+      min-width: 0; max-width: 40rem;
+      display: flex; flex-direction: column;
+      padding: clamp(1.5rem, 4vw, 2.75rem);
+      border: 1px solid rgb(var(--hairline-rgb) / 0.8);
+      border-radius: var(--radius-panel);
+      background: rgb(var(--paper-rgb) / 0.96);
+      color: rgb(var(--fg-rgb));
+      box-shadow: 0 1px 2px rgb(var(--scrim-rgb) / 0.2), 0 18px 48px rgb(var(--scrim-rgb) / 0.35);
+    }
+    .contact-card.is-easing { transition: min-height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .contact-form:not(.hidden) { display: grid; gap: 1.4rem; }
+    .contact-pair { display: grid; gap: 1.4rem; }
+    @media (min-width: 640px) { .contact-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
+    .contact-field { display: grid; gap: 0.45rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+    .field-label {
+      display: block; margin: 0; padding: 0;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; line-height: 1.4;
+      color: rgb(var(--ink-secondary-rgb));
+    }
+    /* 16px text so iOS Safari never zooms the page on focus. */
+    .contact-input {
+      display: block; width: 100%; min-height: 3rem; margin: 0;
+      padding: 0.75rem 0.9rem;
+      font: inherit; font-size: 1rem; line-height: 1.5;
+      color: rgb(var(--fg-rgb));
+      background: rgb(var(--card-rgb) / 0.7);
+      border: 0; border-radius: var(--radius-control);
+      box-shadow: inset 0 0 0 1px rgb(var(--hairline-rgb));
+      -webkit-appearance: none; appearance: none;
+      transition: box-shadow 0.15s, background-color 0.15s;
+    }
+    .contact-input::placeholder { color: rgb(var(--placeholder-rgb)); opacity: 1; }
+    .contact-input:hover:not(:focus) { box-shadow: inset 0 0 0 1px rgb(var(--outline-rgb)); }
+    .contact-input:focus { outline: none; background: rgb(var(--card-rgb)); box-shadow: inset 0 0 0 2px rgb(var(--ink-secondary-rgb)); }
+    .contact-input[aria-invalid="true"] { box-shadow: inset 0 0 0 1px rgb(var(--error-rgb)); }
+    .contact-input[aria-invalid="true"]:focus { box-shadow: inset 0 0 0 2px rgb(var(--error-rgb)); }
+    /* overflow-x: Safari otherwise draws a stray horizontal scroll bar. */
+    textarea.contact-input { min-height: 9.5rem; resize: vertical; overflow-x: hidden; overflow-wrap: break-word; line-height: 1.65; }
+    /* A legend isn't a grid item, so the field's gap doesn't reach it. */
+    legend.field-label { margin-bottom: 0.45rem; }
+    .field-error { margin: 0; font-size: 0.78rem; line-height: 1.45; color: rgb(var(--danger-rgb)); }
+
+    /* 主題 — the portal's option buttons (radio inputs underneath). */
+    .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+    @media (min-width: 640px) { .topic-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    .topic-option { position: relative; display: block; cursor: pointer; }
+    .topic-option input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+    .topic-option span {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 2.75rem; padding: 0.5rem 0.6rem;
+      border-radius: var(--radius-control);
+      background: rgb(var(--card-rgb) / 0.5);
+      box-shadow: inset 0 0 0 1px rgb(var(--hairline-rgb));
+      color: rgb(var(--ink-secondary-rgb));
+      font-size: 0.875rem; font-weight: 500; line-height: 1.3; text-align: center;
+      transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
+    }
+    .topic-option:hover span { background: rgb(var(--card-rgb) / 0.85); box-shadow: inset 0 0 0 1px rgb(var(--outline-rgb)); }
+    .topic-option input:checked + span {
+      color: rgb(var(--sage-ink-rgb));
+      background: rgb(var(--selected-rgb));
+      box-shadow: inset 0 0 0 1px rgb(var(--green-rgb));
+    }
+    .topic-option input:focus-visible + span { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+
+    /* 送出訊息 — butter, the one primary yellow, with its hairline edge. */
+    .contact-submit {
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      width: 100%; min-height: 3.25rem; margin: 0.35rem 0 0;
+      padding: 0.8rem 1.5rem;
+      border: 1px solid rgb(var(--accent-strong-rgb));
+      border-radius: var(--radius-control);
+      background: rgb(var(--accent-rgb));
+      color: rgb(var(--fg-rgb));
+      font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; line-height: 1.2;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .contact-submit:hover:not(:disabled) { filter: brightness(0.97); }
+    .contact-submit:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 3px; }
+    .contact-submit:disabled { cursor: wait; }
+    .contact-submit[aria-busy="true"]::before {
+      content: '';
+      width: 1rem; height: 1rem; flex: none;
+      border: 2px solid rgb(var(--fg-rgb) / 0.18);
+      border-top-color: rgb(var(--fg-rgb) / 0.7);
+      border-radius: 50%;
+      animation: contact-spin 0.8s linear infinite;
+    }
+    @keyframes contact-spin { to { transform: rotate(360deg); } }
+    .contact-note { margin: -0.4rem 0 0; font-size: 0.78rem; line-height: 1.6; color: rgb(var(--ink-secondary-rgb)); }
+    .contact-note a, .contact-alert a { text-decoration: underline; text-underline-offset: 0.2em; }
+    .contact-note a:hover { color: rgb(var(--fg-rgb)); }
+    /* Honeypot: off-screen (not display:none, which some bots skip). */
+    .form-hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+    /* Sent — fills the card at the form's height (locked from JS), centred. */
+    .contact-thanks:not(.hidden) { display: flex; flex: 1; flex-direction: column; justify-content: center; align-items: flex-start; }
+    .contact-thanks:focus { outline: none; }
+    .contact-thanks .contact-rule { margin: 0 0 1.4rem; }
+    .contact-thanks-title { margin: 0; font-size: 1.375rem; font-weight: 600; line-height: 1.4; color: rgb(var(--fg-rgb)); }
+    .contact-thanks-body { margin: 0.6rem 0 0; font-size: 0.95rem; line-height: 1.7; color: rgb(var(--ink-secondary-rgb)); }
+    .contact-text-btn {
+      margin: 1.5rem 0 0 -0.85rem; min-height: 2.5rem; padding: 0.5rem 0.85rem;
+      border: 0; border-radius: var(--radius-control); background: transparent;
+      color: rgb(var(--sage-ink-rgb));
+      font-size: 0.9rem; font-weight: 600; letter-spacing: 0.03em;
+      cursor: pointer; transition: background-color 0.15s;
+    }
+    .contact-text-btn:hover { background: rgb(var(--hairline-rgb) / 0.4); }
+    .contact-text-btn:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+
+    /* Not sent. */
+    .contact-alert {
+      margin-top: 1.25rem; padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--danger-rgb) / 0.25);
+      border-radius: var(--radius-control);
+      background: rgb(var(--danger-container-rgb) / 0.4);
+      color: rgb(var(--danger-rgb));
+      font-size: 0.875rem; line-height: 1.6;
+    }
+    .contact-alert:focus { outline: none; }
+    .contact-alert p { margin: 0; }
+    /* High-contrast modes drop box-shadows — give fields and topics real edges. */
+    @media (forced-colors: active) {
+      .contact-input, .topic-option span { border: 1px solid CanvasText; }
+      .topic-option input:checked + span { outline: 2px solid Highlight; outline-offset: 1px; }
+    }
+
+    @media (min-width: 1100px) {
+      /* The photo, slightly over-wide and shifted left, so the glass lands in
+         the open gap (tokens in :root). */
+      .contact-photo {
+        top: 0; bottom: 0; right: 0; left: calc(-1 * var(--contact-photo-bleed));
+        height: auto;
+        -webkit-mask-image: none; mask-image: none;
+      }
+      .contact-inner { padding: clamp(6rem, 9vw, 8.5rem) 2rem; }
+      .contact-layout { grid-template-columns: minmax(0, 24rem) minmax(3rem, 1fr) minmax(0, 34rem); gap: 0; align-items: start; }
+      .contact-intro { grid-column: 1; }
+      .contact-card {
+        grid-column: 3;
+        background: rgb(var(--paper-rgb) / 0.94);
+        -webkit-backdrop-filter: blur(18px) saturate(1.05);
+        backdrop-filter: blur(18px) saturate(1.05);
+      }
+    }
 
     /* ═══════════  Footer  ═══════════ */
     .footer-social { display: flex; gap: 0.25rem; margin-left: -0.6rem; }
@@ -781,7 +1042,10 @@
 
     @media (prefers-reduced-motion: reduce) {
       html.scroll-smooth { scroll-behavior: auto; }
-      .site-header, .store-badge { transition: none; }
+      .site-header, .site-header *, .store-badge,
+      .contact-link, .contact-link-arrow, .contact-input, .topic-option span,
+      .contact-submit, .contact-text-btn, .contact-card.is-easing { transition: none; }
+      .contact-submit[aria-busy="true"]::before { animation-duration: 2.4s; }
     }
 
     /* ═══════════  Small Mobile (≤639px)  ═══════════ */
@@ -797,7 +1061,7 @@
 <body id="top" class="bg-bg font-sans text-fg antialiased">
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
-  <header class="site-header sticky top-0 z-50">
+  <header class="site-header is-on-dark sticky top-0 z-50">
     <div class="header-row">
       <!-- Left: "Crafted in 2026" above the line -->
       <div class="header-left">
@@ -835,22 +1099,28 @@
 
   <main>
     <!-- ───────────────────────  01 · HERO  ───────────────────────
-         Desktop: wide map full-bleed behind, text on the left column.
-         Mobile: same map under a cream veil (.hero-mobile-overlay) so the text
-         stays readable; the colophon flows after the store buttons. -->
-    <section class="hero relative overflow-hidden">
-      <!-- Pre-rendered background (frosted map + window baked into the image). Swap the src below
-           for your rendered file (desktop / tablet-landscape only). -->
+         The map full-bleed behind — already darkened in the art itself
+         (images/bg.png) — with the text reading light on it, like the app's
+         貴賓禮遇計畫 pages. Mobile: the colophon flows after the store buttons. -->
+    <section class="hero relative overflow-hidden" data-dark-ground>
+      <!-- Map art: WebP renditions of images/bg.png, with a JPEG fallback.
+           Phones get a crop of the map's right side — the only part they show
+           (object-position: right center) — and wider screens a width-matched
+           file. `sizes`: object-cover draws the map wider than the viewport
+           whenever the window is taller than the map's 8:5. -->
       <div class="absolute inset-0 block" aria-hidden="true">
-        <img
-          src="images/app-map-wide-extended-withoutfrost.png" alt=""
-          class="hero-background-image h-full w-full object-cover"
-          onerror="this.style.display='none'"
-        />
-        <!-- optional charcoal veil for legibility (default 0, tune via #tune) -->
-        <div class="hero-dark absolute inset-0"></div>
-        <!-- Mobile cream veil — softens the map so text is readable on small screens -->
-        <div class="hero-mobile-overlay absolute inset-0"></div>
+        <picture class="block h-full w-full">
+          <source media="(max-width: 767px)" type="image/webp" srcset="images/hero-bg-mobile.webp" />
+          <source type="image/webp"
+            srcset="images/hero-bg-1920.webp 1920w, images/hero-bg-2880.webp 2880w, images/hero-bg-3840.webp 3840w"
+            sizes="(max-aspect-ratio: 8/5) 160vh, 100vw" />
+          <img
+            src="images/hero-bg.jpg" alt=""
+            class="hero-background-image h-full w-full object-cover"
+            fetchpriority="high" decoding="async"
+            onerror="this.style.display='none'"
+          />
+        </picture>
       </div>
 
       <!-- Content — editorial composition. Keep the grid + min-height (they drive the
@@ -864,6 +1134,7 @@
           <div class="hero-left-col">
             <h1 class="hero-slogan" data-i18n="hero.slogan">The places, the people &amp; the bottle.</h1>
             <p class="hero-taiwan">第一版 · 臺灣</p>
+            <span class="hero-rule" aria-hidden="true"></span>
             <p class="hero-intro" data-i18n="hero.intro">Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
 
             <!-- Store buttons — below the intro, left-aligned -->
@@ -894,6 +1165,7 @@
             <div class="hero-headline">
               <h1 class="hero-slogan" data-i18n="hero.slogan">The places, the people &amp; the bottle.</h1>
               <p class="hero-taiwan">第一版 · 臺灣</p>
+              <span class="hero-rule" aria-hidden="true"></span>
               <p class="hero-intro" data-i18n="hero.intro">Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
             </div>
             <div class="hero-store">
@@ -1054,75 +1326,125 @@
 
     <!-- ───────────────────────  02 · CONTACT  ───────────────────────
          Numbered 03 originally — renumbered to 02 while THE MAP / FIELD NOTES
-         are hidden. The form POSTs to the Google Apps Script in
-         scripts/apps-script/contact-form.gs, which emails each message (and logs
-         it to the linked Sheet). See CONTACT_ENDPOINT in the script below. -->
-    <section id="contact" class="border-t border-fg">
-      <div class="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-24">
-        <div class="grid grid-cols-12 gap-y-14 lg:items-start lg:gap-x-12">
+         are hidden. Owner-portal styling on the darkened linen photograph
+         (images/bg2.png; see the Contact CSS for the layout per width). The form POSTs to the Google
+         Apps Script in scripts/apps-script/contact-form.gs, which emails each
+         message (and logs it to the linked Sheet). See CONTACT_ENDPOINT in the
+         script below. -->
+    <section id="contact" class="contact-section" data-dark-ground>
+      <picture class="contact-photo" aria-hidden="true">
+        <source type="image/webp" srcset="images/contact-bg.webp" />
+        <img src="images/contact-bg.jpg" alt="" width="1536" height="1024"
+             loading="lazy" decoding="async" onerror="this.style.display='none'" />
+      </picture>
 
-          <!-- Left: eyebrow + heading + copy + form -->
-          <div class="col-span-12 lg:col-span-7">
+      <div class="contact-inner">
+        <div class="contact-layout">
+
+          <!-- Left: eyebrow · title · copy · other ways to reach us -->
+          <div class="contact-intro">
             <p class="section-eyebrow">
               <span data-i18n="contact.eyebrow">Contact</span>
             </p>
-            <h2 class="section-title contact-title mt-6" data-i18n="contact.heading">Get in touch.</h2>
-            <p class="mt-5 max-w-md text-base leading-relaxed text-fgmuted" data-i18n="contact.desc">
+            <h2 class="section-title contact-title" data-i18n="contact.heading">Get in touch.</h2>
+            <span class="contact-rule" aria-hidden="true"></span>
+            <p class="contact-desc" data-i18n="contact.desc">
               Partnerships, press, a correction to a listing, or simply an idea — write to us and we'll reply as soon as we can.
             </p>
 
-            <form id="contactForm" class="contact-form mt-8 max-w-xl space-y-6" novalidate>
-              <div class="grid gap-6 sm:grid-cols-2">
-                <div>
+            <aside class="contact-elsewhere" aria-labelledby="contactElsewhere">
+              <p id="contactElsewhere" class="contact-aside-label" data-i18n="contact.elsewhere">Elsewhere</p>
+              <ul class="contact-links">
+                <li>
+                  <a class="contact-link" href="https://www.threads.com/@yellowgrapes.app" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg>
+                    <span class="contact-link-text">
+                      <span class="contact-link-name">Threads</span>
+                      <span class="contact-link-handle">@yellowgrapes.app</span>
+                    </span>
+                    <span class="contact-link-arrow" aria-hidden="true">↗</span>
+                    <span class="sr-only" data-i18n="a11y.newTab">(opens in a new tab)</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="contact-link" href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
+                    <span class="contact-link-text">
+                      <span class="contact-link-name">Instagram</span>
+                      <span class="contact-link-handle">@yellowgrapes.app</span>
+                    </span>
+                    <span class="contact-link-arrow" aria-hidden="true">↗</span>
+                    <span class="sr-only" data-i18n="a11y.newTab">(opens in a new tab)</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="contact-link" href="mailto:support@yellow.grapes.com.tw">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="1"/><path d="m3 5.5 9 7.5 9-7.5"/></svg>
+                    <span class="contact-link-text">
+                      <span class="contact-link-name" data-i18n="contact.email">Email</span>
+                      <span class="contact-link-handle">support@yellow.grapes.com.tw</span>
+                    </span>
+                    <span class="contact-link-arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              </ul>
+            </aside>
+          </div>
+
+          <!-- Right: the form, on a paper card -->
+          <div class="contact-card" id="contactCard">
+            <form id="contactForm" class="contact-form" novalidate>
+              <div class="contact-pair">
+                <div class="contact-field">
                   <label for="contactName" class="field-label" data-i18n="form.name">Name</label>
                   <input
                     id="contactName" name="name" type="text" required maxlength="100"
                     autocomplete="name" enterkeyhint="next" aria-describedby="contactNameError"
-                    class="w-full appearance-none rounded-none border border-fg/30 bg-bg px-4 py-3.5 text-base text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent"
+                    class="contact-input"
                   />
                   <p id="contactNameError" class="field-error hidden" data-i18n="form.nameError">Please enter your name.</p>
                 </div>
-                <div>
+                <div class="contact-field">
                   <label for="contactEmail" class="field-label" data-i18n="form.email">Email address</label>
                   <input
                     id="contactEmail" name="email" type="email" required maxlength="254"
                     autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false"
                     enterkeyhint="next" placeholder="you@example.com" aria-describedby="contactEmailError"
-                    class="w-full appearance-none rounded-none border border-fg/30 bg-bg px-4 py-3.5 text-base text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent"
+                    class="contact-input"
                   />
                   <p id="contactEmailError" class="field-error hidden" data-i18n="form.emailError">Please enter a valid email address.</p>
                 </div>
               </div>
 
-              <fieldset>
+              <fieldset class="contact-field">
                 <legend class="field-label" data-i18n="form.topic">Topic</legend>
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <label class="cursor-pointer">
-                    <input type="radio" name="topic" value="general" checked class="peer sr-only" />
-                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.general">General</span>
+                <div class="topic-grid">
+                  <label class="topic-option">
+                    <input type="radio" name="topic" value="general" checked />
+                    <span data-i18n="topic.general">General</span>
                   </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="topic" value="business" class="peer sr-only" />
-                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.business">Business</span>
+                  <label class="topic-option">
+                    <input type="radio" name="topic" value="business" />
+                    <span data-i18n="topic.business">Business</span>
                   </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="topic" value="press" class="peer sr-only" />
-                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.press">Press</span>
+                  <label class="topic-option">
+                    <input type="radio" name="topic" value="press" />
+                    <span data-i18n="topic.press">Press</span>
                   </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="topic" value="other" class="peer sr-only" />
-                    <span class="block border border-fg/30 px-3 py-3 text-center text-sm font-semibold text-fg transition-colors peer-checked:border-accentstrong peer-checked:bg-accent peer-checked:text-onaccent peer-focus-visible:ring-2 peer-focus-visible:ring-accent" data-i18n="topic.other">Other</span>
+                  <label class="topic-option">
+                    <input type="radio" name="topic" value="other" />
+                    <span data-i18n="topic.other">Other</span>
                   </label>
                 </div>
               </fieldset>
 
-              <div>
+              <div class="contact-field">
                 <label for="contactMessage" class="field-label" data-i18n="form.message">Message</label>
                 <textarea
                   id="contactMessage" name="message" rows="6" required maxlength="2000"
                   aria-describedby="contactMessageError" data-i18n-placeholder="form.messagePlaceholder"
                   placeholder="What would you like to tell us?"
-                  class="w-full appearance-none rounded-none border border-fg/30 bg-bg px-4 py-3.5 text-base text-fg placeholder:text-fgmuted/70 focus:border-accentstrong focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+                  class="contact-input"
                 ></textarea>
                 <p id="contactMessageError" class="field-error hidden" data-i18n="form.messageError">Please write a message.</p>
               </div>
@@ -1133,67 +1455,24 @@
                 <input id="contactWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
               </div>
 
-              <div class="space-y-4">
-                <button type="submit"
-                  class="w-full bg-sage px-6 py-4 text-sm font-bold uppercase tracking-wide text-bg transition-colors hover:bg-[#515e4e] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
-                  data-i18n="form.submit">
-                  Send message
-                </button>
-                <p class="contact-note" data-i18n="form.privacy">We'll only use these details to reply to you. See our <a href="/privacy">Privacy Policy</a>.</p>
-              </div>
+              <button type="submit" class="contact-submit" data-i18n="form.submit">Send message</button>
+              <p class="contact-note" data-i18n="form.privacy">We'll only use these details to reply to you. See our <a href="/privacy">Privacy Policy</a>.</p>
             </form>
 
-            <!-- Success state (revealed after a successful submit) -->
-            <div id="contactThanks" class="mt-8 hidden focus:outline-none max-w-xl border border-fg px-6 py-8" tabindex="-1">
-              <p class="font-brand text-lg font-bold text-fg" data-i18n="thanks.title">Message sent. 🍇</p>
-              <p class="mt-2 text-sm text-fgmuted" data-i18n="thanks.body">Thanks for writing — we'll get back to you as soon as we can.</p>
-              <button type="button" id="contactAgain" class="header-btn mt-5 text-sm font-semibold" data-i18n="thanks.again">Send another message</button>
+            <!-- Success state (replaces the form after a successful submit) -->
+            <div id="contactThanks" class="contact-thanks hidden" tabindex="-1">
+              <span class="contact-rule" aria-hidden="true"></span>
+              <p class="contact-thanks-title" data-i18n="thanks.title">Message sent. 🍇</p>
+              <p class="contact-thanks-body" data-i18n="thanks.body">Thanks for writing — we'll get back to you as soon as we can.</p>
+              <button type="button" id="contactAgain" class="contact-text-btn" data-i18n="thanks.again">Send another message</button>
             </div>
 
             <!-- Error state (shown on submission failure) -->
-            <div id="contactError" class="contact-alert mt-6 hidden focus:outline-none max-w-xl border border-red-500 bg-red-50 px-6 py-4" role="alert" tabindex="-1">
-              <p class="text-sm font-medium text-red-700" data-i18n="error.submit">Your message couldn't be sent. Please try again, or email us at <a href="mailto:support@yellow.grapes.com.tw">support@yellow.grapes.com.tw</a>.</p>
+            <div id="contactError" class="contact-alert hidden" role="alert" tabindex="-1">
+              <p data-i18n="error.submit">Your message couldn't be sent. Please try again, or email us at <a href="mailto:support@yellow.grapes.com.tw">support@yellow.grapes.com.tw</a>.</p>
             </div>
           </div>
 
-          <!-- Right: other ways to reach us -->
-          <aside class="col-span-12 lg:col-span-4 lg:col-start-9" aria-labelledby="contactElsewhere">
-            <p id="contactElsewhere" class="contact-aside-label" data-i18n="contact.elsewhere">Elsewhere</p>
-            <ul class="contact-links max-w-xl">
-              <li>
-                <a class="contact-link" href="https://www.threads.com/@yellowgrapes.app" target="_blank" rel="noopener noreferrer">
-                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg>
-                  <span class="contact-link-text">
-                    <span class="contact-link-name">Threads</span>
-                    <span class="contact-link-handle">@yellowgrapes.app</span>
-                  </span>
-                  <span class="contact-link-arrow" aria-hidden="true">↗</span>
-                  <span class="sr-only" data-i18n="a11y.newTab">(opens in a new tab)</span>
-                </a>
-              </li>
-              <li>
-                <a class="contact-link" href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer">
-                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
-                  <span class="contact-link-text">
-                    <span class="contact-link-name">Instagram</span>
-                    <span class="contact-link-handle">@yellowgrapes.app</span>
-                  </span>
-                  <span class="contact-link-arrow" aria-hidden="true">↗</span>
-                  <span class="sr-only" data-i18n="a11y.newTab">(opens in a new tab)</span>
-                </a>
-              </li>
-              <li>
-                <a class="contact-link" href="mailto:support@yellow.grapes.com.tw">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="1"/><path d="m3 5.5 9 7.5 9-7.5"/></svg>
-                  <span class="contact-link-text">
-                    <span class="contact-link-name" data-i18n="contact.email">Email</span>
-                    <span class="contact-link-handle">support@yellow.grapes.com.tw</span>
-                  </span>
-                  <span class="contact-link-arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            </ul>
-          </aside>
         </div>
       </div>
     </section>
@@ -1201,7 +1480,7 @@
 
   <!-- ─────────────────────────────  FOOTER  ───────────────────────────── -->
   <footer class="border-t border-fg">
-    <div class="mx-auto max-w-7xl px-6 py-12 sm:px-8 sm:py-14">
+    <div class="mx-auto max-w-[92rem] px-6 py-12 sm:px-8 sm:py-14">
       <div class="footer-grid">
         <!-- Left: tagline + edition/place meta -->
         <div>
@@ -1216,10 +1495,10 @@
             <a href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
           </div>
           <nav class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-fgmuted">
-            <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.home">Home</a>
-            <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
-            <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.terms">Terms</a>
-            <a href="#contact" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accent hover:decoration-2" data-i18n="footer.contact">Contact</a>
+            <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.home">Home</a>
+            <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
+            <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.terms">Terms</a>
+            <a href="#contact" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.contact">Contact</a>
           </nav>
           <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited</p>
         </div>
@@ -1453,6 +1732,7 @@
     (function () {
       var form = document.getElementById('contactForm');
       if (!form) return;
+      var card = document.getElementById('contactCard');
       var thanks = document.getElementById('contactThanks');
       var errorEl = document.getElementById('contactError');
       var again = document.getElementById('contactAgain');
@@ -1529,8 +1809,21 @@
           .then(function (res) { return res.json(); })
           .then(function (data) {
             if (!data || data.success !== true) throw new Error((data && data.error) || 'Submission failed');
+            // Wide layout: hold the card at the form's height (the thanks note
+            // centres in it beside the links). Narrow: ease the card down to
+            // the note's own height instead of letting the page jump.
+            var formHeight = card.offsetHeight;
             form.classList.add('hidden');
             thanks.classList.remove('hidden');
+            if (window.matchMedia('(min-width: 1100px)').matches) {
+              card.style.minHeight = formHeight + 'px';
+            } else {
+              var noteHeight = card.offsetHeight;
+              card.style.minHeight = formHeight + 'px';
+              void card.offsetHeight; // commit the start height before easing
+              card.classList.add('is-easing');
+              card.style.minHeight = noteHeight + 'px';
+            }
             thanks.focus();
           })
           .catch(function () {
@@ -1552,23 +1845,38 @@
         if (general) general.checked = true;
         fields.forEach(function (f) { setInvalid(f, false); });
         thanks.classList.add('hidden');
+        card.classList.remove('is-easing');
+        card.style.minHeight = '';
         form.classList.remove('hidden');
         messageEl.focus();
       });
     })();
 
-    // ─────────────  Header: cream background once the page scrolls  ─────────────
+    // ─────────────  Header: light over the dark sections, cream elsewhere  ─────────────
     (function () {
       var header = document.querySelector('.site-header');
       if (!header) return;
+      var darkGrounds = document.querySelectorAll('[data-dark-ground]');
       var ticking = false;
+      // True while a dark section spans the header's middle line.
+      function overDark() {
+        var mid = header.offsetHeight / 2;
+        for (var i = 0; i < darkGrounds.length; i++) {
+          var r = darkGrounds[i].getBoundingClientRect();
+          if (r.top <= mid && r.bottom > mid) return true;
+        }
+        return false;
+      }
       function update() {
         ticking = false;
         header.classList.toggle('is-scrolled', (window.scrollY || window.pageYOffset) > 4);
+        header.classList.toggle('is-on-dark', overDark());
       }
-      window.addEventListener('scroll', function () {
+      function schedule() {
         if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-      }, { passive: true });
+      }
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule);
       update();
     })();
   </script>
