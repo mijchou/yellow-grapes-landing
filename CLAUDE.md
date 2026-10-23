@@ -65,12 +65,19 @@ portal and the app share one primary yellow. Butter is a *fill/mark* colour only
 rule); **text on butter is charcoal (`onaccent`)**, and butter is never text or
 a thin line on cream (it vanishes there — use the edge colour, as the contact
 title's rule does). Type is **left-aligned** (Urbanist headlines, system-font
-body, Cormorant / Noto Serif TC section titles). The hero and contact sections
-sit on dark photographs, with light text in `--on-dark-rgb` (warmGrey50, the
-app's dark-theme ink) and `--scrim-rgb` (photoScrim) for the dark header bar;
-the contact form uses the owner portal's vocabulary
-(`--paper-rgb`, `--hairline-rgb`, `--selected-rgb`, `--sage-ink-rgb`, radii 8/12/16px —
-mirrors `owner_portal/src/styles.css`). The sibling app (`../yellow_grapes_app`)
+body, Cormorant / Noto Serif TC section titles). The hero sits on a light
+map with the original **charcoal** elements (slogan, intro, colophon, header,
+translucent-cream store buttons). The contact section sits on a dark grapes
+photograph and the footer continues its dark ground (`--contact-ground-rgb`).
+Text on those is light (`--on-dark-rgb`, warmGrey50, the app's dark-theme ink),
+and `--scrim-rgb` (photoScrim) tints the dark header bar. Everything interactive
+on the dark grounds is **glass in one vocabulary**, set by the Threads /
+Instagram / Email rows (`.contact-link`): hairline `on-dark / 0.2` → `0.4` on
+hover, fill `on-dark / 0.06` → `0.12`, `--radius-row` (12px), butter focus
+outlines. The form fields, topic chips, form card and footer icon tiles all
+follow it; the rows and the card also blur what's beneath them (the card adds
+a little of the ground's tone) so a grape never sits sharp behind text.
+`--error-rgb` is the light red used for invalid fields on dark. The sibling app (`../yellow_grapes_app`)
 supplies the canonical logo assets and the *wordmark* (Urbanist).
 **Constraint: keep the palette to the `:root` tokens — one yellow, no extra hues.**
 
@@ -79,38 +86,47 @@ supplies the canonical logo assets and the *wordmark* (Urbanist).
   wordmark used by generated legal pages, while `app-icon.png` is the app icon
   used for the landing page and legal-page favicons / Apple touch icons.
 - Background art is **toned by hand in the source images — the page adds no
-  veil, tint or filter over it** (the owner's explicit choice, 2026-10-20). The
-  sources are `images/bg.png` (hero map, 4096×2567) and `images/bg2.png`
-  (contact linen + glass, 1536×1024); the page serves web renditions of them:
-  - Hero: `images/hero-bg-{1920,2880,3840}.webp` (desktop `srcset`),
-    `images/hero-bg-mobile.webp` (≤767px, a crop of the map's right ~58%, the
-    only part phones show) and `images/hero-bg.jpg` (fallback `src`).
-  - Contact: `images/contact-bg.webp` + `images/contact-bg.jpg` fallback.
-  - If an image changes, regenerate its renditions, e.g.
-    `cwebp -q 86 -m 6 -sharp_yuv -resize 1920 0 images/bg.png -o images/hero-bg-1920.webp`,
-    `cwebp … -crop 1720 0 2376 2567 -resize 0 2160 images/bg.png -o images/hero-bg-mobile.webp`
-    and `cwebp … -noalpha images/bg2.png -o images/contact-bg.webp`. Light
-    text needs the art to stay dark under it (it measured ≥ 8:1 with these).
-  The `<img>`s `onerror`-hide if missing. The portrait `images/app-map.png` only
-  serves as the OG/Twitter preview image.
-- Contact section: ≥1100px the photo is full-bleed, drawn slightly over-wide
-  (`--contact-photo-bleed`) so the wine glass sits in the open gap between the
-  links (left) and the paper form card (right); below that it is a plate at the
-  top fading into the section's dark ground (`--contact-ground-rgb`, the app's
-  darkBackground). If the photo changes, retune those tokens by screenshot at
-  1280–1920px.
+  veil, tint or filter over it** (the owner's explicit choice, 2026-10-20).
+  - Hero: the source is `images/app-map-wide-extended-withoutfrost.png`
+    (the light, untoned map, 4658×2919, restored 2026-10-24; the toned
+    `images/new-bg1.png` it replaced is no longer referenced). The page serves
+    `images/hero-bg-{1920,2880,3840}.webp`
+    (desktop `srcset`), `images/hero-bg-mobile.webp` (≤767px, a crop of the
+    map's right ~58%, the only part phones show) and `images/hero-bg.jpg`
+    (fallback `src`). If the art changes, regenerate them, e.g.
+    `cwebp -q 86 -m 6 -sharp_yuv -noalpha -resize 1920 0 images/app-map-wide-extended-withoutfrost.png -o images/hero-bg-1920.webp`,
+    `cwebp … -crop 1956 0 2702 2919 -resize 0 2160 images/app-map-wide-extended-withoutfrost.png -o images/hero-bg-mobile.webp`,
+    and a 1920px JPEG for `images/hero-bg.jpg`. The charcoal text needs the art
+    to stay light-to-mid-tone under it.
+  - Contact: the source is `images/new-bg2.png` (dark linen with yellow
+    grapes, 1536×1024). The page serves `images/contact-bg.webp` +
+    `images/contact-bg.jpg` (`cwebp … -noalpha images/new-bg2.png -o images/contact-bg.webp`).
+    `bg.png` / `bg2.png` are older art, no longer referenced.
+  The `<img>`s `onerror`-hide if missing. The portrait `images/app-map.png`
+  only serves as the OG/Twitter preview image.
+- Contact section: stacked below 900px; from 900px, intro + glass links (left)
+  and the glass form card (right). Below 1100px the photo is a plate at the top
+  (`--contact-plate-h`) fading into `--contact-ground-rgb` (#1F1D19, the app's
+  darkBackground — the photo's own darkest tone), with the content starting
+  over its lower part; from 1100px it fills the section, drawn slightly
+  over-wide (`--contact-photo-bleed`) so the grapes gather in the open gap
+  between the two columns — retune by screenshot at 1280–1920px if the photo
+  changes. The footer continues the same ground below a hairline (top row:
+  tagline/meta + social tiles; bottom row: copyright + header-style uppercase
+  nav).
 - Hero type sizes are tunable tokens in `:root` (`--hero-slogan-size`,
   `--hero-taiwan-size`, and `-mobile` variants for ≤767px). 「第一版 · 臺灣」 (600)
-  and the contact title 「與我們聯繫」 (500) use **Noto Serif TC** loaded from
-  Google Fonts as a glyph subset (`text=` in the `<head>` link) — if either
-  wording changes, update the `text=` value too.
-- The sticky header has light ink while a dark section (`[data-dark-ground]`:
-  the hero and the contact section) is under it (`.is-on-dark`, shipped in the
-  markup for the first paint): transparent at the very top, a dark glass bar
-  once scrolled. Over anything else (the footer) it is the cream bar with
-  charcoal ink. Both classes are toggled by the small scroll script at the end
-  of the page; header colours go through `--hdr-ink` / `--hdr-text-alpha`. A
-  new dark section must carry `data-dark-ground`.
+  uses **Noto Serif TC** loaded from Google Fonts as a glyph subset (`text=`
+  in the `<head>` link) — if that wording changes, update the `text=` value
+  too. The contact title (「與我們聯絡」 / "Get in touch.") is set like the hero
+  slogan: Urbanist 700, CJK falling back to the system sans.
+- The sticky header has charcoal ink over the hero (transparent at the very
+  top, the cream bar once scrolled) and light ink while a dark section
+  (`[data-dark-ground]`: the contact section and the footer) is under it
+  (`.is-on-dark`: a dark glass bar once scrolled). Both classes are toggled by
+  the small scroll script at the end of the page; header colours go through
+  `--hdr-ink` / `--hdr-text-alpha`. A new dark section must carry
+  `data-dark-ground`.
   `--header-h-mobile` (80px) must stay tall enough to contain the 中/EN toggle.
 
 ### Contact form → email (Google Apps Script)

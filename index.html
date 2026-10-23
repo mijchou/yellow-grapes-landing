@@ -49,10 +49,9 @@
   <link rel="apple-touch-icon" href="logo/app-icon.png" />
 
   <!-- Fonts: Urbanist (headings/labels), Cormorant Garamond (section titles),
-       Noto Serif TC — subset to exactly the glyphs of 「第一版 · 臺灣」 (600) and
-       the contact title 「與我們聯繫」 (500) via `text=` (a few KB), so those lines
-       render identically on every device. If either wording changes, update the
-       `text=` value too. -->
+       Noto Serif TC — subset to exactly the glyphs of 「第一版 · 臺灣」 (600) via
+       `text=` (a few KB), so that line renders identically on every device. If
+       the wording changes, update the `text=` value too. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -60,7 +59,7 @@
     rel="stylesheet"
   />
   <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600&text=%E7%AC%AC%E4%B8%80%E7%89%88%20%C2%B7%20%E8%87%BA%E7%81%A3%E8%88%87%E6%88%91%E5%80%91%E8%81%AF%E7%B9%AB&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600&text=%E7%AC%AC%E4%B8%80%E7%89%88%20%C2%B7%20%E8%87%BA%E7%81%A3&display=swap"
     rel="stylesheet"
   />
 
@@ -91,18 +90,8 @@
       --scrim-rgb: 28 23 19;         /* #1C1713 — AppColors.photoScrim */
       --on-dark-rgb: 254 253 251;    /* #FEFDFB — warmGrey50, text on the scrim */
 
-      /* Owner-portal form vocabulary (owner_portal/src/styles.css ← AppColors) */
-      --paper-rgb: 254 253 251;      /* warmGrey50 — the contact card, link rows */
-      --card-rgb: 255 255 255;       /* surfaceCard — field fill */
-      --ink-secondary-rgb: 108 98 77;/* warmGrey600 — field labels, captions */
-      --hairline-rgb: 211 206 196;   /* outlineVariant — field + card edges */
-      --outline-rgb: 181 172 159;    /* warmGrey300 — hovered field edge */
-      --placeholder-rgb: 142 134 122;/* warmGrey500 */
-      --selected-rgb: 242 232 212;   /* filterSelectedFill — chosen topic */
-      --sage-ink-rgb: 62 76 62;      /* themeText5Light — chosen topic, text buttons */
-      --danger-rgb: 186 37 37;       /* negative — error text */
-      --danger-container-rgb: 250 205 205;
-      --error-rgb: 230 106 106;      /* colorScheme.error — invalid field edge */
+      /* Glass on the dark grounds — store buttons, contact rows, form, footer */
+      --error-rgb: 230 106 106;      /* colorScheme.error — invalid field edge + message, readable on dark */
       --radius-control: 8px;
       --radius-row: 12px;
       --radius-panel: 16px;
@@ -134,14 +123,15 @@
       --hero-stack-top: 6vh;
       --hero-peek: 6vh;
 
-      /* Contact photo (images/contact-bg.*). Wide screens: the photo is drawn
-         a little wider than the section and shifted left so the glass sits in
-         the open gap between the links and the form card. */
-      --contact-photo-bleed: 12%;
-      --contact-photo-y: 45%;
-      /* Narrow screens: the photo is a plate at the top that fades into the
-         section's own dark ground (the photo's tone). */
+      /* Contact photo (images/new-bg2.png → contact-bg.*). Wide screens: drawn
+         a little wider than the section and shifted left so the grapes gather
+         in the open gap between the links and the form card. Narrow screens:
+         a plate at the top that fades into the ground below. */
+      --contact-photo-bleed: 8%;
+      --contact-photo-y: 50%;
       --contact-plate-h: min(118vw, 36rem);
+      /* Contact + footer ground — the photo's own darkest tone, so the plate's
+         fade and the footer meet it without a seam. */
       --contact-ground-rgb: 31 29 25;  /* #1F1D19 — AppColors.darkBackground */
 
       /* Right-side lede box positioning (tune these to adjust) */
@@ -161,8 +151,8 @@
 
     /* ═══════════  Header  ═══════════ */
     .site-header {
-      /* Ink + ground as channels: charcoal on cream by default, light on the
-         scrim while the header sits over the darkened hero (.is-on-dark). */
+      /* Ink + ground as channels: charcoal on cream by default (over the hero
+         too), light on the scrim over a dark section (.is-on-dark). */
       --hdr-ink: var(--fg-rgb);
       --hdr-ground: var(--bg-rgb);
       --hdr-line-alpha: 0.25;
@@ -180,10 +170,10 @@
       --header-opacity: 0.92;
       --header-blur: 12px;
     }
-    /* Toggled from JS while a dark section ([data-dark-ground]: the hero, the
-       contact section) is under the header: light ink, and once scrolled a dark
-       glass bar instead of the cream one. The markup ships with this class so
-       the first paint (over the hero) is already right. */
+    /* Toggled from JS while a dark section ([data-dark-ground]: the contact
+       section, the footer) is under the header: light ink, and once scrolled a
+       dark glass bar instead of the cream one. Over the hero the header keeps
+       its charcoal ink (and the cream bar once scrolled). */
     .site-header.is-on-dark {
       --hdr-ink: var(--on-dark-rgb);
       --hdr-ground: var(--scrim-rgb);
@@ -299,8 +289,8 @@
     }
 
     #the-map, #field-notes { scroll-margin-top: calc(var(--header-h-desktop) + 8px); }
-    /* Contact lands flush at the top: its photo runs under the header (dark
-       glass over it), and its own padding clears the text. */
+    /* Contact lands flush at the top: its dark ground runs under the header
+       (dark glass over it), and its own padding clears the text. */
     #contact { scroll-margin-top: 0; }
 
     /* ═══════════  Logo  ═══════════ */
@@ -471,12 +461,12 @@
     }
 
     .hero-store { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 6rem; }
-    /* Glass on the darkened hero, like the 貴賓禮遇計畫 page actions. */
+    /* Translucent cream on the map, charcoal ink — the original colours. */
     .store-badge {
       display: inline-flex; align-items: center; justify-content: center; gap: 1rem;
-      background: rgb(var(--on-dark-rgb) / 0.08);
-      color: rgb(var(--on-dark-rgb));
-      border: 1px solid rgb(var(--on-dark-rgb) / 0.34);
+      background: rgb(var(--bg-rgb) / 0.45);
+      color: rgb(var(--fg-rgb));
+      border: 1px solid rgb(var(--fg-rgb) / 0.22);
       border-radius: var(--radius-row);
       -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
@@ -485,15 +475,15 @@
       text-decoration: none;
       transition: background-color 0.15s, border-color 0.15s;
     }
-    a.store-badge[href]:hover { background: rgb(var(--on-dark-rgb) / 0.16); border-color: rgb(var(--on-dark-rgb) / 0.6); }
-    a.store-badge[href]:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 3px; }
+    a.store-badge[href]:hover { background: rgb(var(--bg-rgb) / 0.8); border-color: rgb(var(--fg-rgb) / 0.5); }
+    a.store-badge[href]:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
     /* iOS badge before the App Store URL is configured (see store-config.js):
        an <a> with no href — not clickable or focusable — reading "Coming soon". */
     a.store-badge:not([href]) { cursor: default; }
-    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--on-dark-rgb) / 0.78); }
+    .store-badge svg { height: 1.6rem; width: 1.6rem; flex: none; color: rgb(var(--fg-rgb) / 0.6); }
     .store-badge--android svg { height: 1.28rem; width: 1.28rem; }
     .store-badge .badge-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
-    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--on-dark-rgb) / 0.7); }
+    .store-badge .badge-top { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--fg-rgb) / 0.6); }
     .store-badge .badge-name { font-size: 0.95rem; font-weight: 700; }
 
     .hero-label {
@@ -502,9 +492,9 @@
       font-size: 0.6875rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgb(var(--on-dark-rgb));
+      color: rgb(var(--fg-rgb));
     }
-    .hero-label--muted { color: rgb(var(--on-dark-rgb) / 0.72); }
+    .hero-label--muted { color: rgb(var(--fg-rgb) / 0.6); }
 
     .hero-bottom-bar {
       position: absolute;
@@ -548,7 +538,7 @@
       font-size: var(--hero-slogan-size);
       line-height: 1.15;
       letter-spacing: 0.02em;
-      color: rgb(var(--on-dark-rgb));
+      color: rgb(var(--fg-rgb));
       max-width: 14em;
     }
     .hero-intro {
@@ -556,7 +546,7 @@
       max-width: 30rem;
       font-size: clamp(0.9rem, 1vw, 1rem);
       line-height: 1.7;
-      color: rgb(var(--on-dark-rgb) / 0.9);
+      color: rgb(var(--fg-rgb) / 0.8);
     }
     /* "第一版 · 臺灣" sub-wordmark (line under the slogan) — Noto Serif TC 600,
        loaded as a glyph subset in <head>. word-spacing keeps the airy gap around
@@ -569,7 +559,7 @@
       line-height: 1;
       letter-spacing: 0.02em;
       word-spacing: 0.25em;
-      color: rgb(var(--on-dark-rgb) / 0.84);
+      color: rgb(var(--fg-rgb) / 0.6);
     }
 
     /* ═══════════  Shared editorial section chrome  ═══════════ */
@@ -680,27 +670,30 @@
     }
 
     /* ═══════════  Contact  ═══════════
-       The owner portal's form vocabulary on the darkened linen photograph
-       (already toned in the art itself — no veil here). Text set on the photo
-       reads light; the form sits on a paper card, like PartnerSurface.
-       Narrow (<1100px): the photo is a plate at the top that fades into the
-       section's dark ground; title, links, then the form card follow (side by
-       side from 900px). Wide: full-bleed photo — links (left), the glass in
-       the open gap, the form card (right). DOM order = reading order. */
+       On the grapes-on-linen photograph (toned in the art itself — no veil).
+       Everything on it is glass in one vocabulary, set by the Threads /
+       Instagram / Email rows: light ink, hairline on-dark/0.2 → 0.4 on hover,
+       fill on-dark/0.06 → 0.12, 12px corners, butter focus rings; the rows
+       and the form card blur what's beneath, so a grape never sits sharp
+       behind text. Stacked below 900px; from 900px the intro + links (left)
+       and the form card (right) sit side by side. Below 1100px the photo is a
+       plate at the top; from 1100px it fills the section. DOM order = reading
+       order. */
     .contact-section {
       position: relative;
       isolation: isolate;
       overflow: hidden;
       background: rgb(var(--contact-ground-rgb));
       color: rgb(var(--on-dark-rgb));
+      color-scheme: dark;  /* native textarea scrollbar + resize grip */
     }
     .contact-photo {
-      position: absolute; z-index: -2;
+      position: absolute; z-index: -1;
       top: 0; left: 0; right: 0;
       height: var(--contact-plate-h);
       pointer-events: none;
-      -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 90%);
-      mask-image: linear-gradient(180deg, #000 60%, transparent 90%);
+      -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 92%);
+      mask-image: linear-gradient(180deg, #000 60%, transparent 92%);
     }
     .contact-photo img {
       display: block; width: 100%; height: 100%;
@@ -708,35 +701,48 @@
     }
     .contact-inner {
       max-width: 92rem; margin: 0 auto;
-      padding: calc(var(--contact-plate-h) * 0.76) 1.5rem 4.5rem;
+      padding: clamp(4.5rem, 8vw, 7.5rem) 1.5rem;
     }
     .contact-layout { display: grid; gap: 3rem; }
     @media (min-width: 640px) {
       .contact-inner { padding-left: 2rem; padding-right: 2rem; }  /* the footer's gutters */
     }
-    /* Tablet landscape: the photo stays a plate; links and form side by side. */
-    @media (min-width: 900px) and (max-width: 1099px) {
-      .contact-layout { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 3rem; align-items: start; }
+    @media (min-width: 900px) {
+      .contact-layout {
+        grid-template-columns: minmax(0, 24rem) minmax(0, 36rem);
+        justify-content: space-between; align-items: start;
+      }
+    }
+    @media (max-width: 1099px) {
+      .contact-inner { padding-top: calc(var(--contact-plate-h) * 0.76); }
+    }
+    @media (min-width: 1100px) {
+      .contact-photo {
+        bottom: 0; left: calc(-1 * var(--contact-photo-bleed));
+        height: auto;
+        -webkit-mask-image: none; mask-image: none;
+      }
     }
     .contact-intro { min-width: 0; max-width: 34rem; }
     .contact-intro .section-eyebrow { color: rgb(var(--on-dark-rgb) / 0.72); }
+    /* Same face as the hero slogan (探索地方、職人與葡萄酒。): Urbanist 700, CJK
+       falling back to the system sans. */
     .contact-title {
-      margin-top: 1.4rem;
+      margin: 1.4rem 0 0;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
       color: rgb(var(--on-dark-rgb));
-      /* Noto Serif TC is the 與我們聯繫 glyph subset loaded in <head>. */
-      font-family: 'Cormorant Garamond', 'Noto Serif TC', Georgia, serif;
-      font-size: clamp(2.2rem, 3.6vw, 3.2rem);
-      line-height: 1.12;
     }
-    /* Short rule under a title — butter on the dark photo (as in the hero);
-       butter's edge on the paper card, where pale butter would vanish. */
+    /* Short butter rule under a title — as in the hero. */
     .contact-rule {
       display: block;
       width: 2rem; height: 1.5px;
       margin-top: 1.4rem;
       background: rgb(var(--accent-rgb));
     }
-    .contact-card .contact-rule { background: rgb(var(--accent-strong-rgb)); }
     .contact-desc {
       margin: 1.4rem 0 0;
       max-width: 28rem;
@@ -744,15 +750,16 @@
       color: rgb(var(--on-dark-rgb) / 0.8);
     }
 
-    /* Other ways to reach us — the portal's grouped edit rows, as glass on
-       the dark photo (the same treatment as the hero's store buttons). */
+    /* Other ways to reach us — glass rows (the same treatment as the hero's
+       store buttons). The form and footer below borrow this vocabulary. */
     .contact-elsewhere { margin-top: 2.75rem; max-width: 26rem; }
-    .contact-aside-label {
-      margin: 0 0 0.85rem;
+    .contact-aside-label,
+    .field-label {
       font-family: 'Urbanist', system-ui, sans-serif;
-      font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em;
+      font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; line-height: 1.4;
       text-transform: uppercase; color: rgb(var(--on-dark-rgb) / 0.6);
     }
+    .contact-aside-label { margin: 0 0 0.85rem; }
     .contact-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
     .contact-link {
       display: flex; align-items: center; gap: 0.95rem;
@@ -775,90 +782,110 @@
     .contact-link:hover .contact-link-arrow { transform: translate(2px, -2px); }
     .contact-link[href^="mailto:"]:hover .contact-link-arrow { transform: translateX(2px); }
 
-    /* The form card — PartnerSurface / the portal's panel: paper, hairline,
-       16px corners, a soft lift. */
+    /* The form card — a frosted glass panel holding glass fields; the blur and
+       a little of the ground's tone keep the photo quiet behind the text. */
     .contact-card {
-      min-width: 0; max-width: 40rem;
+      min-width: 0;
       display: flex; flex-direction: column;
-      padding: clamp(1.5rem, 4vw, 2.75rem);
-      border: 1px solid rgb(var(--hairline-rgb) / 0.8);
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      border: 1px solid rgb(var(--on-dark-rgb) / 0.16);
       border-radius: var(--radius-panel);
-      background: rgb(var(--paper-rgb) / 0.96);
-      color: rgb(var(--fg-rgb));
-      box-shadow: 0 1px 2px rgb(var(--scrim-rgb) / 0.2), 0 18px 48px rgb(var(--scrim-rgb) / 0.35);
+      background: rgb(var(--contact-ground-rgb) / 0.45);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      color: rgb(var(--on-dark-rgb));
     }
     .contact-card.is-easing { transition: min-height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .contact-form:not(.hidden) { display: grid; gap: 1.4rem; }
     .contact-pair { display: grid; gap: 1.4rem; }
     @media (min-width: 640px) { .contact-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
-    .contact-field { display: grid; gap: 0.45rem; min-width: 0; margin: 0; padding: 0; border: 0; }
-    .field-label {
-      display: block; margin: 0; padding: 0;
-      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; line-height: 1.4;
-      color: rgb(var(--ink-secondary-rgb));
-    }
+    .contact-field { display: grid; gap: 0.55rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+    .field-label { display: block; margin: 0; padding: 0; }
     /* 16px text so iOS Safari never zooms the page on focus. */
     .contact-input {
-      display: block; width: 100%; min-height: 3rem; margin: 0;
-      padding: 0.75rem 0.9rem;
+      display: block; width: 100%; min-height: 3.25rem; margin: 0;
+      padding: 0.8rem 1rem;
       font: inherit; font-size: 1rem; line-height: 1.5;
-      color: rgb(var(--fg-rgb));
-      background: rgb(var(--card-rgb) / 0.7);
-      border: 0; border-radius: var(--radius-control);
-      box-shadow: inset 0 0 0 1px rgb(var(--hairline-rgb));
+      color: rgb(var(--on-dark-rgb));
+      caret-color: rgb(var(--accent-rgb));
+      background: rgb(var(--on-dark-rgb) / 0.06);
+      border: 1px solid rgb(var(--on-dark-rgb) / 0.2);
+      border-radius: var(--radius-row);
       -webkit-appearance: none; appearance: none;
-      transition: box-shadow 0.15s, background-color 0.15s;
+      transition: background-color 0.15s, border-color 0.15s;
     }
-    .contact-input::placeholder { color: rgb(var(--placeholder-rgb)); opacity: 1; }
-    .contact-input:hover:not(:focus) { box-shadow: inset 0 0 0 1px rgb(var(--outline-rgb)); }
-    .contact-input:focus { outline: none; background: rgb(var(--card-rgb)); box-shadow: inset 0 0 0 2px rgb(var(--ink-secondary-rgb)); }
-    .contact-input[aria-invalid="true"] { box-shadow: inset 0 0 0 1px rgb(var(--error-rgb)); }
-    .contact-input[aria-invalid="true"]:focus { box-shadow: inset 0 0 0 2px rgb(var(--error-rgb)); }
+    .contact-input::placeholder { color: rgb(var(--on-dark-rgb) / 0.42); opacity: 1; }
+    .contact-input:hover:not(:focus) { background: rgb(var(--on-dark-rgb) / 0.1); border-color: rgb(var(--on-dark-rgb) / 0.4); }
+    .contact-input:focus {
+      outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 2px;
+      background: rgb(var(--on-dark-rgb) / 0.1); border-color: rgb(var(--on-dark-rgb) / 0.7);
+    }
+    .contact-input[aria-invalid="true"] { border-color: rgb(var(--error-rgb)); }
+    .contact-input[aria-invalid="true"]:focus { outline-color: rgb(var(--error-rgb)); }
+    /* Browser autofill paints its own pale fill — keep the field dark. */
+    .contact-input:-webkit-autofill,
+    .contact-input:-webkit-autofill:hover,
+    .contact-input:-webkit-autofill:focus {
+      -webkit-text-fill-color: rgb(var(--on-dark-rgb));
+      -webkit-box-shadow: inset 0 0 0 100px rgb(var(--contact-ground-rgb));
+      transition: background-color 9999s;
+    }
     /* overflow-x: Safari otherwise draws a stray horizontal scroll bar. */
     textarea.contact-input { min-height: 9.5rem; resize: vertical; overflow-x: hidden; overflow-wrap: break-word; line-height: 1.65; }
     /* A legend isn't a grid item, so the field's gap doesn't reach it. */
-    legend.field-label { margin-bottom: 0.45rem; }
-    .field-error { margin: 0; font-size: 0.78rem; line-height: 1.45; color: rgb(var(--danger-rgb)); }
+    legend.field-label { margin-bottom: 0.55rem; }
+    .field-error { margin: 0; font-size: 0.8rem; line-height: 1.45; color: rgb(var(--error-rgb)); }
 
-    /* 主題 — the portal's option buttons (radio inputs underneath). */
+    /* 主題 — glass chips (radio inputs underneath); the chosen one lights up
+       with a butter dot. */
     .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
     @media (min-width: 640px) { .topic-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
     .topic-option { position: relative; display: block; cursor: pointer; }
     .topic-option input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
     .topic-option span {
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
       min-height: 2.75rem; padding: 0.5rem 0.6rem;
-      border-radius: var(--radius-control);
-      background: rgb(var(--card-rgb) / 0.5);
-      box-shadow: inset 0 0 0 1px rgb(var(--hairline-rgb));
-      color: rgb(var(--ink-secondary-rgb));
+      border: 1px solid rgb(var(--on-dark-rgb) / 0.2);
+      border-radius: var(--radius-row);
+      background: rgb(var(--on-dark-rgb) / 0.06);
+      color: rgb(var(--on-dark-rgb) / 0.72);
       font-size: 0.875rem; font-weight: 500; line-height: 1.3; text-align: center;
-      transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
     }
-    .topic-option:hover span { background: rgb(var(--card-rgb) / 0.85); box-shadow: inset 0 0 0 1px rgb(var(--outline-rgb)); }
+    .topic-option:hover span { background: rgb(var(--on-dark-rgb) / 0.12); border-color: rgb(var(--on-dark-rgb) / 0.4); color: rgb(var(--on-dark-rgb)); }
     .topic-option input:checked + span {
-      color: rgb(var(--sage-ink-rgb));
-      background: rgb(var(--selected-rgb));
-      box-shadow: inset 0 0 0 1px rgb(var(--green-rgb));
+      color: rgb(var(--on-dark-rgb));
+      background: rgb(var(--on-dark-rgb) / 0.16);
+      border-color: rgb(var(--on-dark-rgb) / 0.6);
     }
-    .topic-option input:focus-visible + span { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+    .topic-option input:checked + span::before {
+      content: ''; flex: none;
+      width: 0.375rem; height: 0.375rem; border-radius: 50%;
+      background: rgb(var(--accent-rgb));
+    }
+    .topic-option input:focus-visible + span { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 2px; }
 
-    /* 送出訊息 — butter, the one primary yellow, with its hairline edge. */
+    /* 送出訊息 — butter, the one primary yellow, shaped like the rows above
+       and carrying their arrow. */
     .contact-submit {
       display: flex; align-items: center; justify-content: center; gap: 0.6rem;
-      width: 100%; min-height: 3.25rem; margin: 0.35rem 0 0;
+      width: 100%; min-height: 3.5rem; margin: 0.35rem 0 0;
       padding: 0.8rem 1.5rem;
       border: 1px solid rgb(var(--accent-strong-rgb));
-      border-radius: var(--radius-control);
+      border-radius: var(--radius-row);
       background: rgb(var(--accent-rgb));
       color: rgb(var(--fg-rgb));
-      font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; line-height: 1.2;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.05em; line-height: 1.2;
       cursor: pointer;
       transition: filter 0.15s;
     }
-    .contact-submit:hover:not(:disabled) { filter: brightness(0.97); }
-    .contact-submit:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 3px; }
+    .contact-submit::after { content: '→'; font-weight: 500; transition: transform 0.15s; }
+    .contact-submit:hover:not(:disabled) { filter: brightness(1.05); }
+    .contact-submit:hover:not(:disabled)::after { transform: translateX(3px); }
+    .contact-submit:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 3px; }
     .contact-submit:disabled { cursor: wait; }
+    .contact-submit[aria-busy="true"]::after { content: none; }
     .contact-submit[aria-busy="true"]::before {
       content: '';
       width: 1rem; height: 1rem; flex: none;
@@ -868,9 +895,9 @@
       animation: contact-spin 0.8s linear infinite;
     }
     @keyframes contact-spin { to { transform: rotate(360deg); } }
-    .contact-note { margin: -0.4rem 0 0; font-size: 0.78rem; line-height: 1.6; color: rgb(var(--ink-secondary-rgb)); }
+    .contact-note { margin: -0.4rem 0 0; font-size: 0.78rem; line-height: 1.6; color: rgb(var(--on-dark-rgb) / 0.6); }
     .contact-note a, .contact-alert a { text-decoration: underline; text-underline-offset: 0.2em; }
-    .contact-note a:hover { color: rgb(var(--fg-rgb)); }
+    .contact-note a:hover { color: rgb(var(--on-dark-rgb)); }
     /* Honeypot: off-screen (not display:none, which some bots skip). */
     .form-hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
 
@@ -878,73 +905,91 @@
     .contact-thanks:not(.hidden) { display: flex; flex: 1; flex-direction: column; justify-content: center; align-items: flex-start; }
     .contact-thanks:focus { outline: none; }
     .contact-thanks .contact-rule { margin: 0 0 1.4rem; }
-    .contact-thanks-title { margin: 0; font-size: 1.375rem; font-weight: 600; line-height: 1.4; color: rgb(var(--fg-rgb)); }
-    .contact-thanks-body { margin: 0.6rem 0 0; font-size: 0.95rem; line-height: 1.7; color: rgb(var(--ink-secondary-rgb)); }
+    .contact-thanks-title { margin: 0; font-family: 'Urbanist', system-ui, sans-serif; font-size: 1.375rem; font-weight: 700; line-height: 1.4; color: rgb(var(--on-dark-rgb)); }
+    .contact-thanks-body { margin: 0.6rem 0 0; font-size: 0.95rem; line-height: 1.7; color: rgb(var(--on-dark-rgb) / 0.7); }
     .contact-text-btn {
       margin: 1.5rem 0 0 -0.85rem; min-height: 2.5rem; padding: 0.5rem 0.85rem;
-      border: 0; border-radius: var(--radius-control); background: transparent;
-      color: rgb(var(--sage-ink-rgb));
+      border: 0; border-radius: var(--radius-row); background: transparent;
+      color: rgb(var(--on-dark-rgb) / 0.85);
       font-size: 0.9rem; font-weight: 600; letter-spacing: 0.03em;
-      cursor: pointer; transition: background-color 0.15s;
+      cursor: pointer; transition: background-color 0.15s, color 0.15s;
     }
-    .contact-text-btn:hover { background: rgb(var(--hairline-rgb) / 0.4); }
-    .contact-text-btn:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 2px; }
+    .contact-text-btn:hover { background: rgb(var(--on-dark-rgb) / 0.08); color: rgb(var(--on-dark-rgb)); }
+    .contact-text-btn:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 2px; }
 
     /* Not sent. */
     .contact-alert {
       margin-top: 1.25rem; padding: 0.85rem 1rem;
-      border: 1px solid rgb(var(--danger-rgb) / 0.25);
-      border-radius: var(--radius-control);
-      background: rgb(var(--danger-container-rgb) / 0.4);
-      color: rgb(var(--danger-rgb));
+      border: 1px solid rgb(var(--error-rgb) / 0.45);
+      border-radius: var(--radius-row);
+      background: rgb(var(--error-rgb) / 0.1);
+      color: rgb(var(--on-dark-rgb) / 0.9);
       font-size: 0.875rem; line-height: 1.6;
     }
     .contact-alert:focus { outline: none; }
     .contact-alert p { margin: 0; }
-    /* High-contrast modes drop box-shadows — give fields and topics real edges. */
+    /* High-contrast modes: mark the chosen topic with a real outline. */
     @media (forced-colors: active) {
-      .contact-input, .topic-option span { border: 1px solid CanvasText; }
       .topic-option input:checked + span { outline: 2px solid Highlight; outline-offset: 1px; }
     }
 
-    @media (min-width: 1100px) {
-      /* The photo, slightly over-wide and shifted left, so the glass lands in
-         the open gap (tokens in :root). */
-      .contact-photo {
-        top: 0; bottom: 0; right: 0; left: calc(-1 * var(--contact-photo-bleed));
-        height: auto;
-        -webkit-mask-image: none; mask-image: none;
-      }
-      .contact-inner { padding: clamp(6rem, 9vw, 8.5rem) 2rem; }
-      .contact-layout { grid-template-columns: minmax(0, 24rem) minmax(3rem, 1fr) minmax(0, 34rem); gap: 0; align-items: start; }
-      .contact-intro { grid-column: 1; }
-      .contact-card {
-        grid-column: 3;
-        background: rgb(var(--paper-rgb) / 0.94);
-        -webkit-backdrop-filter: blur(18px) saturate(1.05);
-        backdrop-filter: blur(18px) saturate(1.05);
-      }
+    /* ═══════════  Footer  ═══════════
+       Continues the contact section's dark ground (data-dark-ground keeps the
+       header light). Hairline-ruled rows; the social icons are glass tiles
+       like the contact rows; the nav reads like the header's. */
+    .site-footer {
+      background: rgb(var(--contact-ground-rgb));
+      color: rgb(var(--on-dark-rgb));
     }
-
-    /* ═══════════  Footer  ═══════════ */
-    .footer-social { display: flex; gap: 0.25rem; margin-left: -0.6rem; }
+    .footer-inner { max-width: 92rem; margin: 0 auto; padding: 0 1.5rem; }
+    @media (min-width: 640px) { .footer-inner { padding: 0 2rem; } }
+    .footer-top, .footer-bottom {
+      display: flex; flex-direction: column; gap: 1.75rem;
+      border-top: 1px solid rgb(var(--on-dark-rgb) / 0.14);
+    }
+    .footer-top { padding: 2.75rem 0; }
+    .footer-bottom { padding: 1.5rem 0 2.25rem; gap: 1.25rem; }
+    .footer-tagline { margin: 0; font-size: 0.95rem; line-height: 1.6; color: rgb(var(--on-dark-rgb) / 0.75); max-width: 22rem; }
+    .footer-tagline:empty { display: none; }
+    .footer-meta {
+      margin: 0.85rem 0 0;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgb(var(--on-dark-rgb) / 0.55);
+    }
+    .footer-tagline:empty + .footer-meta { margin-top: 0; }
+    .footer-social { display: flex; gap: 0.5rem; }
     .footer-social a {
       display: inline-flex; align-items: center; justify-content: center;
       width: 2.75rem; height: 2.75rem;
-      color: rgb(var(--fg-rgb) / 0.6); transition: color 0.15s;
+      border: 1px solid rgb(var(--on-dark-rgb) / 0.2);
+      border-radius: var(--radius-row);
+      background: rgb(var(--on-dark-rgb) / 0.06);
+      color: rgb(var(--on-dark-rgb) / 0.8);
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
     }
-    .footer-social a:hover { color: rgb(var(--fg-rgb)); }
-    .footer-social a:focus-visible { outline: 2px solid rgb(var(--accent-strong-rgb)); outline-offset: 0; }
-    .footer-social svg { width: 1.25rem; height: 1.25rem; }
-    .footer-grid { display: flex; flex-direction: column; gap: 2.5rem; }
-    .footer-tagline { margin: 1.25rem 0 0; font-size: 0.95rem; line-height: 1.6; color: rgb(var(--fg-rgb) / 0.75); max-width: 22rem; }
-    .footer-meta { margin-top: 1.5rem; }
-    .footer-right { display: flex; flex-direction: column; gap: 1.25rem; }
-    .footer-copy { margin: 0; font-size: 0.75rem; line-height: 1.5; color: rgb(var(--fg-rgb) / 0.5); max-width: 24rem; }
+    .footer-social a:hover { background: rgb(var(--on-dark-rgb) / 0.12); border-color: rgb(var(--on-dark-rgb) / 0.4); color: rgb(var(--on-dark-rgb)); }
+    .footer-social a:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 2px; }
+    .footer-social svg { width: 1.125rem; height: 1.125rem; }
+    .footer-nav {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.75rem;
+      font-family: 'Urbanist', system-ui, sans-serif;
+      font-weight: 700; font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; line-height: 1;
+    }
+    .footer-nav a {
+      position: relative;
+      color: rgb(var(--on-dark-rgb) / 0.7); text-decoration: none;
+      text-decoration-thickness: 1.5px; text-underline-offset: 0.5em;
+      transition: color 0.15s;
+    }
+    .footer-nav a::after { content: ''; position: absolute; inset: -12px -6px; }  /* ~40px tap target */
+    .footer-nav a:hover { color: rgb(var(--on-dark-rgb)); text-decoration-line: underline; text-decoration-color: rgb(var(--accent-rgb)); }
+    .footer-nav a:focus-visible { outline: 2px solid rgb(var(--accent-rgb)); outline-offset: 4px; border-radius: 2px; }
+    .footer-copy { margin: 0; font-size: 0.75rem; line-height: 1.5; color: rgb(var(--on-dark-rgb) / 0.5); }
     @media (min-width: 768px) {
-      .footer-grid { flex-direction: row; justify-content: space-between; align-items: flex-start; gap: 3rem; }
-      .footer-right { align-items: flex-end; text-align: right; }
-      .footer-social { margin-left: 0; margin-right: -0.6rem; }
+      .footer-top, .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; gap: 3rem; }
+      .footer-top { align-items: flex-start; padding: 3.25rem 0; }
     }
 
     /* ═══════════  CJK Adjustments  ═══════════ */
@@ -1044,7 +1089,8 @@
       html.scroll-smooth { scroll-behavior: auto; }
       .site-header, .site-header *, .store-badge,
       .contact-link, .contact-link-arrow, .contact-input, .topic-option span,
-      .contact-submit, .contact-text-btn, .contact-card.is-easing { transition: none; }
+      .contact-submit, .contact-submit::after, .contact-text-btn, .contact-card.is-easing,
+      .footer-social a, .footer-nav a { transition: none; }
       .contact-submit[aria-busy="true"]::before { animation-duration: 2.4s; }
     }
 
@@ -1061,7 +1107,7 @@
 <body id="top" class="bg-bg font-sans text-fg antialiased">
 
   <!-- ─────────────────────────────  HEADER  ───────────────────────────── -->
-  <header class="site-header is-on-dark sticky top-0 z-50">
+  <header class="site-header sticky top-0 z-50">
     <div class="header-row">
       <!-- Left: "Crafted in 2026" above the line -->
       <div class="header-left">
@@ -1099,11 +1145,11 @@
 
   <main>
     <!-- ───────────────────────  01 · HERO  ───────────────────────
-         The map full-bleed behind — already darkened in the art itself
-         (images/bg.png) — with the text reading light on it, like the app's
-         貴賓禮遇計畫 pages. Mobile: the colophon flows after the store buttons. -->
-    <section class="hero relative overflow-hidden" data-dark-ground>
-      <!-- Map art: WebP renditions of images/bg.png, with a JPEG fallback.
+         The map full-bleed behind (images/app-map-wide-extended-withoutfrost.png),
+         with the original charcoal text on it. Mobile: the colophon flows after
+         the store buttons. -->
+    <section class="hero relative overflow-hidden">
+      <!-- Map art: WebP renditions of images/app-map-wide-extended-withoutfrost.png, with a JPEG fallback.
            Phones get a crop of the map's right side — the only part they show
            (object-position: right center) — and wider screens a width-matched
            file. `sizes`: object-cover draws the map wider than the viewport
@@ -1326,18 +1372,16 @@
 
     <!-- ───────────────────────  02 · CONTACT  ───────────────────────
          Numbered 03 originally — renumbered to 02 while THE MAP / FIELD NOTES
-         are hidden. Owner-portal styling on the darkened linen photograph
-         (images/bg2.png; see the Contact CSS for the layout per width). The form POSTs to the Google
-         Apps Script in scripts/apps-script/contact-form.gs, which emails each
-         message (and logs it to the linked Sheet). See CONTACT_ENDPOINT in the
-         script below. -->
+         are hidden. Glass links + form on the grapes photograph
+         (images/new-bg2.png; see the Contact CSS). The form POSTs to the Google Apps Script in
+         scripts/apps-script/contact-form.gs, which emails each message (and
+         logs it to the linked Sheet). See CONTACT_ENDPOINT in the script below. -->
     <section id="contact" class="contact-section" data-dark-ground>
       <picture class="contact-photo" aria-hidden="true">
         <source type="image/webp" srcset="images/contact-bg.webp" />
         <img src="images/contact-bg.jpg" alt="" width="1536" height="1024"
              loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </picture>
-
       <div class="contact-inner">
         <div class="contact-layout">
 
@@ -1346,7 +1390,7 @@
             <p class="section-eyebrow">
               <span data-i18n="contact.eyebrow">Contact</span>
             </p>
-            <h2 class="section-title contact-title" data-i18n="contact.heading">Get in touch.</h2>
+            <h2 class="contact-title" data-i18n="contact.heading">Get in touch.</h2>
             <span class="contact-rule" aria-hidden="true"></span>
             <p class="contact-desc" data-i18n="contact.desc">
               Partnerships, press, a correction to a listing, or simply an idea — write to us and we'll reply as soon as we can.
@@ -1391,7 +1435,7 @@
             </aside>
           </div>
 
-          <!-- Right: the form, on a paper card -->
+          <!-- Right: the form, on a glass card -->
           <div class="contact-card" id="contactCard">
             <form id="contactForm" class="contact-form" novalidate>
               <div class="contact-pair">
@@ -1479,29 +1523,29 @@
   </main>
 
   <!-- ─────────────────────────────  FOOTER  ───────────────────────────── -->
-  <footer class="border-t border-fg">
-    <div class="mx-auto max-w-[92rem] px-6 py-12 sm:px-8 sm:py-14">
-      <div class="footer-grid">
-        <!-- Left: tagline + edition/place meta -->
+  <footer class="site-footer" data-dark-ground>
+    <div class="footer-inner">
+      <!-- Top: tagline + edition meta (left) · social tiles (right) -->
+      <div class="footer-top">
         <div>
           <p class="footer-tagline" data-i18n="footer.tagline">A living index of the city's wine culture.</p>
-          <p class="meta-line meta-line--sage footer-meta" data-i18n="footer.meta">Yellow Grapes &middot; Edition 01 &middot; Taiwan</p>
+          <p class="footer-meta" data-i18n="footer.meta">Yellow Grapes &middot; Edition 01 &middot; Taiwan</p>
         </div>
+        <div class="footer-social">
+          <a href="https://www.threads.com/@yellowgrapes.app" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Threads"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a>
+          <a href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+        </div>
+      </div>
 
-        <!-- Right: nav + copyright. Privacy / Terms → build-time pages from Firestore (see CLAUDE.md). -->
-        <div class="footer-right">
-          <div class="footer-social">
-            <a href="https://www.threads.com/@yellowgrapes.app" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Threads"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a>
-            <a href="https://www.instagram.com/yellowgrapes.app/" target="_blank" rel="noopener noreferrer" aria-label="Yellow Grapes on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
-          </div>
-          <nav class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-fgmuted">
-            <a href="#top" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.home">Home</a>
-            <a href="/privacy" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.privacy">Privacy</a>
-            <a href="/terms" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.terms">Terms</a>
-            <a href="#contact" class="underline-offset-4 transition-colors hover:text-fg hover:underline hover:decoration-accentstrong hover:decoration-2" data-i18n="footer.contact">Contact</a>
-          </nav>
-          <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited</p>
-        </div>
+      <!-- Bottom: copyright (left) · nav (right). Privacy / Terms → build-time pages from Firestore (see CLAUDE.md). -->
+      <div class="footer-bottom">
+        <p class="footer-copy" data-i18n="footer.copyright">Copyright &copy; 2026 Torsade Technologies Company Limited</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="#top" data-i18n="footer.home">Home</a>
+          <a href="/privacy" data-i18n="footer.privacy">Privacy</a>
+          <a href="/terms" data-i18n="footer.terms">Terms</a>
+          <a href="#contact" data-i18n="footer.contact">Contact</a>
+        </nav>
       </div>
     </div>
   </footer>
@@ -1618,7 +1662,7 @@
         'store.appleSoon': '即將上架',
         'store.googleTop': '立即下載',
         'contact.eyebrow': '聯絡我們',
-        'contact.heading': '與我們聯繫',
+        'contact.heading': '與我們聯絡',
         'contact.desc': '合作提案、媒體採訪、店家資訊更正，或任何想法，都歡迎寫信給我們，我們會盡快回覆。',
         'contact.elsewhere': '其他聯絡方式',
         'contact.email': '電子郵件',
