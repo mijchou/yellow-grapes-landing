@@ -7,7 +7,9 @@
     "build:legal": "node scripts/build-legal.js",
     "build": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
     "build:all": "npm run build:legal && npm run build",
+    "test": "npm run test:manager-invite && npm run test:merchant-link",
     "test:manager-invite": "node --test scripts/test-manager-invite.js",
+    "test:merchant-link": "node --test scripts/test-merchant-link.js",
     "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "devDependencies": {

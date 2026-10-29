@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#faf9f5" />
+    <title>在 Yellow Grapes 查看這間店</title>
+    <meta
+      name="description"
+      content="Open this shared wine merchant in the Yellow Grapes app."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Yellow Grapes" />
+    <meta property="og:title" content="在 Yellow Grapes 查看這間店" />
+    <meta
+      property="og:description"
+      content="回到分享訊息並再次點擊連結，即可在 Yellow Grapes 中查看店家。"
+    />
+    <meta property="og:image" content="https://yellow.grapes.com.tw/logo/app-icon.png" />
+    <link rel="icon" type="image/png" href="/logo/app-icon.png" />
+    <link rel="apple-touch-icon" href="/logo/app-icon.png" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #faf9f5;
+        color: #1a1814;
+      }
+      * { box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 32px 20px;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(245, 230, 190, .75), transparent 44%),
+          #faf9f5;
+      }
+      main {
+        width: min(440px, 100%);
+        text-align: center;
+      }
+      .logo {
+        width: 88px;
+        height: 88px;
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(26, 24, 20, .14);
+      }
+      .eyebrow {
+        margin: 28px 0 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .22em;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(28px, 7vw, 40px);
+        line-height: 1.12;
+      }
+      .intro {
+        margin: 18px auto 0;
+        max-width: 36ch;
+        color: #5c574e;
+        line-height: 1.7;
+      }
+      .english { margin-top: 10px; font-size: 14px; }
+      .stores {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .store {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border: 1px solid rgba(26, 24, 20, .18);
+        border-radius: 12px;
+        background: #1c1713;
+        color: #fefdfb;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .store[hidden] { display: none; }
+      .soon {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border: 1px solid rgba(26, 24, 20, .12);
+        border-radius: 12px;
+        color: #777168;
+        background: rgba(255, 255, 255, .55);
+      }
+      .note {
+        margin: 24px auto 0;
+        padding-top: 20px;
+        border-top: 1px solid rgba(26, 24, 20, .14);
+        color: #5c574e;
+        font-size: 13px;
+        line-height: 1.65;
+      }
+      @media (max-width: 480px) {
+        .stores { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body data-yellow-grapes-merchant-landing>
+    <main>
+      <img class="logo" src="/logo/app-icon.png" alt="Yellow Grapes" />
+      <p class="eyebrow">YELLOW GRAPES</p>
+      <h1 id="shareHeading">在 App 中查看這間店</h1>
+      <p class="intro">
+        如果你已經安裝 Yellow Grapes，請回到收到這個連結的訊息，再點擊一次。
+      </p>
+      <p class="intro english">
+        If Yellow Grapes is installed, return to the message that contained this link and tap it again.
+      </p>
+
+      <div class="stores" aria-label="Download Yellow Grapes">
+        <a id="iosStore" class="store" hidden rel="noopener">App Store</a>
+        <span id="iosSoon" class="soon">App Store · 即將上架</span>
+        <a id="androidStore" class="store" hidden rel="noopener">Google Play</a>
+        <span id="androidSoon" class="soon">Google Play · 即將上架</span>
+      </div>
+
+      <p class="note">
+        安裝完成後，請回到原本的分享連結。為了避免把已安裝 App 的使用者誤送到商店，本頁不會自動跳轉。<br />
+        After installing, return to the original shared link. This page never redirects automatically.
+      </p>
+    </main>
+
+    <script src="/store-config.js"></script>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var eventIds = params.getAll('event');
+        if (params.get('id') && eventIds.length === 1 && eventIds[0]) {
+          document.title = '在 Yellow Grapes 查看這場活動';
+          document.getElementById('shareHeading').textContent = '在 App 中查看這場活動';
+        }
+        var ios = typeof window.YELLOW_GRAPES_IOS_APP_STORE_URL === 'string'
+          ? window.YELLOW_GRAPES_IOS_APP_STORE_URL : '';
+        var android = typeof window.YELLOW_GRAPES_ANDROID_PLAY_STORE_URL === 'string'
+          ? window.YELLOW_GRAPES_ANDROID_PLAY_STORE_URL : '';
+
+        if (/^https:\/\/apps\.apple\.com\//.test(ios)) {
+          var iosStore = document.getElementById('iosStore');
+          iosStore.href = ios;
+          iosStore.hidden = false;
+          document.getElementById('iosSoon').hidden = true;
+        }
+        if (/^https:\/\/play\.google\.com\/store\/apps\/details\?id=tw\.com\.grapes\.yellow(?:&|$)/.test(android)) {
+          var androidStore = document.getElementById('androidStore');
+          androidStore.href = android;
+          androidStore.hidden = false;
+          document.getElementById('androidSoon').hidden = true;
+        }
+      })();
+    </script>
+  </body>
+</html>

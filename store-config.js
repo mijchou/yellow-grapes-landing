@@ -3,3 +3,4 @@
 // soon"). On deploy, CI overwrites it in the published site from the
 // IOS_APP_STORE_URL repository variable — see scripts/build-store-config.js.
 window.YELLOW_GRAPES_IOS_APP_STORE_URL = "";
+window.YELLOW_GRAPES_ANDROID_PLAY_STORE_URL = "";

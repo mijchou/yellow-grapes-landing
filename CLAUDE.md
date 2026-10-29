@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 A single-page, static **landing page** for the Yellow Grapes wine-map app
 (`index.html`). It is styled with a **locally-built Tailwind CSS v3** stylesheet
 and deployed via **GitHub Pages** at the custom domain `yellow.grapes.com.tw`
-(see `CNAME`). There is no backend, no framework, and no test suite.
+(see `CNAME`). There is no backend or framework; the app-link fallbacks have Node test coverage.
 
 ## Commands
 
@@ -19,7 +19,7 @@ npm run build:legal  # render terms.html / privacy.html from Firestore (needs cr
 npm run build:all    # build:legal then build (the order CI uses)
 ```
 
-There is no lint or test step.
+Run `npm test` for manager invitation, shared-link fallback, association-file, and artifact assembly checks.
 
 **Deploy = push to `main` → GitHub Action.** Pages is set to deploy *from GitHub
 Actions* (`.github/workflows/deploy.yml`), not directly from the branch. On each
@@ -149,6 +149,9 @@ supplies the canonical logo assets and the *wordmark* (Urbanist).
 ### Store links
 - **Android** is a fixed link in the markup:
   `https://play.google.com/store/apps/details?id=tw.com.grapes.yellow`.
+- The merchant-link fallback only enables its Android button when the
+  **`ANDROID_PLAY_STORE_URL` repo variable** contains that public listing URL.
+  Until then it shows "Coming soon" and never sends recipients to a 404.
 - **iOS** comes from the **`IOS_APP_STORE_URL` repo variable** (Settings →
   Secrets and variables → Actions → Variables). On deploy,
   `scripts/build-store-config.js` writes it into `_site/store-config.js` (landing
@@ -222,3 +225,12 @@ No Firestore rule changes are required — the Admin SDK bypasses rules.
   dedicated 1200×630 `images/og.png` would preview better.
 - Set the `IOS_APP_STORE_URL` repo variable once the app is live on the App
   Store, then re-run the deploy (see **Store links**).
+- Set `ANDROID_PLAY_STORE_URL` once the production Play listing is public.
+- Set the `PLAY_APP_SIGNING_CERT_SHA256` secret to the Play **app signing**
+  certificate when available. Missing configuration omits Android associations;
+  malformed supplied values fail the build. The upload/debug certificate is not a substitute.
+
+
+### Pre-release shared merchant and event links (29 October 2026)
+
+The shared route is `/merchant/?id=MERCHANT_ID&event=EVENT_ID` (omit `event` for a merchant). `merchant/index.html` provides the branded fallback and event-aware heading. Both store URLs may remain unset until their listings are public. `scripts/assemble-site.js` packages this page, its assets, store configuration, and associations for GitHub Pages. Missing Android signing configuration omits `assetlinks.json` but still generates iOS associations; a malformed supplied fingerprint fails the build. Publishing requires explicit approval for the prepared update.
