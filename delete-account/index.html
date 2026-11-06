@@ -13,6 +13,19 @@
     />
     <link rel="icon" type="image/png" href="/logo/app-icon.png" />
     <link rel="apple-touch-icon" href="/logo/app-icon.png" />
+    <script>
+      // Language before first paint: the site-wide saved choice ('yg-lang',
+      // shared with the landing and legal pages), else the system language.
+      (function () {
+        var lang;
+        try { lang = localStorage.getItem('yg-lang'); } catch (e) {}
+        if (lang !== 'zh' && lang !== 'en') {
+          lang = (navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en';
+        }
+        document.documentElement.setAttribute('data-lang', lang);
+        document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
+      })();
+    </script>
     <style>
       :root {
         color-scheme: light;
@@ -30,6 +43,37 @@
         line-height: 1.75;
       }
       main { width: min(640px, 100%); margin: 0 auto; }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .lang-toggle {
+        min-width: 44px;
+        min-height: 36px;
+        padding: 6px 14px;
+        border: 1px solid rgba(26, 24, 20, .2);
+        border-radius: 999px;
+        background: transparent;
+        color: #1a1814;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: .04em;
+        cursor: pointer;
+        transition: border-color .15s;
+      }
+      .lang-toggle:hover { border-color: #aa8d40; }
+      .lang-toggle:focus-visible { outline: 2px solid #aa8d40; outline-offset: 2px; }
+      /* Without JS, html has no data-lang: both languages show and the toggle hides. */
+      html:not([data-lang]) .lang-toggle { display: none; }
+      html[data-lang="zh"] [data-content="en"],
+      html[data-lang="en"] [data-content="zh"] { display: none; }
+      html:not([data-lang]) [data-content="en"] {
+        margin-top: 56px;
+        padding-top: 28px;
+        border-top: 1px solid rgba(26, 24, 20, .3);
+      }
       .logo {
         width: 64px;
         height: 64px;
@@ -74,11 +118,6 @@
       .note { color: #5c574e; font-size: 14px; }
       a { color: #1a1814; text-decoration-color: #aa8d40; text-underline-offset: 3px; }
       a:focus-visible { outline: 2px solid #aa8d40; outline-offset: 2px; border-radius: 2px; }
-      .lang {
-        margin-top: 56px;
-        padding-top: 28px;
-        border-top: 1px solid rgba(26, 24, 20, .3);
-      }
       footer {
         margin-top: 48px;
         color: #777168;
@@ -88,9 +127,12 @@
   </head>
   <body>
     <main>
-      <img class="logo" src="/logo/app-icon.png" alt="Yellow Grapes" />
+      <div class="top">
+        <img class="logo" src="/logo/app-icon.png" alt="Yellow Grapes" />
+        <button id="langToggle" class="lang-toggle" type="button"></button>
+      </div>
 
-      <div lang="zh-Hant">
+      <div data-content="zh" lang="zh-Hant">
         <p class="eyebrow">YELLOW GRAPES</p>
         <h1>刪除你的 Yellow Grapes 帳號</h1>
         <p class="lead">
@@ -160,7 +202,7 @@
         </section>
       </div>
 
-      <div class="lang" lang="en">
+      <div data-content="en" lang="en">
         <p class="eyebrow">YELLOW GRAPES</p>
         <h1>Delete your Yellow Grapes account</h1>
         <p class="lead">
@@ -231,5 +273,32 @@
 
       <footer>Yellow Grapes · Torsade Technologies Company Limited</footer>
     </main>
+
+    <script>
+      (function () {
+        var TITLES = {
+          zh: '刪除 Yellow Grapes 帳號',
+          en: 'Delete your Yellow Grapes account'
+        };
+        var root = document.documentElement;
+        var toggle = document.getElementById('langToggle');
+
+        function apply(lang) {
+          root.setAttribute('data-lang', lang);
+          root.lang = lang === 'zh' ? 'zh-Hant' : 'en';
+          document.title = TITLES[lang];
+          toggle.textContent = lang === 'zh' ? 'EN' : '中';
+          toggle.setAttribute('aria-label', lang === 'zh' ? 'Switch to English' : '切換至繁體中文');
+        }
+
+        apply(root.getAttribute('data-lang') === 'zh' ? 'zh' : 'en');
+        toggle.addEventListener('click', function () {
+          var next = root.getAttribute('data-lang') === 'zh' ? 'en' : 'zh';
+          apply(next);
+          try { localStorage.setItem('yg-lang', next); } catch (e) {}
+          window.scrollTo(0, 0);
+        });
+      })();
+    </script>
   </body>
 </html>
