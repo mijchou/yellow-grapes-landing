@@ -234,3 +234,7 @@ No Firestore rule changes are required — the Admin SDK bypasses rules.
 ### Pre-release shared merchant and event links (29 October 2026)
 
 The shared route is `/merchant/?id=MERCHANT_ID&event=EVENT_ID` (omit `event` for a merchant). `merchant/index.html` provides the branded fallback and event-aware heading. Both store URLs may remain unset until their listings are public. `scripts/assemble-site.js` packages this page, its assets, store configuration, and associations for GitHub Pages. Missing Android signing configuration omits `assetlinks.json` but still generates iOS associations; a malformed supplied fingerprint fails the build. Publishing requires explicit approval for the prepared update.
+
+### Account deletion page (6 November 2026)
+
+`/delete-account/` (`delete-account/index.html`) is the **Delete account URL** in the Google Play Data safety form. It is deliberately **not linked from `index.html`** — don't add a link. Don't change the URL. Its lists of deleted and kept data mirror the app's `deleteAccount` callable (`../yellow_grapes_app/functions/src/account.ts`) and the backup schedule (`backup-cleanup.ts`); update the page when either changes.

@@ -6,7 +6,7 @@ const { build } = require('./build-store-config');
 const root = resolve(__dirname, '..');
 const output = resolve(process.argv[2] || '_site');
 mkdirSync(output, { recursive: true });
-for (const file of ['index.html', 'terms.html', 'privacy.html', 'CNAME', 'dist', 'logo', 'images', 'manager-invite', 'merchant']) {
+for (const file of ['index.html', 'terms.html', 'privacy.html', 'CNAME', 'dist', 'logo', 'images', 'manager-invite', 'merchant', 'delete-account']) {
   cpSync(resolve(root, file), resolve(output, file), { recursive: true });
 }
 build(output, process.env);
