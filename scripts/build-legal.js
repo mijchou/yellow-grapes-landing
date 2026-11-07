@@ -181,8 +181,8 @@ function renderPage(pageDef, parsed) {
   <link rel="canonical" href="${canonical}" />
 
   <!-- App-matched Yellow Grapes icon. -->
-  <link rel="icon" type="image/png" sizes="1024x1024" href="/logo/app-icon.png" />
-  <link rel="apple-touch-icon" href="/logo/app-icon.png" />
+  <link rel="icon" type="image/png" sizes="1024x1024" href="/logo/app-icon.png?v=2" />
+  <link rel="apple-touch-icon" href="/logo/app-icon.png?v=2" />
 
   <!-- Brand wordmark font (Urbanist — matches the landing page). -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
