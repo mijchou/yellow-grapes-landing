@@ -60,7 +60,7 @@ jobs:
       #
       # IOS_APP_STORE_URL (repo variable, apps.apple.com link) drives the
       # landing page's iOS badge + Smart App Banner AND the manager-invite
-      # iPhone redirect — set it once the app is live, then re-run this workflow.
+      # iPhone redirect. Both store repository variables point to the public listings.
       - name: Assemble site
         env:
           IOS_APP_STORE_URL: ${{ vars.IOS_APP_STORE_URL }}

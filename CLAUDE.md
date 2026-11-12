@@ -151,15 +151,16 @@ supplies the canonical logo assets and the *wordmark* (Urbanist).
   `https://play.google.com/store/apps/details?id=tw.com.grapes.yellow`.
 - The merchant-link fallback only enables its Android button when the
   **`ANDROID_PLAY_STORE_URL` repo variable** contains that public listing URL.
-  Until then it shows "Coming soon" and never sends recipients to a 404.
+  It is configured with the public production listing.
 - **iOS** comes from the **`IOS_APP_STORE_URL` repo variable** (Settings →
   Secrets and variables → Actions → Variables). On deploy,
   `scripts/build-store-config.js` writes it into `_site/store-config.js` (landing
   badge) and `_site/manager-invite/store-config.js` (invite redirect), and swaps
   the `<!-- @ios-smart-app-banner -->` marker in index.html for Safari's Smart
-  App Banner meta tag. Until it's set, the iOS badge reads "Coming soon / 即將上架"
-  and isn't clickable. The committed root `store-config.js` is only the local
-  preview default (empty).
+  App Banner meta tag. The production URL is
+  `https://apps.apple.com/app/id6784374207`. The committed root `store-config.js`
+  contains both public URLs for local preview. Desktop and mobile store badges
+  read "Download now / 立即下載" and have working links in the static markup.
 - Tailwind only generates classes it finds **literally in the files** it scans
   (`content: ['./*.html', './scripts/build-legal.js']` — `index.html`, the
   generated `terms.html` / `privacy.html`, and the legal-page template). Always run `build:legal` **before** the Tailwind build so the
@@ -223,17 +224,14 @@ No Firestore rule changes are required — the Admin SDK bypasses rules.
 ## Outstanding TODOs
 - OG/Twitter preview uses the portrait `app-map.png` (crops in wide cards); a
   dedicated 1200×630 `images/og.png` would preview better.
-- Set the `IOS_APP_STORE_URL` repo variable once the app is live on the App
-  Store, then re-run the deploy (see **Store links**).
-- Set `ANDROID_PLAY_STORE_URL` once the production Play listing is public.
 - Set the `PLAY_APP_SIGNING_CERT_SHA256` secret to the Play **app signing**
   certificate when available. Missing configuration omits Android associations;
   malformed supplied values fail the build. The upload/debug certificate is not a substitute.
 
 
-### Pre-release shared merchant and event links (29 October 2026)
+### Shared merchant and event links (29 October 2026)
 
-The shared route is `/merchant/?id=MERCHANT_ID&event=EVENT_ID` (omit `event` for a merchant). `merchant/index.html` provides the branded fallback and event-aware heading. Both store URLs may remain unset until their listings are public. `scripts/assemble-site.js` packages this page, its assets, store configuration, and associations for GitHub Pages. Missing Android signing configuration omits `assetlinks.json` but still generates iOS associations; a malformed supplied fingerprint fails the build. Publishing requires explicit approval for the prepared update.
+The shared route is `/merchant/?id=MERCHANT_ID&event=EVENT_ID` (omit `event` for a merchant). `merchant/index.html` provides the branded fallback and event-aware heading. Both store URLs are configured for the public production listings. `scripts/assemble-site.js` packages this page, its assets, store configuration, and associations for GitHub Pages. Missing Android signing configuration omits `assetlinks.json` but still generates iOS associations; a malformed supplied fingerprint fails the build. Publishing requires explicit approval for the prepared update.
 
 ### Account deletion page (6 November 2026)
 
