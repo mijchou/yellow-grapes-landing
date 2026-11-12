@@ -298,15 +298,6 @@
     .yg-wordmark { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.42em; }
 
     /* ═══════════  Hero  ═══════════ */
-    /* A short butter rule under 第一版 · 臺灣 — the 貴賓禮遇計畫 header mark. */
-    .hero-rule {
-      display: block;
-      width: 2rem; height: 1.5px;
-      margin: -0.25rem 0 -0.15rem;
-      background: rgb(var(--accent-rgb));
-      flex: none;
-    }
-
     /* Two-column hero composition — branding (left) + narrative box (right) */
     .hero-center-block {
       flex-direction: column;
@@ -1049,7 +1040,7 @@
         padding-left: 1.5rem;
         padding-right: 1.5rem;
       }
-      .hero-background-image { object-position: right center; }
+      .hero-background-image { object-position: center; }
       .header-actions { margin-top: 0.75rem; }
       .hero-tagline { white-space: normal; }
       .hero-wordmark-row { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
@@ -1148,14 +1139,15 @@
          with the original charcoal text on it. Mobile: the colophon flows after
          the store buttons. -->
     <section class="hero relative overflow-hidden">
-      <!-- Map art: WebP renditions of images/app-map-wide-extended-withoutfrost.png, with a JPEG fallback.
-           Phones get a crop of the map's right side — the only part they show
-           (object-position: right center) — and wider screens a width-matched
-           file. `sizes`: object-cover draws the map wider than the viewport
+      <!-- Map art: phones use images/phone-bg-1.png, with an optimized WebP copy.
+           Wider screens use width-matched renditions of
+           images/app-map-wide-extended-withoutfrost.png with a JPEG fallback.
+           `sizes`: object-cover draws the map wider than the viewport
            whenever the window is taller than the map's 8:5. -->
       <div class="absolute inset-0 block" aria-hidden="true">
         <picture class="block h-full w-full">
-          <source media="(max-width: 767px)" type="image/webp" srcset="images/hero-bg-mobile.webp" />
+          <source media="(max-width: 767px)" type="image/webp" srcset="images/phone-bg-1.webp" />
+          <source media="(max-width: 767px)" type="image/png" srcset="images/phone-bg-1.png" />
           <source type="image/webp"
             srcset="images/hero-bg-1920.webp 1920w, images/hero-bg-2880.webp 2880w, images/hero-bg-3840.webp 3840w"
             sizes="(max-aspect-ratio: 8/5) 160vh, 100vw" />
@@ -1179,7 +1171,6 @@
           <div class="hero-left-col">
             <h1 class="hero-slogan" data-i18n="hero.slogan">The places, the people &amp; the bottle.</h1>
             <p class="hero-taiwan">第一版 · 臺灣</p>
-            <span class="hero-rule" aria-hidden="true"></span>
             <p class="hero-intro" data-i18n="hero.intro">Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
 
             <!-- Store buttons — below the intro, left-aligned -->
@@ -1208,7 +1199,6 @@
             <div class="hero-headline">
               <h1 class="hero-slogan" data-i18n="hero.slogan">The places, the people &amp; the bottle.</h1>
               <p class="hero-taiwan">第一版 · 臺灣</p>
-              <span class="hero-rule" aria-hidden="true"></span>
               <p class="hero-intro" data-i18n="hero.intro">Yellow Grapes is a curated map of wine places, businesses, and the people quietly shaping how the city tastes.</p>
             </div>
             <div class="hero-store">

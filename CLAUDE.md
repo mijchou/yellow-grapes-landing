@@ -61,8 +61,8 @@ the app's `AppColors.butter`) with its hairline edge (`--accent-strong-rgb`,
 #AA8D40, `actionPrimaryBorder`), which is also the focus-ring colour. Since
 2026-10-20 this replaces the old lemon-curd so the site, the Golden Grapes owner
 portal and the app share one primary yellow. Butter is a *fill/mark* colour only
-(the 送出訊息 button, the "Get the app" pill on the legal pages, the hero's short
-rule); **text on butter is charcoal (`onaccent`)**, and butter is never text or
+(the 送出訊息 button and the "Get the app" pill on the legal pages);
+**text on butter is charcoal (`onaccent`)**, and butter is never text or
 a thin line on cream (it vanishes there — use the edge colour, as the contact
 title's rule does). Type is **left-aligned** (Urbanist headlines, system-font
 body, Cormorant / Noto Serif TC section titles). The hero sits on a light
@@ -91,11 +91,12 @@ supplies the canonical logo assets and the *wordmark* (Urbanist).
     (the light, untoned map, 4658×2919, restored 2026-10-24; the toned
     `images/new-bg1.png` it replaced is no longer referenced). The page serves
     `images/hero-bg-{1920,2880,3840}.webp`
-    (desktop `srcset`), `images/hero-bg-mobile.webp` (≤767px, a crop of the
-    map's right ~58%, the only part phones show) and `images/hero-bg.jpg`
-    (fallback `src`). If the art changes, regenerate them, e.g.
+    (desktop `srcset`) and `images/hero-bg.jpg` (desktop fallback `src`).
+    Phones (≤767px) use the quieter `images/phone-bg-1.png`, served as
+    `images/phone-bg-1.webp` with the original PNG as fallback and centered
+    `object-cover` positioning. The yellow rule below 第一版 · 臺灣 has been removed
+    from both layouts. If the desktop art changes, regenerate its renditions, e.g.
     `cwebp -q 86 -m 6 -sharp_yuv -noalpha -resize 1920 0 images/app-map-wide-extended-withoutfrost.png -o images/hero-bg-1920.webp`,
-    `cwebp … -crop 1956 0 2702 2919 -resize 0 2160 images/app-map-wide-extended-withoutfrost.png -o images/hero-bg-mobile.webp`,
     and a 1920px JPEG for `images/hero-bg.jpg`. The charcoal text needs the art
     to stay light-to-mid-tone under it.
   - Contact: the source is `images/new-bg2.png` (dark linen with yellow
